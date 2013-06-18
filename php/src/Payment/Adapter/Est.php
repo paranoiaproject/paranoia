@@ -36,24 +36,10 @@ class Est extends Http implements AdapterInterface
         $request->setRawData($xml);
         return http_build_query($data);
     }
-
+   
     /**
-    * @param \Payment\Request $request
-    * @return mixed
-    */
-    protected function _buildPreauthorizationRequest(Request $request)
-    {
-        
-    }
-    
-    /**
-    * @param \Payment\Request $request
-    * @return mixed
-    */
-    protected function _buildPostAuthorizationRequest(Request $request)
-    {}
-    
-    /**
+    * build request data for sale transaction.
+    *
     * @param \Payment\Request $request
     * @return mixed
     */
@@ -78,6 +64,8 @@ class Est extends Http implements AdapterInterface
     }
     
     /**
+    * build request data for refund transaction.
+    *
     * @param \Payment\Request $request
     * @return mixed
     */
@@ -96,6 +84,8 @@ class Est extends Http implements AdapterInterface
     }
     
     /**
+    * build request data for cancel transaction.
+    *
     * @param \Payment\Request $request
     * @return mixed
     */
@@ -110,15 +100,10 @@ class Est extends Http implements AdapterInterface
 
         return $requestData;
     }
-    
+
     /**
-    * @param \Payment\Request $request
-    * @return mixed
-    */
-    protected function _buildInquiryRequest(Request $request)
-    {}
-    
-    /**
+    * parses response from returned provider.
+    *
     * @param string $rawResponse
     * @return \Payment\Response\PaymentResponse
     */
