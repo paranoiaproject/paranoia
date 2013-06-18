@@ -1,16 +1,34 @@
 # Paranoia!
-## What is Paranoia ?
+### What is Paranoia ?
 Paranoia is simple generic payment client for payment api of popular turkish banks. It provides simple usability 
 with single interface for more than one payment api.
 
-## How ?
+### How ?
 All payment transaction is very easy with Paranoia in a few steps.
-1) Create a payment request.
-2) Create a payment instance with factory.
-3) Call intended transaction method of payment instance with request object.
+- Create a payment request.
+- Create a payment instance with factory.
+- Call intended transaction method of payment instance with request object.
 That's it!
 
-## Usage:
+### Supported Adapters:
+- Est (Akbank, Finansbank, İş Bankası, HSBC) 
+- Gvp (Garanti Bankası, Teb Bonus)  - Coming soon
+- Posnet  (Yapı Kredi, Vakıfbank, Anadolubank) - Coming soon
+
+### Supported Currency Codes:
+- TRL: Turkish Lira
+- USD: U.S. Dollar
+- EUR: Euro
+
+### Supported Transactions:
+- sale
+- cancel
+- refund
+- preauthorization - coming soon
+- postauthorization - coming soon
+- payment with 3d secure - coming soon
+
+### Usage:
 ```php
 //loading configuration.
 $config = new Zend_Config_Ini(APPLICATION_PATH . '/config/payment.ini', APPLICATION_ENV);
