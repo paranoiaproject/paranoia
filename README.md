@@ -5,15 +5,16 @@ with single interface for more than one payment api.
 
 ## How ?
 All payment transaction is very easy with Paranoia in a few steps.
-1. Create a payment request.
-2. Create a payment instance with factory.
-3. Call intended transaction method of payment instance with request object.
+- Create a payment request.
+- Create a payment instance with factory.
+- Call intended transaction method of payment instance with request object.
 That's it!
 
 ## Supported Adapters:
-* Est (Akbank, Finansbank, İş Bankası, HSBC) 
-* Gvp (Garanti Bankası, Teb Bonus)  - Coming soon
-* Posnet  (Yapı Kredi, Vakıfbank, Anadolubank) - Coming soon
+- Est (Akbank, Finansbank, İş Bankası, HSBC) 
+- Gvp (Garanti Bankası, Teb Bonus)  - Coming soon
+- Posnet  (Yapı Kredi, Vakıfbank, Anadolubank) - Coming soon
+
 ## Usage:
 ```php
 //loading configuration.
