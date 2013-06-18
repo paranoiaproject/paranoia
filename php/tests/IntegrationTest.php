@@ -1,13 +1,13 @@
 <?php
-use \Payment\Adapter\Est;
+use \Payment\Factory;
 use \Payment\Request;
 
-class EstTest extends PHPUnit_Framework_TestCase
-{
+class IntegrationTest extends PHPUnit_Framework_TestCase
+{   
     public function setUp()
     {
         $config = new Zend_Config_Ini('config/payment.ini', APPLICATION_ENV);
-        $this->_config = $config->isbank;
+        $this->_config  = $config;
     }
     
     /**
@@ -29,6 +29,11 @@ class EstTest extends PHPUnit_Framework_TestCase
         $request->setExpireMonth(12);
         $request->setExpireYear(2013);
         return $request;
+    }
+
+    public function getBankList()
+    {
+        return array(array('isbank'));
     }
     
     /**
@@ -77,10 +82,11 @@ class EstTest extends PHPUnit_Framework_TestCase
     * this tet case performs the following test steps:
     * makes sale transaction.
     * make cancel transaction and canceling previous sale transaction.
+    * @dataProvider getBankList
     */
-    public function testCase1()
+    public function testCase1($bank)
     {
-        $this->_adapter = new Est($this->_config);
+        $this->_adapter = Factory::createInstance($this->_config, $bank);
         $request = $this->_createNewOrder();
         $this->_makeSale($request);
         $this->_makeCancel($request);
@@ -90,10 +96,11 @@ class EstTest extends PHPUnit_Framework_TestCase
     * this tet case performs the following test steps:
     * makes sale transaction.
     * makes full refund.
+    * @dataProvider getBankList
     */
-    public function testCase2()
+    public function testCase2($bank)
     {
-        $this->_adapter = new Est($this->_config);
+        $this->_adapter = Factory::createInstance($this->_config, $bank);
         $request = $this->_createNewOrder();
         $saleResponse = $this->_makeSale($request);
         $refundResponse = $this->_makeRefund($request);
@@ -105,10 +112,11 @@ class EstTest extends PHPUnit_Framework_TestCase
     * makes partial refund as TL2
     * makes partial refund as TL5
     * makes refund that greater then refundable amount.
+    * @dataProvider getBankList
     */
-    public function testCase3()
+    public function testCase3($bank)
     {
-        $this->_adapter = new Est($this->_config);
+        $this->_adapter = Factory::createInstance($this->_config, $bank);
         $request = $this->_createNewOrder(null, 10);
         $this->_makeSale($request);
         $request->setAmount(2);

@@ -21,18 +21,6 @@ abstract class AdapterAbstract
     * @param \Payment\Request $request
     * @return mixed
     */
-    abstract protected function _buildPreauthorizationRequest(Request $request);
-    
-    /**
-    * @param \Payment\Request $request
-    * @return mixed
-    */
-    abstract protected function _buildPostAuthorizationRequest(Request $request);
-    
-    /**
-    * @param \Payment\Request $request
-    * @return mixed
-    */
     abstract protected function _buildSaleRequest(Request $request);
     
     /**
@@ -46,13 +34,7 @@ abstract class AdapterAbstract
     * @return mixed
     */
     abstract protected function _buildCancelRequest(Request $request);
-    
-    /**
-    * @param \Payment\Request $request
-    * @return mixed
-    */
-    abstract protected function _buildInquiryRequest(Request $request);
-    
+        
     /**
     *  build complete raw data for the specified request.
     *
@@ -119,30 +101,6 @@ abstract class AdapterAbstract
         return ( !is_numeric($installment) || intval($installment) <= 1 ) ?
             '' : $installment;
     }
-    
-    /**
-    * @see AdapterInterface::preAuthorization()
-    */
-    public function preAuthorization(Request $request)
-    {
-        $rawRequest = $this->_buildRequest($request, 
-                                            $this->_buildPreauthorizationRequest);
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
-        $response = $this->_parseResponse($rawResponse);
-        return $response;
-    }
-    
-    /**
-    * @see AdapterInterface::postAuthorization()
-    */
-    public function postAuthorization(Request $request)
-    {
-        $rawRequest = $this->_buildRequest($request, 
-                                            $this->_buildPostAuthorizationRequest);
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
-        $response = $this->_parseResponse($rawResponse);
-        return $response;
-    }
 
     /**
     * @see AdapterInterface::sale()
@@ -177,16 +135,5 @@ abstract class AdapterAbstract
         $response = $this->_parseResponse($rawResponse);
         return $response;
 
-    }
-    
-    /**
-    * @see AdapterInterface::inquiry()
-    */
-    public function inquiry(Request $request)
-    {
-        $rawRequest = $this->_buildRequest($request, '_buildInquiryRequest');
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
-        $response = $this->_parseResponse($rawResponse);
-        return $response;
     }
 }   
