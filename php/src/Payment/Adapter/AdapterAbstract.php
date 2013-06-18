@@ -7,6 +7,10 @@ use \Payment\Config;
 
 abstract class AdapterAbstract 
 {
+    const CURRENCY_TRL = 'TRL';
+    const CURRENCY_USD = 'USD';
+    const CURRENCY_EUR = 'EUR';
+
     /**
     * @var \Payment\Config
     */
@@ -62,7 +66,16 @@ abstract class AdapterAbstract
     */
     protected function _formatCurrency($currency)
     {
-        return '949';
+        switch($currency) {
+            case self::CURRENCY_TRL:
+                return '949';
+            case self::CURRENCY_USD:
+                return '840';
+            case self::CURRENCY_EUR:
+                return '978';
+            default:
+                 return '949';
+        }
     }
     
     /**
