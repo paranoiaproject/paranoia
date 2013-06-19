@@ -55,11 +55,14 @@ catch(Exception $e) {
 - USD: U.S. Dollar
 - EUR: Euro
 
-### Supported Transactions:
+### Features:
 - sale
 - cancel
 - refund
 - preauthorization - coming soon
 - postauthorization - coming soon
 - payment with 3d secure - coming soon
-
+- order inquiry - coming soon
+- point query & usage (for est, gvp and posnet) - coming soon
+- Pay with Turkcell Cuzdan - coming soon
+- Pay with Isbank QRCode - coming soon
