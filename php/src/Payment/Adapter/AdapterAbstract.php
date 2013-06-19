@@ -22,18 +22,40 @@ abstract class AdapterAbstract
     }
     
     /**
+    * build request data for preauthorization transaction.
+    *
+    * @param \Payment\Request $request
+    * @return mixed
+    */
+    abstract protected function _buildPreauthorizationRequest(Request $request);
+    
+    /**
+    * build request data for postauthorization transaction.
+    *
+    * @param \Payment\Request $request
+    * @return mixed
+    */
+    abstract protected function _buildPostAuthorizationRequest(Request $request);
+
+    /**
+    * build request data for sale transaction.
+    *
     * @param \Payment\Request $request
     * @return mixed
     */
     abstract protected function _buildSaleRequest(Request $request);
     
     /**
+    * build request data for refund transaction.
+    *
     * @param \Payment\Request $request
     * @return mixed
     */
     abstract protected function _buildRefundRequest(Request $request);
     
     /**
+    * build request data for cancel transaction.
+    *
     * @param \Payment\Request $request
     * @return mixed
     */
@@ -49,8 +71,10 @@ abstract class AdapterAbstract
     abstract protected function _buildRequest(Request $request, $requestBuilder);
 
     /**
+    * parses response from returned provider.
+    *
     * @param string $rawResponse
-    * @return \Payment\Response\ResponseInterface
+    * @return \Payment\Response\PaymentResponse
     */
     abstract protected function _parseResponse($rawResponse);
     
@@ -113,6 +137,29 @@ abstract class AdapterAbstract
     {
         return ( !is_numeric($installment) || intval($installment) <= 1 ) ?
             '' : $installment;
+    }
+    
+    /**
+    * @see AdapterInterface::preAuthorization()
+    */
+    public function preAuthorization(Request $request)
+    {
+        $rawRequest = $this->_buildRequest($request, '_buildPreauthorizationRequest');
+        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
+        $response = $this->_parseResponse($rawResponse);
+        return $response;
+    }
+
+
+    /**
+    * @see AdapterInterface::postAuthorization()
+    */
+    public function postAuthorization(Request $request)
+    {
+        $rawRequest = $this->_buildRequest($request, '_buildPostAuthorizationRequest');
+        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
+        $response = $this->_parseResponse($rawResponse);
+        return $response;
     }
 
     /**

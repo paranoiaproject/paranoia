@@ -21,9 +21,7 @@ class Est extends Http implements AdapterInterface
     }
     
     /**
-     * builds request as expected by the provider.
-     * @param array request.
-     * @return array
+     * @see \Payment\Adapter\AdapterAbstract::_buildRequest()
      */
     protected function _buildRequest(Request $request, $requestBuilder)
     {   
@@ -36,13 +34,44 @@ class Est extends Http implements AdapterInterface
         $request->setRawData($xml);
         return http_build_query($data);
     }
-   
+    
     /**
-    * build request data for sale transaction.
-    *
-    * @param \Payment\Request $request
-    * @return mixed
-    */
+     * @see \Payment\Adapter\AdapterAbstract::_buildPreauthorizationRequest()
+     */
+    protected function _buildPreauthorizationRequest(Request $request)
+    {
+        $amount      = $this->_formatAmount($request->getAmount());
+        $installment = $this->_formatInstallment($request->getInstallment());
+        $currency    = $this->_formatCurrency($request->getCurrency());
+        $expireMonth = $this->_formatExpireDate($request->getExpireMonth(), 
+                                                $request->getExpireYear());
+
+        $requestData = array('Type'     => 'PreAuth',
+                             'Total'    => $amount,
+                             'Currency' => $currency,
+                             'Taksit'   => $installment,
+                             'Number'   => $request->getCardNumber(),
+                             'Cvv2Val'  => $request->getSecurityCode(),
+                             'Expires'  => $expireMonth,
+                             'OrderId'  => $request->getOrderId(), );
+
+        return $requestData;
+    }
+
+    /**
+     * @see \Payment\Adapter\AdapterAbstract::_buildPostAuthorizationRequest()
+     */
+    protected function _buildPostAuthorizationRequest(Request $request)
+    {
+        $requestData = array('Type'     => 'PostAuth',
+                             'OrderId'  => $request->getOrderId(), );
+
+        return $requestData;
+    }
+
+    /**
+     * @see \Payment\Adapter\AdapterAbstract::_buildSaleRequest()
+     */
     protected function _buildSaleRequest(Request $request)
     {
         $amount      = $this->_formatAmount($request->getAmount());
@@ -64,11 +93,8 @@ class Est extends Http implements AdapterInterface
     }
     
     /**
-    * build request data for refund transaction.
-    *
-    * @param \Payment\Request $request
-    * @return mixed
-    */
+     * @see \Payment\Adapter\AdapterAbstract::_buildRefundRequest()
+     */
     protected function _buildRefundRequest(Request $request)
     {
         $amount      = $this->_formatAmount($request->getAmount());
@@ -84,11 +110,8 @@ class Est extends Http implements AdapterInterface
     }
     
     /**
-    * build request data for cancel transaction.
-    *
-    * @param \Payment\Request $request
-    * @return mixed
-    */
+     * @see \Payment\Adapter\AdapterAbstract::_buildCancelRequest()
+     */
     protected function _buildCancelRequest(Request $request)
     {
         $requestData = array('Type'     => 'Void',
@@ -102,11 +125,8 @@ class Est extends Http implements AdapterInterface
     }
 
     /**
-    * parses response from returned provider.
-    *
-    * @param string $rawResponse
-    * @return \Payment\Response\PaymentResponse
-    */
+     * @see \Payment\Adapter\AdapterAbstract::_parseResponse()
+     */
     protected function _parseResponse($rawResponse)
     {
         $response = new PaymentResponse();
