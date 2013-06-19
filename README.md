@@ -10,24 +10,6 @@ All payment transaction is very easy with Paranoia in a few steps.
 - Call intended transaction method of payment instance with request object.
 That's it!
 
-### Supported Adapters:
-- Est (Akbank, Finansbank, İş Bankası, HSBC) 
-- Gvp (Garanti Bankası, Teb Bonus)  - Coming soon
-- Posnet  (Yapı Kredi, Vakıfbank, Anadolubank) - Coming soon
-
-### Supported Currency Codes:
-- TRL: Turkish Lira
-- USD: U.S. Dollar
-- EUR: Euro
-
-### Supported Transactions:
-- sale
-- cancel
-- refund
-- preauthorization - coming soon
-- postauthorization - coming soon
-- payment with 3d secure - coming soon
-
 ### Usage:
 ```php
 //loading configuration.
@@ -62,3 +44,22 @@ catch(Exception $e) {
     }
 }
 ```
+
+### Supported Adapters:
+- Est (Akbank, Finansbank, İş Bankası, HSBC) 
+- Gvp (Garanti Bankası, Teb Bonus)  - Coming soon
+- Posnet  (Yapı Kredi, Vakıfbank, Anadolubank) - Coming soon
+
+### Supported Currency Codes:
+- TRL: Turkish Lira
+- USD: U.S. Dollar
+- EUR: Euro
+
+### Supported Transactions:
+- sale
+- cancel
+- refund
+- preauthorization - coming soon
+- postauthorization - coming soon
+- payment with 3d secure - coming soon
+
