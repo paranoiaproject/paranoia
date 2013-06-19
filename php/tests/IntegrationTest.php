@@ -77,6 +77,20 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         }
         return $response;
     }
+
+    private function _makePreauthorization(Request $request)
+    {
+        $response = $this->_adapter->preAuthorization($request);
+        $this->assertTrue($response->isSuccess());
+        return $response;
+    }
+
+    private function _makePostAuthorization(Request $request)
+    {
+        $response = $this->_adapter->postAuthorization($request);
+        $this->assertTrue($response->isSuccess());
+        return $response;
+    }
     
     /**
     * this tet case performs the following test steps:
@@ -126,5 +140,25 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $request->setAmount(5);
         $response = $this->_makeRefund($request, false);
         $this->assertFalse($response->isSuccess());
+    }
+    
+    /**
+     * this test case performs the following test steps:
+     * makes preauthorization transaction.
+     * makes postauthorization transaction.
+     * cancels postauthorization transaction.
+     * cancels preauthorization transaction.
+     * @dataProvider getBankList
+     */
+    public function testCase4($bank)
+    {
+        $this->_adapter = Factory::createInstance($this->_config, $bank);
+        $request = $this->_createNewOrder();
+        $response1 = $this->_makePreauthorization($request);
+        $response2 = $this->_makePostAuthorization($request);
+        $request->setTransactionId($response2->getTransactionId());
+        $this->_makeCancel($request);
+        $request->setTransactionId($response1->getTransactionId());
+        $this->_makeCancel($request);
     }
 }
