@@ -13,6 +13,7 @@ interface ResponseInterface
     /**
     * sets transaction status to response object.
     * @param bool $isSuccess
+    * @return self
     */
     public function setIsSuccess($isSuccess);
 
@@ -25,6 +26,7 @@ interface ResponseInterface
     /**
     * sets transaction type to response object.
     * @param string $transactionType
+    * @return self
     */
     public function setTransactionType($transactionType);
     
@@ -37,6 +39,7 @@ interface ResponseInterface
     /**
     * sets order identity to response object.
     * @param string $orderId
+    * @return self
     */
     public function setOrderId($orderId);
     
@@ -49,6 +52,7 @@ interface ResponseInterface
     /**
     * sets transaction identity to response object.
     * @param string $transactionId
+    * @return self
     */
     public function setTransactionId($transactionId);
     
@@ -61,6 +65,7 @@ interface ResponseInterface
     /**
     * sets response code to response object.
     * @param integer $responseCode
+    * @return self
     */
     public function setResponseCode($responseCode);
     
@@ -73,6 +78,7 @@ interface ResponseInterface
     /**
     * sets response message to response object.
     * @param string $responseMessage
+    * @return self
     */
     public function setResponseMessage($responseMessage);
 }
