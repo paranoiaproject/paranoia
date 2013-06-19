@@ -65,10 +65,12 @@ class Request
     /**
     * sets order identity to request object.
     * @param $orderId
+    * @return self
     */
     public function setOrderId($orderId)
     {
         $this->_orderId = $orderId;
+        return $this;
     }
     
     /**
@@ -83,10 +85,12 @@ class Request
     /**
     * sets order amount to request object.
     * @param float $amount
+    * @return self
     */
     public function setAmount($amount)
     {
         $this->_amount = $amount;
+        return $this;
     }
 
     /**
@@ -101,10 +105,12 @@ class Request
     /**
     * sets currency code to request object.
     * @param string $currency
+    * @return self
     */
     public function setCurrency($currency)
     {
         $this->_currency = $currency;
+        return $this;
     }
         
     /**
@@ -119,10 +125,12 @@ class Request
     /**
     * set installment amount to object.
     * @param integer $installment.
+    * @return self
     */
     public function setInstallment($installment)
     {
         $this->_installment = $installment;
+        return $this;
     }
     
     /**
@@ -137,10 +145,12 @@ class Request
     /**
     * sets card number to request object.
     * @param numeric $cardNumber
+    * @return self
     */
     public function setCardNumber($cardNumber)
     {
         $this->_cardNumber = $cardNumber;
+        return $this;
     }
     
     /**
@@ -155,10 +165,12 @@ class Request
     /**
     * sets card security code to request object.
     * @param string $securityCode
+    * @return self
     */
     public function setSecurityCode($securityCode)
     {
         $this->_securityCode = $securityCode;
+        return $this;
     }
     
     /**
@@ -173,10 +185,12 @@ class Request
     /**
     * sets card expire month to request object.
     * @param integer $expireMonth
+    * @return self
     */
     public function setExpireMonth($expireMonth)
     {
         $this->_expireMonth = $expireMonth;
+        return $this;
     }
 
     /**
@@ -191,10 +205,12 @@ class Request
     /**
     * sets card expire year to request object.
     * @param integer $expireYear
+    * @return self
     */
     public function setExpireYear($expireYear)
     {
         $this->_expireYear = $expireYear;
+        return $this;
     }
 
     /**
@@ -209,10 +225,12 @@ class Request
     /**
     * sets transaction id to request object.
     * @return string
+    * @return self
     */
     public function setTransactionId($transactionId)
     {
         $this->_transactionId = $transactionId;
+        return $this;
     }
     
     /**
@@ -227,9 +245,11 @@ class Request
     /**
     * sets response data as raw.
     * @param string $rawData
+    * @return self
     */
     public function setRawData($rawData)
     {
         $this->_rawData = $rawData;
+        return $this;
     }
 }

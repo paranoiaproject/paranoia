@@ -52,6 +52,7 @@ abstract class ResponseAbstract
     public function setIsSuccess($isSuccess)
     {
         $this->_isSuccess = $isSuccess;
+        return $this;
     }
 
     /**
@@ -68,6 +69,7 @@ abstract class ResponseAbstract
     public function setTransactionType($transactionType)
     {
         $this->_transactionType = $transactionType;
+        return $this;
     }
     
     /**
@@ -84,6 +86,7 @@ abstract class ResponseAbstract
     public function setOrderId($orderId)
     {
         $this->_orderId = $orderId;
+        return $this;
     }
     
     /**
@@ -100,6 +103,7 @@ abstract class ResponseAbstract
     public function setTransactionId($transactionId)
     {
         $this->_transactionId = $transactionId;
+        return $this;
     }
 
     /**
@@ -116,6 +120,7 @@ abstract class ResponseAbstract
     public function setResponseCode($responseCode)
     {
         $this->_responseCode =  $responseCode;
+        return $this;
     }
     
     /**
@@ -132,6 +137,7 @@ abstract class ResponseAbstract
     public function setResponseMessage($responseMessage)
     {
         $this->_responseMessage = $responseMessage;
+        return $this;
     }
 
     /**
@@ -150,5 +156,6 @@ abstract class ResponseAbstract
     public function setRawData($rawData)
     {
         $this->_rawData = $rawData;
+        return $this;
     }
 }
