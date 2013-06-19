@@ -59,8 +59,8 @@ catch(Exception $e) {
 - sale
 - cancel
 - refund
-- preauthorization - coming soon
-- postauthorization - coming soon
+- preauthorization
+- postauthorization
 - payment with 3d secure - coming soon
 - order inquiry - coming soon
 - point query & usage (for est, gvp and posnet) - coming soon
