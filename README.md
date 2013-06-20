@@ -3,14 +3,14 @@
 Paranoia is simple generic payment client for payment api of popular turkish banks. It provides simple usability 
 with single interface for more than one payment api.
 
-### How ?
+## How ?
 All payment transaction is very easy with Paranoia in a few steps.
 - Create a payment request.
 - Create a payment instance with factory.
 - Call intended transaction method of payment instance with request object.
 That's it!
 
-### Usage:
+## Usage:
 ```php
 //loading configuration.
 $config = new Zend_Config_Ini(APPLICATION_PATH . '/config/payment.ini', APPLICATION_ENV);
@@ -45,17 +45,17 @@ catch(Exception $e) {
 }
 ```
 
-### Supported Adapters:
-- Est (Akbank, Finansbank, İş Bankası, HSBC) 
-- Gvp (Garanti Bankası, Teb Bonus)  - Coming soon
+## Supported Adapters:
+- Est (İşbankası, Akbank, Finansbank, Denizbank, Kuveytturk, Halkbank, Anadolubank, ING Bank, Citibank, Cardplus)
+- Gvp (Denizbank, TEB, ING, Şekerbank, TFKB, Garanti)  - Coming soon
 - Posnet  (Yapı Kredi, Vakıfbank, Anadolubank) - Coming soon
 
-### Supported Currency Codes:
+## Supported Currency Codes:
 - TRL: Turkish Lira
 - USD: U.S. Dollar
 - EUR: Euro
 
-### Features:
+## Features:
 - sale
 - cancel
 - refund
@@ -66,3 +66,54 @@ catch(Exception $e) {
 - point query & usage (for est, gvp and posnet) - coming soon
 - Pay with Turkcell Cuzdan - coming soon
 - Pay with Isbank QRCode - coming soon
+
+## Contribution:
+Also you can contribute to Paraonoia project. If you want to contribute to the project, please perform the following
+steps:
+### Preparation:
+- Fork this repository. Click to
+  https://github.com/ibrahimgunduz34/paranoia/fork
+- clone the forked repository to your local machine.  
+
+```sh
+$ git clone git@github.com:youruser/paranoia.git
+```
+
+- Add this repository to remote repository as upstream to your local environment.  
+
+```sh
+$ git remote add upstream https://github.com/ibrahimgunduz34/paranoia
+```
+
+### Contribution:
+- Choose a issue in available issues or create a new
+- Update your local repository with remote upstream.  
+
+```sh
+$ git checkout master
+$ git fetch upstream
+$ git merge upstream/master
+```
+
+- Create and checkout a new branch.  
+
+```sh
+$ git checkout -b <yourbranchname-issueid>
+```
+
+- Write your magic code...
+- Add your changes to index and commit to local repository.  
+
+```sh
+$ git add .
+$ git commit -m "#<issueid> Short description about your changes."
+```
+
+- Push your changes to remote origin.  
+
+```sh
+$ git push origin <yourbranchname-issueid>
+```
+
+- And finaly send pull request to us. That's it!  
+
