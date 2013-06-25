@@ -4,6 +4,8 @@ namespace Payment\Adapter;
 use \Payment\Request;
 use \Payment\Response;
 use \Payment\Config;
+use \Payment\TransferInterface;
+use \Payment\Exception\UnknownTransactionType;
 
 use \Communication\Connector;
 
@@ -18,6 +20,15 @@ abstract class AdapterAbstract extends EventManagerAbstract
     const EVENT_ON_TRANSACTION_SUCCESSFUL = 'OnTransactionSuccessful';
     const EVENT_ON_TRANSACTION_FAILED = 'OnTransactionFailed';
     const EVENT_ON_EXCEPTION = 'OnException';
+
+    const TRANSACTION_TYPE_PREAUTHORIZATION  = 'preAuthorization';
+	const TRANSACTION_TYPE_POSTAUTHORIZATION = 'postAuthorization';
+	const TRANSACTION_TYPE_SALE 			 = 'sale';
+	const TRANSACTION_TYPE_CANCEL 			 = 'cancel';
+	const TRANSACTION_TYPE_REFUND 			 = 'refund';
+
+	protected $_transactionMap = Array();
+
     /**
     * @var \Payment\Config
     */
@@ -179,17 +190,42 @@ abstract class AdapterAbstract extends EventManagerAbstract
             '' : $installment;
     }
 
-    private function _stamp()
-    {}
+	/**
+	 * stamps transfer objects with time and transaction type.
+	 * @param \Payment\TransferInterface $transfer
+	 * @param string $transactionType
+	 */
+	private function _stamp(TransferInterface $transfer, $transactionType)
+    {
+		$transfer->setTime( microtime(true) );
+		$transfer->setTransactionType($transactionType);
+	}
+
+	/**
+	 * returns transaction code by expected provider.
+	 *
+	 * @param string $transcationType
+	 * @throws UnknownTransactionType
+	 * @return string
+	 */
+	protected function _getProviderTransactionType($transactionType)
+	{
+		if(! array_key_exists($transactionType, $this->_transactionMap)) {
+			throw new UnknownTransactionType('Transaction type is unknown: ' . $transactionType);
+		}
+		return $this->_transactionMap[$transactionType];
+	}
 
     /**
     * @see AdapterInterface::preAuthorization()
     */
     public function preAuthorization(Request $request)
     {
+		$this->_stamp($request, __FUNCTION__);
         $rawRequest = $this->_buildRequest($request, '_buildPreauthorizationRequest');
         $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
         $response = $this->_parseResponse($rawResponse);
+		$this->_stamp($response, __FUNCTION__);
         return $response;
     }
 
@@ -199,10 +235,12 @@ abstract class AdapterAbstract extends EventManagerAbstract
     */
     public function postAuthorization(Request $request)
     {
+		$this->_stamp($request, __FUNCTION__);
         $rawRequest = $this->_buildRequest($request, '_buildPostAuthorizationRequest');
         $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
         $response = $this->_parseResponse($rawResponse);
-        return $response;
+        $this->_stamp($response, __FUNCTION__);
+		return $response;
     }
 
     /**
@@ -210,10 +248,12 @@ abstract class AdapterAbstract extends EventManagerAbstract
     */
     public function sale(Request $request)
     {
+		$this->_stamp($request, __FUNCTION__);
         $rawRequest = $this->_buildRequest($request, '_buildSaleRequest');
         $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
         $response = $this->_parseResponse($rawResponse);
-        return $response;
+		$this->_stamp($response, __FUNCTION__);
+		return $response;
     }
 
     /**
@@ -221,9 +261,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
     */
     public function refund(Request $request)
     {
+		$this->_stamp($request, __FUNCTION__);
         $rawRequest = $this->_buildRequest($request, '_buildRefundRequest');
         $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
         $response = $this->_parseResponse($rawResponse);
+		$this->_stamp($response, __FUNCTION__);
         return $response;
     }
 
@@ -232,9 +274,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
     */
     public function cancel(Request $request)
     {
+		$this->_stamp($request, __FUNCTION__);
         $rawRequest = $this->_buildRequest($request, '_buildCancelRequest');
         $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
         $response = $this->_parseResponse($rawResponse);
+		$this->_stamp($response, __FUNCTION__);
         return $response;
     }
 

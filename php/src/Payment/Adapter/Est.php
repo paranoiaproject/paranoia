@@ -17,6 +17,19 @@ class Est extends AdapterAbstract implements AdapterInterface
 {
     const CONNECTOR_TYPE =  Connector::CONNECTOR_TYPE_HTTP;
 
+	/**
+	 * @var array
+	 */
+	protected $_transactionMap = array(self::TRANSACTION_TYPE_PREAUTHORIZATION  => 'PreAuth',
+									   self::TRANSACTION_TYPE_POSTAUTHORIZATION => 'PostAuth',
+									   self::TRANSACTION_TYPE_SALE 			  	=> 'sale',
+									   self::TRANSACTION_TYPE_CANCEL 			=> 'void',
+									   self::TRANSACTION_TYPE_REFUND 			=> 'refund');
+
+	/**
+	 * builds request base with common arguments.
+	 * @return array
+	 */
     private function _buildBaseRequest()
     {
         $config = $this->_config;
