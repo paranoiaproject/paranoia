@@ -3,16 +3,16 @@ use \Payment\Factory;
 use \Payment\Request;
 
 class IntegrationTest extends PHPUnit_Framework_TestCase
-{   
+{
     public function setUp()
     {
         $config = new Zend_Config_Ini('config/payment.ini', APPLICATION_ENV);
         $this->_config  = $config;
     }
-    
+
     /**
     * creates a order request for test.
-    * @param string $orderId 
+    * @param string $orderId
     * @param float $amount
     * @return \Payment\Request
     */
@@ -23,7 +23,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
             $request->setOrderId(time());
         }
         $request->setAmount($amount);
-        $request->setCurrency('TRL');
+        $request->setCurrency('TRY');
         $request->setCardNumber('5406675406675403');
         $request->setSecurityCode('000');
         $request->setExpireMonth(12);
@@ -35,10 +35,10 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
     {
         return array(array('isbank'));
     }
-    
+
     /**
     * makes sale transaction.
-    * 
+    *
     * @param \Payment\Request $request
     * @return \Payment\Response\PaymentResponse
     */
@@ -48,10 +48,10 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($response->isSuccess());
         return $response;
     }
-    
+
     /**
     * cancels transaction.
-    * 
+    *
     * @param \Payment\Request $request
     * @return \Payment\Response\PaymentResponse
     */
@@ -61,10 +61,10 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($response->isSuccess());
         return $response;
     }
-    
+
     /**
     * makes refund request.
-    * 
+    *
     * @param \Payment\Request $request
     * @param boolean $assertion
     * @return \Payment\Response\PaymentResponse
@@ -91,7 +91,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($response->isSuccess());
         return $response;
     }
-    
+
     /**
     * this tet case performs the following test steps:
     * makes sale transaction.
@@ -119,7 +119,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $saleResponse = $this->_makeSale($request);
         $refundResponse = $this->_makeRefund($request);
     }
-    
+
     /**
     * this tet case performs the following test steps:
     * makes sale transaction.
@@ -141,7 +141,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $response = $this->_makeRefund($request, false);
         $this->assertFalse($response->isSuccess());
     }
-    
+
     /**
      * this test case performs the following test steps:
      * makes preauthorization transaction.

@@ -5,9 +5,9 @@ use \Payment\Request;
 use \Payment\Response;
 use \Payment\Config;
 
-abstract class AdapterAbstract 
+abstract class AdapterAbstract
 {
-    const CURRENCY_TRL = 'TRL';
+    const CURRENCY_TRY = 'TRY';
     const CURRENCY_USD = 'USD';
     const CURRENCY_EUR = 'EUR';
 
@@ -20,7 +20,7 @@ abstract class AdapterAbstract
     {
         $this->_config = $config;
     }
-    
+
     /**
     * build request data for preauthorization transaction.
     *
@@ -28,7 +28,7 @@ abstract class AdapterAbstract
     * @return mixed
     */
     abstract protected function _buildPreauthorizationRequest(Request $request);
-    
+
     /**
     * build request data for postauthorization transaction.
     *
@@ -44,7 +44,7 @@ abstract class AdapterAbstract
     * @return mixed
     */
     abstract protected function _buildSaleRequest(Request $request);
-    
+
     /**
     * build request data for refund transaction.
     *
@@ -52,7 +52,7 @@ abstract class AdapterAbstract
     * @return mixed
     */
     abstract protected function _buildRefundRequest(Request $request);
-    
+
     /**
     * build request data for cancel transaction.
     *
@@ -60,7 +60,7 @@ abstract class AdapterAbstract
     * @return mixed
     */
     abstract protected function _buildCancelRequest(Request $request);
-        
+
     /**
     *  build complete raw data for the specified request.
     *
@@ -77,12 +77,12 @@ abstract class AdapterAbstract
     * @return \Payment\Response\PaymentResponse
     */
     abstract protected function _parseResponse($rawResponse);
-    
+
     /**
     * @see \Payment\Adapter\Container\ContainerAbstract::_sendRequest()
     */
     abstract protected function _sendRequest($url, $rawRequest, $options = array());
-    
+
     /**
     * formats the specified string currency code by iso currency codes.
     * @param string $currency
@@ -91,19 +91,19 @@ abstract class AdapterAbstract
     protected function _formatCurrency($currency)
     {
         switch($currency) {
-            case self::CURRENCY_TRL:
+            case self::CURRENCY_TRY:
                 return '949';
             case self::CURRENCY_USD:
                 return '840';
             case self::CURRENCY_EUR:
                 return '978';
             default:
-                 return '949';
+                return '949';
         }
     }
-    
+
     /**
-    * returns formatted amount with doth or without doth. 
+    * returns formatted amount with doth or without doth.
     * formatted number returns amount default without doth.
     * @param string/float $amount
     * @param boolean $reverse
@@ -111,12 +111,12 @@ abstract class AdapterAbstract
     */
     protected function _formatAmount($amount, $reverse = false)
     {
-        return (!$reverse) ? 
+        return (!$reverse) ?
             number_format($amount, 2, '.', '') :
-            (float) sprintf('%s.%s', substr($amount, 0, -2), 
+            (float) sprintf('%s.%s', substr($amount, 0, -2),
                                      substr($amount, -2));
     }
-    
+
     /**
     * formats expire date as month/year
     * @param int $month
@@ -138,7 +138,7 @@ abstract class AdapterAbstract
         return ( !is_numeric($installment) || intval($installment) <= 1 ) ?
             '' : $installment;
     }
-    
+
     /**
     * @see AdapterInterface::preAuthorization()
     */
@@ -182,9 +182,8 @@ abstract class AdapterAbstract
         $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
         $response = $this->_parseResponse($rawResponse);
         return $response;
-
     }
-    
+
     /**
     * @see AdapterInterface::cancel()
     */
@@ -194,6 +193,5 @@ abstract class AdapterAbstract
         $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
         $response = $this->_parseResponse($rawResponse);
         return $response;
-
     }
-}   
+}

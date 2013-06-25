@@ -23,7 +23,7 @@ $request->setCardNumber('5105105105105100')
         ->setExpireYear(2014)
         ->setOrderNumber('ORD000001')
         ->setAmount(100.35)
-        ->setCurrency('TRL');  // Supported currency types: TRL, USD, EUR
+        ->setCurrency('TRY');  // Supported currency types: TRY, USD, EUR
 
 //creating payment instance
 $instance = \Payment\Factory::createInstance($config, 'Akbank');
@@ -51,7 +51,7 @@ catch(Exception $e) {
 - Posnet  (Yapı Kredi, Vakıfbank, Anadolubank) - Coming soon
 
 ## Supported Currency Codes:
-- TRL: Turkish Lira
+- TRY: Turkish Lira
 - USD: U.S. Dollar
 - EUR: Euro
 
