@@ -4,7 +4,7 @@ namespace Payment\Adapter;
 use \Array2XML;
 
 use \Payment\Request;
-use Payment\Response\PaymentResponse;
+use \Payment\Response\PaymentResponse;
 use \Payment\Adapter\AdapterInterface;
 use \Payment\Adapter\Container\Http;
 use \Payment\Exception\UnexpectedResponse;
@@ -19,22 +19,22 @@ class Est extends Http implements AdapterInterface
                      'ClientId' => $config->client_id,
                      'Mode'     => $config->mode);
     }
-    
+
     /**
      * @see \Payment\Adapter\AdapterAbstract::_buildRequest()
      */
     protected function _buildRequest(Request $request, $requestBuilder)
-    {   
+    {
         $rawRequest = call_user_func(array($this, $requestBuilder), $request);
-        $xml = Array2XML::createXML('CC5Request', 
-                                array_merge($rawRequest, 
+        $xml = Array2XML::createXML('CC5Request',
+                                array_merge($rawRequest,
                                             $this->_buildBaseRequest()));
 
         $data = array('DATA' => $xml->saveXml());
         $request->setRawData($xml);
         return http_build_query($data);
     }
-    
+
     /**
      * @see \Payment\Adapter\AdapterAbstract::_buildPreauthorizationRequest()
      */
@@ -43,7 +43,7 @@ class Est extends Http implements AdapterInterface
         $amount      = $this->_formatAmount($request->getAmount());
         $installment = $this->_formatInstallment($request->getInstallment());
         $currency    = $this->_formatCurrency($request->getCurrency());
-        $expireMonth = $this->_formatExpireDate($request->getExpireMonth(), 
+        $expireMonth = $this->_formatExpireDate($request->getExpireMonth(),
                                                 $request->getExpireYear());
 
         $requestData = array('Type'     => 'PreAuth',
@@ -77,7 +77,7 @@ class Est extends Http implements AdapterInterface
         $amount      = $this->_formatAmount($request->getAmount());
         $installment = $this->_formatInstallment($request->getInstallment());
         $currency    = $this->_formatCurrency($request->getCurrency());
-        $expireMonth = $this->_formatExpireDate($request->getExpireMonth(), 
+        $expireMonth = $this->_formatExpireDate($request->getExpireMonth(),
                                                 $request->getExpireYear());
 
         $requestData = array('Type'     => 'Auth',
@@ -91,7 +91,7 @@ class Est extends Http implements AdapterInterface
 
         return $requestData;
     }
-    
+
     /**
      * @see \Payment\Adapter\AdapterAbstract::_buildRefundRequest()
      */
@@ -100,7 +100,7 @@ class Est extends Http implements AdapterInterface
         $amount      = $this->_formatAmount($request->getAmount());
         $installment = $this->_formatInstallment($request->getInstallment());
         $currency    = $this->_formatCurrency($request->getCurrency());
-        
+
         $requestData = array('Type'     => 'Credit',
                              'Total'    => $amount,
                              'Currency' => $currency,
@@ -108,7 +108,7 @@ class Est extends Http implements AdapterInterface
 
         return $requestData;
     }
-    
+
     /**
      * @see \Payment\Adapter\AdapterAbstract::_buildCancelRequest()
      */
@@ -116,7 +116,7 @@ class Est extends Http implements AdapterInterface
     {
         $requestData = array('Type'     => 'Void',
                              'OrderId' => $request->getOrderId(), );
-        
+
         if( $request->getTransactionId() ) {
             $requestData['TransId'] = $request->getTransactionId();
         }
@@ -134,26 +134,26 @@ class Est extends Http implements AdapterInterface
             $xml = new \SimpleXmlElement($rawResponse);
         } catch(\Exception $e) {
             throw new UnexpectedResponse('Provider is returned unexpected ' .
-                                         'response. Response data:' . 
-                                         $rawResponse);           
+                                         'response. Response data:' .
+                                         $rawResponse);
         }
         $response->setIsSuccess( (string) $xml->Response == 'Approved' );
-        $response->setResponseCode( (string) $xml->ProcReturnCode  );  
+        $response->setResponseCode( (string) $xml->ProcReturnCode  );
         if( ! $response->isSuccess() ) {
             $errorMessages = array();
-            
+
             if( property_exists($xml, 'Error') ) {
                 $errorMessages[] = sprintf('Error: %s', (string) $xml->Error);
             }
-            
+
             if(property_exists($xml, 'ErrMsg')) {
-                $errorMessages[] = sprintf('Error Message: %s ', 
+                $errorMessages[] = sprintf('Error Message: %s ',
                                             (string) $xml->ErrMsg);
             }
-            
-            if(property_exists($xml, 'Extra') && 
+
+            if(property_exists($xml, 'Extra') &&
                property_exists($xml->Extra, 'HOSTMSG')) {
-                $errorMessages[] = sprintf('Host Message: %s', 
+                $errorMessages[] = sprintf('Host Message: %s',
                                            (string) $xml->Extra->HOSTMSG);
             }
             $errorMessage = implode(' ', $errorMessages);
