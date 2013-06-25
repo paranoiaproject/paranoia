@@ -1,7 +1,9 @@
 <?php
 namespace Payment;
 
-class Request
+use \Payment\TransferInterface;
+
+class Request implements TransferInterface
 {
     /**
     * @var string
@@ -52,6 +54,11 @@ class Request
     * @var string
     */
     private $_rawData;
+
+    /**
+    * @var int
+    */
+    private $_time;
 
     /**
     * returns order identity.
@@ -252,4 +259,27 @@ class Request
         $this->_rawData = $rawData;
         return $this;
     }
+    
+    /**
+    * @see \Payment\TransferInterface::getTransactionType()
+    */
+    public function getTransactionType()
+    {
+        return $this->_transactionType;
+    }
+    
+    /**
+    * @see \Payment\TransferInterface::setTransactionType()
+    */
+    public function setTransactionType($transactionType)
+    {
+        $this->_transactionType = $transactionType;
+        return $this;
+    }
+
+    public function getTime()
+    {}
+    
+    public function setTime($time)
+    {}
 }

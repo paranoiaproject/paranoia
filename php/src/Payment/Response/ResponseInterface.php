@@ -1,7 +1,9 @@
 <?php
 namespace Payment\Response;
 
-interface ResponseInterface
+use \Payment\TransferInterface;
+
+interface ResponseInterface extends TransferInterface
 {
     /**
     * returns boolean result indicating whether 

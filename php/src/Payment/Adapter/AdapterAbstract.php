@@ -179,6 +179,9 @@ abstract class AdapterAbstract extends EventManagerAbstract
             '' : $installment;
     }
 
+    private function _stamp()
+    {}
+
     /**
     * @see AdapterInterface::preAuthorization()
     */
