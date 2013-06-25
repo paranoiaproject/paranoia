@@ -104,7 +104,7 @@ class Est extends Http implements AdapterInterface
         $requestData = array('Type'     => 'Credit',
                              'Total'    => $amount,
                              'Currency' => $currency,
-                             'OrderId' => $request->getOrderId(), );
+                             'OrderId'  => $request->getOrderId(), );
 
         return $requestData;
     }
