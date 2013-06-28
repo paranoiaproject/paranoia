@@ -25,25 +25,24 @@ class Gvp extends AdapterAbstract implements AdapterInterface
 									   self::TRANSACTION_TYPE_SALE 			  	=> 'sales',
 									   self::TRANSACTION_TYPE_CANCEL 			=> 'void',
 									   self::TRANSACTION_TYPE_REFUND 			=> 'refund');
+
     /**
-	 * builds request base with common arguments.
-	 * @param Request $request
-	 * @return array
-	 */
+     * builds request base with common arguments.
+     * @param Request $request
+     * @return array
+     */
     private function _buildBaseRequest(Request $request)
     {
-        $transactionType = $request->getTransactionType();
-        $username    = ( in_array($transactionType, array('sale', 'inquiry')) ) ?
-                            $this->_auth_username : $this->_refund_username;
-        $hash        = $this->_getTransactionHash($request);
-        $terminal    = $this->_buildTerminal($request, $username);
-        $customer    = $this->_buildCustomer($request);
-        $order       = $this->_buildOrder($request);
-        $transaction = $this->_buildTransaction($request);
+
+
+        $terminal        = $this->_buildTerminal($request);
+        $customer        = $this->_buildCustomer($request);
+        $order           = $this->_buildOrder($request);
+        $transaction     = $this->_buildTransaction($request);
 
         return array('Version' 	   => '0.01',
-					 'Mode' 	   => $config->mode,
-					 'Terminal'    => $terminal,
+                     'Mode' 	   => $this->_config->mode,
+                     'Terminal'    => $terminal,
                      'Order'       => $order,
                      'Customer'    => $customer,
                      'Transaction' => $transaction);
@@ -53,19 +52,19 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      * builds terminal section of request.
      *
      * @param \Payment\Request $request
-     * @param string $username
-     * @param string $password
      * @return array
-    */
-    private function _buildTerminal(Request $request, $username, $hash)
+     */
+    private function _buildTerminal(Request $request)
     {
         $config = $this->_config;
-
+        list($username, $password) = $this->_getApiCredentialsByRequest(
+                                        $request->getTransactionType());
+        $hash   = $this->_getTransactionHash($request, $password);
         return array('ProvUserID' => $username,
-                     'HashData'   => $hash,
-                     'UserID'     => $username,
-                     'ID'         => $config->terminal_id,
-                     'MerchantID' => $config->merchant_id);
+                'HashData'   => $hash,
+                'UserID'     => $username,
+                'ID'         => $config->terminal_id,
+                'MerchantID' => $config->merchant_id);
     }
 
     /**
@@ -73,13 +72,13 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      *
      * @param \Payment\Request $request
      * @return array
-    */
+     */
     private function _buildCustomer(Request $request)
     {
         /**
-        * we don't want to share customer information
-        * to bank.
-        */
+         * we don't want to share customer information
+         * to bank.
+         */
         return array('IPAddress'    => '127.0.0.1',
                      'EmailAddress' => 'dummy@dummy.net');
     }
@@ -89,7 +88,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      *
      * @param \Payment\Request $request
      * @return array
-    */
+     */
     private function _buildCard(Request $request)
     {
         $expireMonth = $this->_formatExpireDate($request->getExpireMonth(),
@@ -104,7 +103,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      *
      * @param \Payment\Request $request
      * @return array
-    */
+     */
     private function _buildOrder(Request $request)
     {
         return array('OrderID'     => $request->getOrderId(),
@@ -124,15 +123,19 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     private function _buildTransaction(Request $request, $cardHolderPresentCode = 0,
 									   $originalRetrefNum = null)
     {
+        $transactionType = $request->getTransactionType();
         $installment 	= ($request->getInstallment()) ?
-                            	$this->_formatInstallment($request->getInstallment()) : null;
-        $amount      	= ($request->getAmount()) ?
-                            	$this->_formatAmount($request->getAmount()) : null;
+                                $this->_formatInstallment(
+                                    $request->getInstallment()) : null;
+        $amount         = $this->_isAmountRequired($request) ?
+                                                    $this->_formatAmount($request->getAmount()) :
+                                                    '';
         $currency    	=  ($request->getCurrency()) ?
-                            	$this->_formatCurrency($request->getCurrency()) : null;
-        $transactionType = $this->_getProviderTransactionType($request->getTransactionType);
+                                $this->_formatCurrency(
+                                    $request->getCurrency()) : null;
+        $type           = $this->_getProviderTransactionType($transactionType);
 
-        return array('Type'                  => $transactionType,
+        return array('Type'                  => $type,
                      'InstallmentCnt'        => $installment,
                      'Amount'                => $amount,
                      'CurrencyCode'          => $currency,
@@ -142,18 +145,67 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * returns security hash for using in transaction hash.
+     * returns boolean true, when amount field is required
+     * for request transaction type.
+     *
+     * @param \Payment\Request $request
+     * @return boolean
+     */
+    private function _isAmountRequired(Request $request)
+    {
+        return in_array($request->getTransactionType(),
+                        array(self::TRANSACTION_TYPE_SALE,
+                              self::TRANSACTION_TYPE_PREAUTHORIZATION,
+                              self::TRANSACTION_TYPE_POSTAUTHORIZATION,));
+    }
+
+    /**
+     * returns boolean true, when card number field is required
+     * for request transaction type.
+     *
+     * @param \Payment\Request $request
+     * @return boolean
+     */
+    private function _isCardNumberRequired(Request $request)
+    {
+        return in_array($request->getTransactionType(),
+                        array(self::TRANSACTION_TYPE_SALE,
+                              self::TRANSACTION_TYPE_PREAUTHORIZATION,));
+    }
+
+    /**
+     * returns api credentials by transaction type of request.
      *
      * @param string $transactionType
+     * @return array
+     */
+    private function _getApiCredentialsByRequest($transactionType)
+    {
+        $isAuth = in_array($transactionType, array(
+            self::TRANSACTION_TYPE_SALE,
+            self::TRANSACTION_TYPE_PREAUTHORIZATION,
+            self::TRANSACTION_TYPE_POSTAUTHORIZATION,
+        ));
+        $config = $this->_config;
+        if($isAuth) {
+            return array($config->auth_username, $config->auth_password);
+        } else {
+            return array($config->refund_username, $config->refund_password);
+        }
+    }
+
+    /**
+     * returns security hash for using in transaction hash.
+     *
+     * @param string $password
      * @return string
      */
-    private function _getSecurityHash($transactionType)
+    private function _getSecurityHash($password)
     {
         $config     = $this->_config;
-        $password   = (in_array($transactionType, array('sale', 'inquiry'))) ?
-                        $config->auth_password : $config->refund_password;a
-        $terminalId = sprintf('%s%s', str_repeat('0', strlen($config->terminal_id)),
-                                      $config->terminal_id);
+        $tidPrefix  = str_repeat('0', 9 - strlen($config->terminal_id));
+        $terminalId = sprintf('%s%s', $tidPrefix, $config->terminal_id);
+        # print sprintf('%s | %s', $password, $terminalId)  . PHP_EOL;
         return strtoupper( SHA1( sprintf('%s%s', $password, $terminalId) ) );
     }
 
@@ -161,25 +213,34 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      * returns transaction hash for using in transaction request.
      *
      * @param \Payment\Request $request
+     * @param string $password
      * @return string
      */
-    private function _getTransactionHash(Request $request)
+    private function _getTransactionHash(Request $request, $password)
     {
         $config     	 = $this->_config;
         $orderId    	 = $request->getOrderId();
-        $terminalId 	 = $config->getTerminalId();
-		$transactionType = $request->getTransactionType();
-        $cardNumber 	 = ( !in_array($transactionType, array('refund', 'cancel', 'inquiry')) ) ?
-                            	$request->getCardNumber() : '';
-        $amount     	 = ( !in_array($transactionType, array('cancel', 'inquiry')) ) ?
-                            	$this->_formatAmount($request->getAmount()) : '1';
-        $securityData 	 = $this->_getSecurityHash();
+        $terminalId 	 = $config->terminal_id;
+        $transactionType = $request->getTransactionType();
+        $cardNumber 	 = $this->_isCardNumberRequired($request) ?
+                            $request->getCardNumber() : '';
+        $amount     	 = $this->_isAmountRequired($request) ?
+                            $this->_formatAmount($request->getAmount()) : '';
+        $securityData 	 = $this->_getSecurityHash($password);
+        /*
+        print sprintf('%s | %s | %s | %s | %s',
+                        $orderId,
+                        $terminalId,
+                        $cardNumber,
+                        $amount,
+                        $securityData) . PHP_EOL;
+        */
         return strtoupper( sha1( sprintf('%s%s%s%s%s',
-                                        $orderId,
-                                        $terminalId,
-                                        $cardNumber,
-                                        $amount,
-                                        $securityData) ) );
+                        $orderId,
+                        $terminalId,
+                        $cardNumber,
+                        $amount,
+                        $securityData) ) );
     }
 
     /**
@@ -191,7 +252,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
         $xml 		= Array2XML::createXML('GVPSRequest', $rawRequest);
         $data 		= array('data' => $xml->saveXml());
 
-		$request->setRawData($xml);
+        $request->setRawData($xml);
 
         return http_build_query($data);
     }
@@ -201,8 +262,8 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     protected function _buildPreauthorizationRequest(Request $request)
     {
-		$requestData = array('Card' => $this->_buildCard($request));
-		return array_merge($requestData, $this->_buildBaseRequest($request));
+        $requestData = array('Card' => $this->_buildCard($request));
+        return array_merge($requestData, $this->_buildBaseRequest($request));
     }
 
     /**
@@ -210,10 +271,8 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     protected function _buildPostAuthorizationRequest(Request $request)
     {
-		$requestData = $this->_buildBaseRequest($request);
-		$requestData['Transaction']['Amount'] 		= null;
-		$requestData['Transaction']['CurrencyCode'] = null;
-		return $requestData;
+        $requestData = $this->_buildBaseRequest($request);
+        return $requestData;
     }
 
     /**
@@ -221,7 +280,8 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     protected function _buildSaleRequest(Request $request)
     {
- 		return $this->_buildBaseRequest($request);
+        $requestData = array('Card' => $this->_buildCard($request));
+        return array_merge($requestData, $this->_buildBaseRequest($request));
     }
 
     /**
@@ -229,7 +289,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     protected function _buildRefundRequest(Request $request)
     {
-		return $this->_buildBaseRequest($request);
+        return $this->_buildBaseRequest($request);
     }
 
     /**
@@ -237,12 +297,12 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     protected function _buildCancelRequest(Request $request)
     {
-		$requestData = $this->_buildBaseRequest($request);
-		$transactionId = ($request->getTransactionId()) ?
-							$request->getTransactionId() : null;
-		$transaction =  $this->_buildTransaction($request, 0, $transactionId);
-		$requestData['Transaction'] = $transaction;
-		return $requestData;
+        $requestData = $this->_buildBaseRequest($request);
+        $transactionId = ($request->getTransactionId()) ?
+            $request->getTransactionId() : null;
+        $transaction =  $this->_buildTransaction($request, 0, $transactionId);
+        $requestData['Transaction'] = $transaction;
+        return $requestData;
     }
 
     /**
@@ -250,13 +310,13 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     protected function _parseResponse($rawResponse)
     {
-		$response = new PaymentResponse();
+        $response = new PaymentResponse();
         try {
             $xml = new \SimpleXmlElement($rawResponse);
         } catch(\Exception $e) {
             throw new UnexpectedResponse('Provider is returned unexpected ' .
-                                         'response. Response data:' .
-                                         $rawResponse);
+                    'response. Response data:' .
+                    $rawResponse);
         }
         $response->setIsSuccess( (string) $xml->Transaction->Response->Code == '00' );
         $response->setResponseCode( (string) $xml->Transaction->ReasonCode  );
@@ -265,13 +325,13 @@ class Gvp extends AdapterAbstract implements AdapterInterface
 
             if( property_exists($xml->Transaction->Response, 'ErrorMsg') ) {
                 $errorMessages[] = sprintf('Error Message: %s',
-										   (string) $xml->Transaction->Response->ErrorMsg);
+                        (string) $xml->Transaction->Response->ErrorMsg);
             }
 
             if(property_exists($xml->Transaction->Response, 'SysErrMsg')) {
-            	$errorMessages[] = sprintf('System Error Message: %s',
-						                    (string) $xml->Transaction->Response->SysErrMsg);
-			}
+                $errorMessages[] = sprintf('System Error Message: %s',
+                        (string) $xml->Transaction->Response->SysErrMsg);
+            }
 
             $errorMessage = implode(' ', $errorMessages);
             $response->setResponseMessage($errorMessage);
@@ -282,5 +342,23 @@ class Gvp extends AdapterAbstract implements AdapterInterface
         }
         $response->setRawData($rawResponse);
         return $response;
+    }
+
+    /**
+     * @see \Payment\Adapter\AdapterAbstract::_formatAmount()
+     */
+    protected function _formatAmount($amount, $reverse = false)
+    {
+        return ( ! $reverse ) ?
+            number_format($amount, 2, '', '') :
+            (float) substr($amount, 0, -2) . '.' . substr($amount, -2);
+    }
+
+    /**
+     * @see \Payment\Adapter\AdapterAbstract::_formatExpireDate()
+     */
+    protected function _formatExpireDate($month, $year)
+    {
+        return sprintf('%02s%s', $month, substr($year, -2));
     }
 }

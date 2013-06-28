@@ -46,7 +46,8 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
 
     public function getBankList()
     {
-        return array(array('isbank'));
+        #return array(array('isbank'));
+        return array(array('garanti'));
     }
 
     /**
@@ -111,7 +112,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
     * make cancel transaction and canceling previous sale transaction.
     * @dataProvider getBankList
     */
-    public function testCase1($bank)
+    public function _testCase1($bank)
     {
         $this->_initAdapter($bank);
         $request = $this->_createNewOrder();
@@ -125,7 +126,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
     * makes full refund.
     * @dataProvider getBankList
     */
-    public function testCase2($bank)
+    public function _testCase2($bank)
     {
         $this->_initAdapter($bank);
         $request = $this->_createNewOrder();
@@ -141,7 +142,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
     * makes refund that greater then refundable amount.
     * @dataProvider getBankList
     */
-    public function testCase3($bank)
+    public function _testCase3($bank)
     {
         $this->_initAdapter($bank);
         $request = $this->_createNewOrder(null, 10);
@@ -154,7 +155,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $response = $this->_makeRefund($request, false);
         $this->assertFalse($response->isSuccess());
     }
-
+    
     /**
      * this test case performs the following test steps:
      * makes preauthorization transaction.
