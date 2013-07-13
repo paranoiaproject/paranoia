@@ -63,16 +63,16 @@ class Est extends AdapterAbstract implements AdapterInterface
         $installment = $this->_formatInstallment($request->getInstallment());
         $currency    = $this->_formatCurrency($request->getCurrency());
         $expireMonth = $this->_formatExpireDate($request->getExpireMonth(),
-                $request->getExpireYear());
-
-        $requestData = array('Type'     => 'PreAuth',
-                'Total'    => $amount,
-                'Currency' => $currency,
-                'Taksit'   => $installment,
-                'Number'   => $request->getCardNumber(),
-                'Cvv2Val'  => $request->getSecurityCode(),
-                'Expires'  => $expireMonth,
-                'OrderId'  => $request->getOrderId(), );
+                                                $request->getExpireYear());
+        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $requestData = array('Type'     => $type,
+                             'Total'    => $amount,
+                             'Currency' => $currency,
+                             'Taksit'   => $installment,
+                             'Number'   => $request->getCardNumber(),
+                             'Cvv2Val'  => $request->getSecurityCode(),
+                             'Expires'  => $expireMonth,
+                             'OrderId'  => $request->getOrderId(), );
 
         return $requestData;
     }
@@ -82,8 +82,9 @@ class Est extends AdapterAbstract implements AdapterInterface
      */
     protected function _buildPostAuthorizationRequest(Request $request)
     {
-        $requestData = array('Type'     => 'PostAuth',
-                'OrderId'  => $request->getOrderId(), );
+        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $requestData = array('Type'     => $type,
+                             'OrderId'  => $request->getOrderId(), );
 
         return $requestData;
     }
@@ -98,15 +99,15 @@ class Est extends AdapterAbstract implements AdapterInterface
         $currency    = $this->_formatCurrency($request->getCurrency());
         $expireMonth = $this->_formatExpireDate($request->getExpireMonth(),
                 $request->getExpireYear());
-
-        $requestData = array('Type'     => 'Auth',
-                'Total'    => $amount,
-                'Currency' => $currency,
-                'Taksit'   => $installment,
-                'Number'   => $request->getCardNumber(),
-                'Cvv2Val'  => $request->getSecurityCode(),
-                'Expires'  => $expireMonth,
-                'OrderId'  => $request->getOrderId(), );
+        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $requestData = array('Type'     => $type,
+                             'Total'    => $amount,
+                             'Currency' => $currency,
+                             'Taksit'   => $installment,
+                             'Number'   => $request->getCardNumber(),
+                             'Cvv2Val'  => $request->getSecurityCode(),
+                             'Expires'  => $expireMonth,
+                             'OrderId'  => $request->getOrderId(), );
 
         return $requestData;
     }
@@ -119,11 +120,11 @@ class Est extends AdapterAbstract implements AdapterInterface
         $amount      = $this->_formatAmount($request->getAmount());
         $installment = $this->_formatInstallment($request->getInstallment());
         $currency    = $this->_formatCurrency($request->getCurrency());
-
-        $requestData = array('Type'     => 'Credit',
-                'Total'    => $amount,
-                'Currency' => $currency,
-                'OrderId'  => $request->getOrderId(), );
+        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $requestData = array('Type'     => $type,
+                             'Total'    => $amount,
+                             'Currency' => $currency,
+                             'OrderId'  => $request->getOrderId(), );
 
         return $requestData;
     }
@@ -133,8 +134,9 @@ class Est extends AdapterAbstract implements AdapterInterface
      */
     protected function _buildCancelRequest(Request $request)
     {
-        $requestData = array('Type'     => 'Void',
-                'OrderId' => $request->getOrderId(), );
+        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $requestData = array('Type'     => $type,
+                              'OrderId' => $request->getOrderId(), );
 
         if( $request->getTransactionId() ) {
             $requestData['TransId'] = $request->getTransactionId();

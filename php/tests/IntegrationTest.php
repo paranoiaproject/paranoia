@@ -47,7 +47,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
     public function getBankList()
     {
         #return array(array('isbank'));
-        return array(array('garanti'));
+        return array(array('isbank'));
     }
 
     /**
@@ -155,7 +155,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $response = $this->_makeRefund($request, false);
         $this->assertFalse($response->isSuccess());
     }
-    
+
     /**
      * this test case performs the following test steps:
      * makes preauthorization transaction.
