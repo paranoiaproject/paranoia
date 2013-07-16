@@ -22,5 +22,6 @@ define('APPLICATION_ENV', 'development');
 
 require_once 'Zend/Loader/Autoloader.php';
 require('Array2XML.php');
-Zend_Loader_Autoloader::getInstance()->registerNamespace('Payment');
+Zend_Loader_Autoloader::getInstance()->registerNamespace('Payment')
+                                     ->registerNamespace('Communication');
 

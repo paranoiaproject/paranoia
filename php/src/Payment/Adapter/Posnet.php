@@ -5,13 +5,19 @@ use \Array2XML;
 
 use \Payment\Request;
 use \Payment\Response\PaymentResponse;
+
 use \Payment\Adapter\AdapterInterface;
-use \Payment\Adapter\Container\Http;
+use \Payment\Adapter\AdapterAbstract;
+
 use \Payment\Exception\UnexpectedResponse;
 
-class Posnet extends Http implements AdapterInterface
+use \Communication\Connector;
+
+class Posnet extends AdapterAbstract implements AdapterInterface
 {
-   private function buildBaseRequest()
+    const CONNECTOR_TYPE =  Connector::CONNECTOR_TYPE_HTTP;
+
+    private function buildBaseRequest()
     {
 
     }

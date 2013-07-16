@@ -5,12 +5,18 @@ use \Array2XML;
 
 use \Payment\Request;
 use \Payment\Response\PaymentResponse;
+
 use \Payment\Adapter\AdapterInterface;
-use \Payment\Adapter\Container\Http;
+use \Payment\Adapter\AdapterAbstract;
+
 use \Payment\Exception\UnexpectedResponse;
 
-class Gvp extends Http implements AdapterInterface
+use \Communication\Connector;
+
+class Gvp extends AdapterAbstract implements AdapterInterface
 {
+    const CONNECTOR_TYPE =  Connector::CONNECTOR_TYPE_HTTP;
+
     private function buildBaseRequest()
     {
 
