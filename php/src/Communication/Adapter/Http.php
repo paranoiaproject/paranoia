@@ -2,16 +2,21 @@
 namespace Communication\Adapter;
 
 use \Communication\Adapter\AdapterInterface;
+use \Communication\Adapter\AdapterAbstract;
 
 use \Communication\Exception\UndefinedHttpMethod;
 use \Communication\Exception\CommunicationFailed;
 
-class Http implements AdapterInterface
+class Http extends AdapterAbstract implements AdapterInterface
 {
     const METHOD_POST   = 'POST';
     const METHOD_GET    = 'GET';
     const METHOD_PUT    = 'PUT';
     const METHOD_DELETE = 'DELETE';
+
+    const EVENT_BEFORE_REQUEST = 'BeforeRequest';
+    const EVENT_AFTER_REQUEST = 'AfterRequest';
+    const EVENT_ON_EXCEPTION = 'OnException';
     
     /**
      * @var resources
@@ -101,11 +106,19 @@ class Http implements AdapterInterface
     {
         $curlOptions = $this->_setOptions($url, $data, $options);
         $this->_validateMethod($curlOptions );
+        $this->_triggerEvent(self::EVENT_BEFORE_REQUEST, 
+                             array('data' => $data));
         $response = curl_exec($this->_handler);
+        $this->_triggerEvent(self::EVENT_AFTER_REQUEST, 
+                             array('data' => $response));
         $error = curl_error($this->_handler);
         if($error) {
-            throw new CommunicationFailed('Communication error occurred. ' .
+            $exception = new CommunicationFailed('Communication error occurred. ' .
                                           'Detail: '. $error);
+
+            $this->_triggerEvent(self::EVENT_ON_EXCEPTION, 
+                                 array('exception' => $exception));
+            throw  $exception;
         }
         return $response;
     }

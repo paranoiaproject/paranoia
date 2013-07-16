@@ -1,7 +1,7 @@
 <?php
 namespace EventManager;
 
-use \EventManager\Listener\ListenerAbstract
+use \EventManager\Listener\ListenerAbstract;
 use \EventManager\EventParameter;
 
 abstract class EventManagerAbstract
@@ -42,17 +42,16 @@ abstract class EventManagerAbstract
     /**
      * trigger listener for the specified event.
      *
-     * @param EventManagerAbstract $source
      * @param string $eventName,
      * @param array $data (optional)
      */
-    protected function _triggerEvent(EventManagerAbstract $source, $eventName,
-                                      $data = array())
+    protected function _triggerEvent($eventName, $data = array())
     {
-        $parameter = new EventParameter($source, $eventName,
+        $parameter = new EventParameter($this, $eventName,
                                         $data, microtime(true));
+
         /* @var $listener \EventManager\Listener\ListenerAbstract */
-        for($this->_getListeners($eventName) as $listener) {
+        foreach($this->_getListeners($eventName) as $listener) {
             $listener->triggerEvent($eventName, $parameter);
         }
     }

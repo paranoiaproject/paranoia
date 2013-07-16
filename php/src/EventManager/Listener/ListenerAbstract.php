@@ -27,7 +27,7 @@ abstract class ListenerAbstract
      */
     private function _getEventMethodName($eventName)
     {
-        return sprintf('_%s', ucfirst $eventName));
+        return sprintf('_%s', ucfirst($eventName));
     }
 
     /**

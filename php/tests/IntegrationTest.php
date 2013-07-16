@@ -2,12 +2,25 @@
 use \Payment\Factory;
 use \Payment\Request;
 
+use \EventManager\Listener\CommunicationListener;
+
 class IntegrationTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * 
+     */
     public function setUp()
     {
         $config = new Zend_Config_Ini('config/payment.ini', APPLICATION_ENV);
-        $this->_config  = $config;
+        $this->_config = $config;
+    }
+
+    private function _initAdapter($bank)
+    {
+        $this->_adapter = Factory::createInstance($this->_config, $bank);
+        $listener = new CommunicationListener();
+        $this->_adapter->addListener('BeforeRequest', $listener);
+        $this->_adapter->addListener('AfterRequest', $listener);
     }
 
     /**
@@ -100,7 +113,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
     */
     public function testCase1($bank)
     {
-        $this->_adapter = Factory::createInstance($this->_config, $bank);
+        $this->_initAdapter($bank);
         $request = $this->_createNewOrder();
         $this->_makeSale($request);
         $this->_makeCancel($request);
@@ -114,7 +127,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
     */
     public function testCase2($bank)
     {
-        $this->_adapter = Factory::createInstance($this->_config, $bank);
+        $this->_initAdapter($bank);
         $request = $this->_createNewOrder();
         $saleResponse = $this->_makeSale($request);
         $refundResponse = $this->_makeRefund($request);
@@ -130,7 +143,7 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
     */
     public function testCase3($bank)
     {
-        $this->_adapter = Factory::createInstance($this->_config, $bank);
+        $this->_initAdapter($bank);
         $request = $this->_createNewOrder(null, 10);
         $this->_makeSale($request);
         $request->setAmount(2);
@@ -147,13 +160,14 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
      * makes preauthorization transaction.
      * makes postauthorization transaction.
      * cancels postauthorization transaction.
-     * cancels preauthorization transaction.
+     * cancels preauthorization transaction. 
      * @dataProvider getBankList
      */
     public function testCase4($bank)
     {
-        $this->_adapter = Factory::createInstance($this->_config, $bank);
+        
         $request = $this->_createNewOrder();
+        $this->_initAdapter($bank);
         $response1 = $this->_makePreauthorization($request);
         $response2 = $this->_makePostAuthorization($request);
         $request->setTransactionId($response2->getTransactionId());

@@ -7,7 +7,8 @@ use \Payment\Config;
 
 use \Communication\Connector;
 
-abstract class AdapterAbstract
+
+abstract class AdapterAbstract 
 {
     const CURRENCY_TRY = 'TRY';
     const CURRENCY_USD = 'USD';
