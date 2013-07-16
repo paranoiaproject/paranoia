@@ -139,9 +139,14 @@ class Est extends AdapterAbstract implements AdapterInterface
         try {
             $xml = new \SimpleXmlElement($rawResponse);
         } catch(\Exception $e) {
-            throw new UnexpectedResponse('Provider is returned unexpected ' .
-                                         'response. Response data:' .
-                                         $rawResponse);
+            $exception = new UnexpectedResponse('Provider is returned unexpected ' .
+                                                'response. Response data:' .
+                                                $rawResponse);
+            $this->_triggerEvent(self::EVENT_ON_EXCEPTION,
+                                array_merge($this->_collectTransactionInformation(),
+                                            array('exception' => $exception)));
+            throw $exception;
+
         }
         $response->setIsSuccess( (string) $xml->Response == 'Approved' );
         $response->setResponseCode( (string) $xml->ProcReturnCode  );
@@ -170,6 +175,11 @@ class Est extends AdapterAbstract implements AdapterInterface
             $response->setTransactionId( (string) $xml->TransId );
         }
         $response->setRawData($rawResponse);
+        $eventData = $this->_collectTransactionInformation();
+        $eventName = $response->isSuccess() ?
+                     self::EVENT_ON_TRANSACTION_SUCCESSFUL :
+                     self::EVENT_ON_TRANSACTION_FAILED;
+        $this->_triggerEvent($eventName, $eventData);
         return $response;
     }
 }

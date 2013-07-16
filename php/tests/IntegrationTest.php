@@ -7,7 +7,7 @@ use \EventManager\Listener\CommunicationListener;
 class IntegrationTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * 
+     *
      */
     public function setUp()
     {
@@ -19,8 +19,8 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
     {
         $this->_adapter = Factory::createInstance($this->_config, $bank);
         $listener = new CommunicationListener();
-        $this->_adapter->addListener('BeforeRequest', $listener);
-        $this->_adapter->addListener('AfterRequest', $listener);
+        $this->_adapter->getConnector()->addListener('BeforeRequest', $listener);
+        $this->_adapter->getConnector()->addListener('AfterRequest', $listener);
     }
 
     /**
@@ -160,12 +160,12 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
      * makes preauthorization transaction.
      * makes postauthorization transaction.
      * cancels postauthorization transaction.
-     * cancels preauthorization transaction. 
+     * cancels preauthorization transaction.
      * @dataProvider getBankList
      */
     public function testCase4($bank)
     {
-        
+
         $request = $this->_createNewOrder();
         $this->_initAdapter($bank);
         $response1 = $this->_makePreauthorization($request);

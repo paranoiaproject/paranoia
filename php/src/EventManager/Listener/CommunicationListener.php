@@ -9,7 +9,8 @@ class CommunicationListener extends ListenerAbstract
     protected function _BeforeRequest(EventParameter $parameter)
     {
         print implode(PHP_EOL, array(
-            'Type: Request' ,
+            'Type: Request',
+            'Url:' . $parameter->getData('url'),
             'Data: ' . $parameter->getData('data')
         )) . PHP_EOL;
     }
@@ -18,6 +19,7 @@ class CommunicationListener extends ListenerAbstract
     {
         print implode(PHP_EOL, array(
             'Type: Response' ,
+            'Url:' . $parameter->getData('url'),
             'Data: ' . $parameter->getData('data')
         )) . PHP_EOL;
     }
