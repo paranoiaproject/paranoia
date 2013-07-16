@@ -5,6 +5,8 @@ use \Payment\Request;
 use \Payment\Response;
 use \Payment\Config;
 
+use \Communication\Connector;
+
 abstract class AdapterAbstract
 {
     const CURRENCY_TRY = 'TRY';
@@ -79,9 +81,18 @@ abstract class AdapterAbstract
     abstract protected function _parseResponse($rawResponse);
 
     /**
-    * @see \Payment\Adapter\Container\ContainerAbstract::_sendRequest()
-    */
-    abstract protected function _sendRequest($url, $rawRequest, $options = array());
+     * sends request to remote host.
+     *
+     * @param string $url
+     * @param mixed $data
+     * @param array $options
+     * @return mixed
+     */
+    protected function _sendRequest($url, $data, $options=null)
+    {
+        $connector = new Connector(static::CONNECTOR_TYPE);
+        return $connector->sendRequest($url, $data, $options);
+    }
 
     /**
     * formats the specified string currency code by iso currency codes.

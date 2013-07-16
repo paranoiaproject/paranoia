@@ -5,12 +5,18 @@ use \Array2XML;
 
 use \Payment\Request;
 use \Payment\Response\PaymentResponse;
+
 use \Payment\Adapter\AdapterInterface;
-use \Payment\Adapter\Container\Http;
+use \Payment\Adapter\AdapterAbstract;
+
 use \Payment\Exception\UnexpectedResponse;
 
-class Est extends Http implements AdapterInterface
+use \Communication\Connector;
+
+class Est extends AdapterAbstract implements AdapterInterface
 {
+    const CONNECTOR_TYPE =  Connector::CONNECTOR_TYPE_HTTP;
+
     private function _buildBaseRequest()
     {
         $config = $this->_config;
