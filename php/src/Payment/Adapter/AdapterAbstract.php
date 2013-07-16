@@ -7,20 +7,31 @@ use \Payment\Config;
 
 use \Communication\Connector;
 
-abstract class AdapterAbstract
+use \EventManager\EventManagerAbstract;
+
+abstract class AdapterAbstract extends EventManagerAbstract
 {
     const CURRENCY_TRY = 'TRY';
     const CURRENCY_USD = 'USD';
     const CURRENCY_EUR = 'EUR';
 
+    const EVENT_ON_TRANSACTION_SUCCESSFUL = 'OnTransactionSuccessful';
+    const EVENT_ON_TRANSACTION_FAILED = 'OnTransactionFailed';
+    const EVENT_ON_EXCEPTION = 'OnException';
     /**
     * @var \Payment\Config
     */
     protected $_config;
 
+    /**
+     * @var \Communication\Adapter\CommunicationInterface
+     */
+    protected $_connector;
+
     public function __construct(\Zend_Config $config)
     {
         $this->_config = $config;
+        $this->_connector = new Connector(static::CONNECTOR_TYPE);
     }
 
     /**
@@ -81,6 +92,16 @@ abstract class AdapterAbstract
     abstract protected function _parseResponse($rawResponse);
 
     /**
+     * returns connector object.
+     *
+     * @return \Communication\Adapter\AdapterInterface
+     */
+    public function getConnector()
+    {
+        return $this->_connector;
+    }
+
+    /**
      * sends request to remote host.
      *
      * @param string $url
@@ -90,8 +111,16 @@ abstract class AdapterAbstract
      */
     protected function _sendRequest($url, $data, $options=null)
     {
-        $connector = new Connector(static::CONNECTOR_TYPE);
-        return $connector->sendRequest($url, $data, $options);
+        try {
+            return $this->getConnector()->sendRequest($url, $data, $options);
+        } catch(\ErrorException $e) {
+            $backtrace = debug_backtrace();
+            $this->_triggerEvent(self::EVENT_ON_EXCEPTION,
+                                 array('exception' => $e,
+                                       'request'   => $this->_maskRequest($this->getConnector()->getLastSentRequest()),
+                                       'response'  => $this->getConnector()->getLastReceivedResponse()));
+            throw $e;
+        }
     }
 
     /**
@@ -204,5 +233,30 @@ abstract class AdapterAbstract
         $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
         $response = $this->_parseResponse($rawResponse);
         return $response;
+    }
+
+    /**
+     * mask some critical information in transaction request.
+     *
+     * @param string $rawRequest
+     * @return string
+     */
+    protected function _maskRequest($rawRequest)
+    {
+        return $rawRequest;
+    }
+
+    /**
+     * collects transaction information.
+     *
+     * @return array
+     */
+    protected function _collectTransactionInformation()
+    {
+        $backtrace = debug_backtrace();
+        $data = array('transaction' => $backtrace[2]['function'],
+                      'request'     => $this->_maskRequest($this->getConnector()->getLastSentRequest()),
+                      'response'    => $this->getConnector()->getLastReceivedResponse(),);
+        return $data;
     }
 }
