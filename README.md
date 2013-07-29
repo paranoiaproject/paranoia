@@ -27,21 +27,24 @@ $request->setCardNumber('5105105105105100')
 
 //creating payment instance
 $instance = \Payment\Factory::createInstance($config, 'Akbank');
+
 try {
-    // Performing sale transaction. Also you can perform cancel, refund and inquiry transaction.
+    // Performing sale transaction. 
+    // Also you can perform cancel, refund and inquiry transaction.
     $response = $instance->sale($request);
 
-    if( $response->isSuccess() ) {
-        echo 'Payment is performed successfuly.';   
+    if ($response->isSuccess()) {
+        echo 'Payment is performed successfuly.';
     } else {
         echo 'Payment is failed.';
     }
-catch(Exception $e) {
-    if($e instanceof \Payment\Exception\UnexpectedResponse) {
-        echo 'Provider is responded an unexpected response.';
-    } elseif( $e instanceof \Payment\Adapter\Container\Exception\ConnectionFailed ) {
-        echo 'Provider connection is failed.';
-    }
+
+} catch(\Payment\Exception\UnexpectedResponse $e) {
+    echo 'Provider is responded an unexpected response.';
+} catch(\Payment\Adapter\Container\Exception\ConnectionFailed $e) {
+    echo 'Provider connection is failed.';
+} catch(Exception $e) {
+        // ..
 }
 ```
 
