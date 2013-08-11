@@ -22,9 +22,9 @@ class Est extends AdapterAbstract implements AdapterInterface
 	 */
 	protected $_transactionMap = array(self::TRANSACTION_TYPE_PREAUTHORIZATION  => 'PreAuth',
 									   self::TRANSACTION_TYPE_POSTAUTHORIZATION => 'PostAuth',
-									   self::TRANSACTION_TYPE_SALE 			  	=> 'sale',
-									   self::TRANSACTION_TYPE_CANCEL 			=> 'void',
-									   self::TRANSACTION_TYPE_REFUND 			=> 'refund');
+									   self::TRANSACTION_TYPE_SALE 			  	=> 'Auth',
+									   self::TRANSACTION_TYPE_CANCEL 			=> 'Void',
+									   self::TRANSACTION_TYPE_REFUND 			=> 'Credit');
 
 	/**
 	 * builds request base with common arguments.
