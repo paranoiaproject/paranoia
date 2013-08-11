@@ -17,13 +17,26 @@ class Est extends AdapterAbstract implements AdapterInterface
 {
     const CONNECTOR_TYPE =  Connector::CONNECTOR_TYPE_HTTP;
 
+	/**
+	 * @var array
+	 */
+	protected $_transactionMap = array(self::TRANSACTION_TYPE_PREAUTHORIZATION  => 'PreAuth',
+									   self::TRANSACTION_TYPE_POSTAUTHORIZATION => 'PostAuth',
+									   self::TRANSACTION_TYPE_SALE 			  	=> 'sale',
+									   self::TRANSACTION_TYPE_CANCEL 			=> 'void',
+									   self::TRANSACTION_TYPE_REFUND 			=> 'refund');
+
+	/**
+	 * builds request base with common arguments.
+	 * @return array
+	 */
     private function _buildBaseRequest()
     {
         $config = $this->_config;
         return array('Name'     => $config->username,
-                     'Password' => $config->password,
-                     'ClientId' => $config->client_id,
-                     'Mode'     => $config->mode);
+                'Password' => $config->password,
+                'ClientId' => $config->client_id,
+                'Mode'     => $config->mode);
     }
 
     /**
@@ -33,8 +46,8 @@ class Est extends AdapterAbstract implements AdapterInterface
     {
         $rawRequest = call_user_func(array($this, $requestBuilder), $request);
         $xml = Array2XML::createXML('CC5Request',
-                                array_merge($rawRequest,
-                                            $this->_buildBaseRequest()));
+                array_merge($rawRequest,
+                    $this->_buildBaseRequest()));
 
         $data = array('DATA' => $xml->saveXml());
         $request->setRawData($xml);
@@ -51,8 +64,8 @@ class Est extends AdapterAbstract implements AdapterInterface
         $currency    = $this->_formatCurrency($request->getCurrency());
         $expireMonth = $this->_formatExpireDate($request->getExpireMonth(),
                                                 $request->getExpireYear());
-
-        $requestData = array('Type'     => 'PreAuth',
+        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $requestData = array('Type'     => $type,
                              'Total'    => $amount,
                              'Currency' => $currency,
                              'Taksit'   => $installment,
@@ -69,7 +82,8 @@ class Est extends AdapterAbstract implements AdapterInterface
      */
     protected function _buildPostAuthorizationRequest(Request $request)
     {
-        $requestData = array('Type'     => 'PostAuth',
+        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $requestData = array('Type'     => $type,
                              'OrderId'  => $request->getOrderId(), );
 
         return $requestData;
@@ -84,9 +98,9 @@ class Est extends AdapterAbstract implements AdapterInterface
         $installment = $this->_formatInstallment($request->getInstallment());
         $currency    = $this->_formatCurrency($request->getCurrency());
         $expireMonth = $this->_formatExpireDate($request->getExpireMonth(),
-                                                $request->getExpireYear());
-
-        $requestData = array('Type'     => 'Auth',
+                $request->getExpireYear());
+        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $requestData = array('Type'     => $type,
                              'Total'    => $amount,
                              'Currency' => $currency,
                              'Taksit'   => $installment,
@@ -106,8 +120,8 @@ class Est extends AdapterAbstract implements AdapterInterface
         $amount      = $this->_formatAmount($request->getAmount());
         $installment = $this->_formatInstallment($request->getInstallment());
         $currency    = $this->_formatCurrency($request->getCurrency());
-
-        $requestData = array('Type'     => 'Credit',
+        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $requestData = array('Type'     => $type,
                              'Total'    => $amount,
                              'Currency' => $currency,
                              'OrderId'  => $request->getOrderId(), );
@@ -120,8 +134,9 @@ class Est extends AdapterAbstract implements AdapterInterface
      */
     protected function _buildCancelRequest(Request $request)
     {
-        $requestData = array('Type'     => 'Void',
-                             'OrderId' => $request->getOrderId(), );
+        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $requestData = array('Type'     => $type,
+                              'OrderId' => $request->getOrderId(), );
 
         if( $request->getTransactionId() ) {
             $requestData['TransId'] = $request->getTransactionId();
@@ -146,7 +161,6 @@ class Est extends AdapterAbstract implements AdapterInterface
                                 array_merge($this->_collectTransactionInformation(),
                                             array('exception' => $exception)));
             throw $exception;
-
         }
         $response->setIsSuccess( (string) $xml->Response == 'Approved' );
         $response->setResponseCode( (string) $xml->ProcReturnCode  );
@@ -159,13 +173,13 @@ class Est extends AdapterAbstract implements AdapterInterface
 
             if(property_exists($xml, 'ErrMsg')) {
                 $errorMessages[] = sprintf('Error Message: %s ',
-                                            (string) $xml->ErrMsg);
+                        (string) $xml->ErrMsg);
             }
 
             if(property_exists($xml, 'Extra') &&
-               property_exists($xml->Extra, 'HOSTMSG')) {
+                    property_exists($xml->Extra, 'HOSTMSG')) {
                 $errorMessages[] = sprintf('Host Message: %s',
-                                           (string) $xml->Extra->HOSTMSG);
+                        (string) $xml->Extra->HOSTMSG);
             }
             $errorMessage = implode(' ', $errorMessages);
             $response->setResponseMessage($errorMessage);
