@@ -1,4 +1,5 @@
 <?php
+ini_set('xdebug.profiler_enable', 'On');
 // Define path to application directory
 defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', dirname(__DIR__) . '/src');

@@ -37,6 +37,11 @@ abstract class ResponseAbstract
     * @var string
     */
     protected $_rawData;
+
+    /**
+     * @var integer
+     */
+    protected $_time;
     
     /**
     * @see \Payment\Response\ResponseInterface::isSuccess()
@@ -156,6 +161,23 @@ abstract class ResponseAbstract
     public function setRawData($rawData)
     {
         $this->_rawData = $rawData;
+        return $this;
+    }
+
+    /**
+     * @see \Payment\TransferInterface::getTime()
+     */
+    public function getTime()
+    {
+        return $this->_time;
+    }
+
+    /**
+     * @see \Payment\TransferInterface::setTime()
+     */
+    public function setTime($time)
+    {
+        $this->_time = $time;
         return $this;
     }
 }
