@@ -2,7 +2,7 @@
 namespace EventManager\Listener;
 
 use \EventManager\EventParameter;
-use \EventParameter\Exception\UndefinedListenerMethod;
+use \EventManager\Exception\UndefinedListenerMethod;
 abstract class ListenerAbstract
 {
     /**

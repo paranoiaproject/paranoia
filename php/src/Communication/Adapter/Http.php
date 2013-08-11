@@ -100,7 +100,7 @@ class Http extends AdapterAbstract implements AdapterInterface
         return $curlOptions;
     }
 
-    /*
+    /**
      * @see \Communication\CommunicationInterface::sendRequest()
      */
     public function sendRequest($url, $data, $options = null)
