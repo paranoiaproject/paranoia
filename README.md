@@ -50,7 +50,7 @@ try {
 
 ## Supported Adapters:
 - Est (İşbankası, Akbank, Finansbank, Denizbank, Kuveytturk, Halkbank, Anadolubank, ING Bank, Citibank, Cardplus)
-- Gvp (Denizbank, TEB, ING, Şekerbank, TFKB, Garanti)  - Coming soon
+- Gvp (Denizbank, TEB, ING, Şekerbank, TFKB, Garanti) 
 - Posnet  (Yapı Kredi, Vakıfbank, Anadolubank) - Coming soon
 
 ## Supported Currency Codes:
