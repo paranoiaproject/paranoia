@@ -1,122 +1,127 @@
-# Paranoia!
-### What is Paranoia ?
-Paranoia is simple generic payment client for payment api of popular turkish banks. It provides simple usability 
-with single interface for more than one payment api.
+# Paranoia
+## Nedir ?
+Paranoia, Türkiye dahilinde kullanılan popüler ödeme sistemlerinin tek bir API arayüzü üzerinden basitce kullanımına olanak veren açık kaynak kodlu bir kütüphanedir.
 
-## How ?
-All payment transaction is very easy with Paranoia in a few steps.
-- Create a payment request.
-- Create a payment instance with factory.
-- Call intended transaction method of payment instance with request object.
-That's it!
+## Nasıl çalışır ?
+Paranoia kullanarak desteklenen senkron ve asenkron ödeme servisleri üzerinden kolayca satış, iptal ve iade işlemlerinizi gerçekleştirebilir, siparişlerinize ait hareketleri sorgulayabilirsiniz.
 
-## Usage:
+### Örnek Satış İşlemi:
+
 ```php
-//loading configuration.
-$config = new Zend_Config_Ini(APPLICATION_PATH . '/config/payment.ini', APPLICATION_ENV);
+	use \Zend_Config_Ini;
+	use \Payment\Request;
+	use \Payment\Factory;
+	use \Payment\Adapter\Container\Exception\ConnectionFailed;
 
-//creating payment request.
-$request = new \Payment\Request();
-$request->setCardNumber('5105105105105100')
-        ->setSecurityCode('510')
-        ->setExpireMonth(3)
-        ->setExpireYear(2014)
-        ->setOrderNumber('ORD000001')
-        ->setAmount(100.35)
-        ->setCurrency('TRY');  // Supported currency types: TRY, USD, EUR
+	$config = Zend_Config_Ini(APPLICATION_PATH . '/config/payment.ini', APPLICATION_ENV);
 
-//creating payment instance
-$instance = \Payment\Factory::createInstance($config, 'Akbank');
+	$instance = Factory::createInstance($config, 'Akbank');
 
-try {
-    // Performing sale transaction. 
-    // Also you can perform cancel, refund and inquiry transaction.
-    $response = $instance->sale($request);
+	$request = new Request();
+	$request->setCardNumber('5105105105105100')
+	        ->setSecurityCode('510')
+	        ->setExpireMonth(3)
+	        ->setExpireYear(2014)
+	        ->setOrderNumber('ORD000001')
+	        ->setAmount(100.35)
+	        ->setCurrency('TRY');
 
-    if ($response->isSuccess()) {
-        echo 'Payment is performed successfuly.';
-    } else {
-        echo 'Payment is failed.';
-    }
+	try {
+		$response = $instance->sale($request);
+		if($response->isSuccess()) {
+			echo 'Ödeme işlemi gerçekleşti.';
+		} else {
+			echo 'Ödeme işlemi gerçekleştirilemedi.';
+		}
+	} catch(ConnectionFailed $e) {
+		echo 'Bankayla bağlantı kurulamadı. Lütfen daha sonra tekrar deneyiniz.';
+	} catch(Exception $e) {
+		echo 'İşleminiz gerçekleştirilemedi. Lütfen daha sonra tekrar deneyiniz.'	;
+	}
 
-} catch(\Payment\Exception\UnexpectedResponse $e) {
-    echo 'Provider is responded an unexpected response.';
-} catch(\Payment\Adapter\Container\Exception\ConnectionFailed $e) {
-    echo 'Provider connection is failed.';
-} catch(Exception $e) {
-        // ..
-}
 ```
 
-## Supported Adapters:
-- Est (İşbankası, Akbank, Finansbank, Denizbank, Kuveytturk, Halkbank, Anadolubank, ING Bank, Citibank, Cardplus)
-- Gvp (Denizbank, TEB, ING, Şekerbank, TFKB, Garanti) 
-- Posnet  (Yapı Kredi, Vakıfbank, Anadolubank) - Coming soon
+## Desteklenen Ödeme Sistemleri:
 
-## Supported Currency Codes:
-- TRY: Turkish Lira
-- USD: U.S. Dollar
-- EUR: Euro
+* ***Est***
+	* İşbankası, Akbank, Finansbank, Denizbank, Kuveytturk, Halkbank, Anadolubank, ING Bank, Citibank, Cardplus
+* ***Gvp***
+	* Denizbank, TEB, ING, Şekerbank, TFKB, Garanti
+* ***Posnet***
+	* Yapı Kredi, Vakıfbank, Anadolubank - ***Yakında***
+* ***BKM Express***
+	* ***Yakında***
+* ***Turkcell Cüzdan***
+	* ***Yakında***
+* ***PayPal***
+	* ***Yakında***
+* ***Ininal***
+	* ***Yakında***
 
-## Features:
-- sale
-- cancel
-- refund
-- preauthorization
-- postauthorization
-- payment with 3d secure - coming soon
-- order inquiry - coming soon
-- point query & usage (for est, gvp and posnet) - coming soon
-- Pay with Turkcell Cuzdan - coming soon
-- Pay with Isbank QRCode - coming soon
+## Desteklenen Para Birimleri:
 
-## Contribution:
-Also you can contribute to Paraonoia project. If you want to contribute to the project, please perform the following
-steps:
-### Preparation:
-- Fork this repository. Click to
-  https://github.com/ibrahimgunduz34/paranoia/fork
-- clone the forked repository to your local machine.  
+* ***TRL:*** Türk Lirası
+* ***EUR:*** Avro
+* ***USD:*** Amerikan Doları
+
+## Katkıda Bulunun:
+Siz de yapacağınız geliştirmelerle açık kaynaklı Paranoia kütüphanesine katkıda bulunabilirsiniz.
+
+Katkıda bulunmak için aşağıdaki işlem adımlarını gerçekleştirin:
+
+### Hazırlık:
+
+* ***git@github.com:ibrahimgunduz34/paranoia.git*** deposunu kendi github hesabınıza fork edin.
+* Kendi hesabınızdaki fork edilmiş repoyu yerel geliştirme ortamınıza kopyalayın.
 
 ```sh
-$ git clone git@github.com:youruser/paranoia.git
+
+$ git clone git@github.com:youruser/paranoia.github
+
 ```
-
-- Add this repository to remote repository as upstream to your local environment.  
+* ***git@github.com:ibrahimgunduz34/paranoia.git*** reposunu yerel geliştirme ortamınıza upstream olarak tanımlayın.
 
 ```sh
+
 $ git remote add upstream https://github.com/ibrahimgunduz34/paranoia
+
 ```
 
-### Contribution:
-- Choose a issue in available issues or create a new
-- Update your local repository with remote upstream.  
+### Değişikliklerin/Geliştirmelerin İletilmesi:
+
+* Projenin issues bölümünden dilediğiniz bir konuyu seçin veya yeni bir konu yaratın.
+* Geliştirmeye başlamadan önce upstreamdeki değişiklikleri yerel deponuza alın.
 
 ```sh
+
 $ git checkout master
 $ git fetch upstream
 $ git merge upstream/master
+
 ```
 
-- Create and checkout a new branch.  
+* Yeni bir dal oluşturun ve giriş yapın.
 
 ```sh
-$ git checkout -b <yourbranchname-issueid>
+
+$ git checkout -b <branch-adi-issueid>
+
 ```
 
-- Write your magic code...
-- Add your changes to index and commit to local repository.  
+* Değişikliklerinizi tamamlayın ve yerel deponuza gönderin.
 
 ```sh
+
 $ git add .
-$ git commit -m "#<issueid> Short description about your changes."
+$ git commit -m "#<issueid> Geliştirme hakkında kısa bir commit mesajı."
+
 ```
 
-- Push your changes to remote origin.  
+* Yerel depodaki değişimi fork ettiğiniz depoya iletin.
 
 ```sh
+
 $ git push origin <yourbranchname-issueid>
+
 ```
-
-- And finaly send pull request to us. That's it!  
-
+* Son olarak değişiklikleri bildirmek için bize bir ***pull request*** gönderin.
