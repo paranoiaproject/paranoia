@@ -13,7 +13,7 @@ Paranoia kullanarak desteklenen senkron ve asenkron ödeme servisleri üzerinden
 	use \Payment\Factory;
 	use \Payment\Adapter\Container\Exception\ConnectionFailed;
 
-	$config = Zend_Config_Ini(APPLICATION_PATH . '/config/payment.ini', APPLICATION_ENV);
+	$config = new Zend_Config_Ini(APPLICATION_PATH . '/config/payment.ini', APPLICATION_ENV);
 
 	$instance = Factory::createInstance($config, 'Akbank');
 
