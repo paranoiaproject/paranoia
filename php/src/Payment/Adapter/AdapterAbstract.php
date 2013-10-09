@@ -1,9 +1,10 @@
 <?php
 namespace Payment\Adapter;
 
+use \StdClass;
+
 use \Payment\Request;
 use \Payment\Response;
-use \Payment\Config;
 use \Payment\TransferInterface;
 use \Payment\Exception\UnknownTransactionType;
 
@@ -30,7 +31,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     protected $_transactionMap = Array();
 
     /**
-     * @var \Payment\Config
+     * @var \StdClass
      */
     protected $_config;
 
@@ -39,7 +40,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     protected $_connector;
 
-    public function __construct(\Zend_Config $config)
+    public function __construct(StdClass $config)
     {
         $this->_config = $config;
         $this->_connector = new Connector(static::CONNECTOR_TYPE);

@@ -11,8 +11,8 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $config = new Zend_Config_Ini('config/payment.ini', APPLICATION_ENV);
-        $this->_config = $config;
+        $config = include(dirname(__FILE__) . '/config.php');
+        $this->_config = json_decode(json_encode($config));
     }
 
     private function _initAdapter($bank)
