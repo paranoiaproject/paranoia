@@ -1,6 +1,8 @@
 <?php
 namespace Payment;
 
+use \StdClass;
+
 use \Payment\Exception\UnknownAdapter;
 use \Payment\Exception\UnknownPos;
 
@@ -10,7 +12,7 @@ class Factory
     * returns a adapter instance that defined adaptername in 
     * configuration.
     *
-    * @param Zend_Config $config
+    * @param StdClass $config
     * @return \Payment\Adapter\AdapterInterface
     */
     private static function _getAdapter($config)
@@ -27,11 +29,11 @@ class Factory
     /**
     * creates a new adapter instance by the specified pos key.
     *
-    * @param \Zend_Config $config
+    * @param StdClass $config
     * @param string $paymentMethod
     * @return \Payment\Adapter\AdapterInterface
     */
-    public static function createInstance(\Zend_Config $config, $paymentMethod)
+    public static function createInstance(StdClass $config, $paymentMethod)
     {
         if( ! isset($config->{$paymentMethod}) ) {
             throw new UnknownPos('Unknown pos : ' . $paymentMethod);

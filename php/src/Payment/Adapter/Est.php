@@ -1,7 +1,7 @@
 <?php
 namespace Payment\Adapter;
 
-use \Array2XML;
+use \Pext\Serializer\Serializer;
 
 use \Payment\Request;
 use \Payment\Response\PaymentResponse;
@@ -45,11 +45,12 @@ class Est extends AdapterAbstract implements AdapterInterface
     protected function _buildRequest(Request $request, $requestBuilder)
     {
         $rawRequest = call_user_func(array($this, $requestBuilder), $request);
-        $xml = Array2XML::createXML('CC5Request',
-                array_merge($rawRequest,
-                    $this->_buildBaseRequest()));
-
-        $data = array('DATA' => $xml->saveXml());
+        $serializer = new Serializer(Serializer::XML);
+        $xml = $serializer->serialize(
+            array_merge($rawRequest, $this->_buildBaseRequest()), 
+            array('root_name' => 'CC5Request')
+        );
+        $data = array('DATA' => $xml);
         $request->setRawData($xml);
         return http_build_query($data);
     }
