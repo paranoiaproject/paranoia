@@ -8,7 +8,7 @@ return array(
         'password' => '',
         'mode' => '',
     ),
-    'posnet_bank' => array(
+    'gvp_bank' => array(
         'adapter' => 'Gvp',
         'api_url' => '',
         'terminal_id' => '',
