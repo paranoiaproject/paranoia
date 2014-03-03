@@ -40,14 +40,13 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
         $request->setCardNumber('5406675406675403');
         $request->setSecurityCode('000');
         $request->setExpireMonth(12);
-        $request->setExpireYear(2013);
+        $request->setExpireYear(2050);
         return $request;
     }
 
     public function getBankList()
     {
         return array(array('isbank'));
-#return array(array('isbank'));
     }
 
     /**
