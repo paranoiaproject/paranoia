@@ -8,13 +8,12 @@ Paranoia kullanarak desteklenen senkron ve asenkron ödeme servisleri üzerinden
 ### Örnek Satış İşlemi:
 
 ```php
-	use \Zend_Config_Ini;
 	use \Payment\Request;
 	use \Payment\Factory;
 	use \Payment\Adapter\Container\Exception\ConnectionFailed;
 
-	$config = new Zend_Config_Ini(APPLICATION_PATH . '/config/payment.ini', APPLICATION_ENV);
-
+    $config = json_decode(file_get_contents('config.json'));
+    
 	$instance = Factory::createInstance($config, 'Akbank');
 
 	$request = new Request();

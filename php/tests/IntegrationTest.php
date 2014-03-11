@@ -11,8 +11,12 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $config = include(dirname(__FILE__) . '/config.php');
-        $this->_config = json_decode(json_encode($config));
+        $configFile = dirname(__FILE__) . '/config.json';
+        if(!file_exists($configFile)) {
+            throw new Exception('configuration file does not exist.');
+        }
+        $config = json_decode(file_get_contents($configFile));
+        $this->_config = $config;
     }
 
     private function _initAdapter($bank)
