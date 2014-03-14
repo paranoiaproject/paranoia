@@ -3,7 +3,14 @@
 Paranoia, Türkiye dahilinde kullanılan popüler ödeme sistemlerinin tek bir API arayüzü üzerinden basitce kullanımına olanak veren açık kaynak kodlu bir kütüphanedir.
 
 ## Nasıl çalışır ?
-Paranoia kullanarak desteklenen senkron ve asenkron ödeme servisleri üzerinden kolayca satış, iptal ve iade işlemlerinizi gerçekleştirebilir, siparişlerinize ait hareketleri sorgulayabilirsiniz.
+Paranoia kullanarak desteklenen senkron ve asenkron ödeme servisleri üzerinden kolayca satış, iptal ve iade işlemlerinizi gerçekleştirebilirsiniz.
+
+## Kullanım:
+
+Repoyu kopyaladıktan sonra composer ile paranoia kurulumunu gerceklestirebilirsiniz.
+```shell
+	$ composer install
+```
 
 ### Örnek Satış İşlemi:
 

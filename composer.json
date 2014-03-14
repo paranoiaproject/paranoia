@@ -3,6 +3,10 @@
     "type": "library",
     "description": "Universal Payment Library",
     "keywords": ["payment", "e-commerce"],
+    "require": {
+        "php": ">=5.3.0",
+        "monolog/monolog": "~1.7"
+    },
     "license": "MIT",
     "authors": [
         {

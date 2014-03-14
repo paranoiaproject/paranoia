@@ -1,3 +1,4 @@
 .idea
 config.php
 vendor
+composer.lock
