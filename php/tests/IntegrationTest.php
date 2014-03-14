@@ -6,9 +6,6 @@ use \EventManager\Listener\CommunicationListener;
 
 class IntegrationTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     *
-     */
     public function setUp()
     {
         $configFile = dirname(__FILE__) . '/config.json';
@@ -28,11 +25,11 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-    * creates a order request for test.
-    * @param string $orderId
-    * @param float $amount
-    * @return \Payment\Request
-    */
+     * creates a order request for test.
+     * @param string $orderId
+     * @param float|int $amount
+     * @return Request
+     */
     private function _createNewOrder($orderId = null, $amount = 100)
     {
         $request = new Request();
@@ -56,8 +53,8 @@ class IntegrationTest extends PHPUnit_Framework_TestCase
     /**
     * makes sale transaction.
     *
-    * @param \Payment\Request $request
-    * @return \Payment\Response\PaymentResponse
+    * @param Request $request
+    * @return Response\PaymentResponse
     */
     private function _makeSale(Request $request)
     {

@@ -1,0 +1,24 @@
+{
+    "name": "ibrahimgunduz34/paranoia",
+    "type": "library",
+    "description": "Universal Payment Library",
+    "keywords": ["payment", "e-commerce"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ibrahimgunduz34",
+            "email": "ibrahimgunduz34@gmail.com",
+            "homepage": "http://ibrahimgunduz.net"
+        },
+        {
+            "name": "Paranoia Contributers",
+            "homepage": "https://github.com/paranoia/paranoia/contributors"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Paranoia": "src/",
+            "Paranoia\\Tests": "tests/"
+        }
+    }
+}
