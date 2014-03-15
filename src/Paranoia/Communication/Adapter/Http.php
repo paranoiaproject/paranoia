@@ -92,7 +92,6 @@ class Http extends AdapterAbstract implements AdapterInterface
         $curlOptions = array(CURLOPT_URL            => $url,
                              CURLOPT_RETURNTRANSFER => true,
                              CURLOPT_SSL_VERIFYPEER => false,
-                             CURLOPT_SSL_VERIFYHOST => true,
                              CURLOPT_HEADER         => false,
                              CURLOPT_CUSTOMREQUEST => $options['method']);
         $this->_attachData($data, $curlOptions);

@@ -1,4 +1,7 @@
 # Paranoia
+
+Master: [![Build Status](https://secure.travis-ci.org/ibrahimgunduz34/paranoia.png?branch=master)](http://travis-ci.org/ibrahimgunduz34/paranoia)
+
 ## Nedir ?
 Paranoia, Türkiye dahilinde kullanılan popüler ödeme sistemlerinin tek bir API arayüzü üzerinden basitce kullanımına olanak veren açık kaynak kodlu bir kütüphanedir.
 
