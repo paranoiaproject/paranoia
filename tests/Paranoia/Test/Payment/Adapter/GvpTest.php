@@ -6,8 +6,6 @@ use \Exception;
 use Paranoia\Payment\Factory;
 use Paranoia\Payment\Request;
 
-//use Paranoia\Payment\Response\ResponseInterface;
-//use Paranoia\EventManager\Listener\CommunicationListener;
 class GvpTest extends PHPUnit_Framework_TestCase
 {
 
@@ -31,9 +29,9 @@ class GvpTest extends PHPUnit_Framework_TestCase
     private function createNewOrder( $orderId = null, $amount = 10 )
     {
         $testData = $this->config->{$this->bank}->testcard;
-        $request  = new Request();
-        if ($orderId == null) {
-            $request->setOrderId(time());
+        $request = new Request();
+        if($orderId == null) {
+            $request->setOrderId(sprintf('PRNY%s%s', time(), rand(1,9999)));
         } else {
             $request->setOrderId($orderId);
         }
@@ -49,11 +47,6 @@ class GvpTest extends PHPUnit_Framework_TestCase
     private function initializeAdapter()
     {
         $instance = Factory::createInstance($this->config, $this->bank);
-        // remove comment character from the following lines to
-        // displaying transaction logs.
-        //        $listener = new CommunicationListener();
-        //        $instance->getConnector()->addListener('BeforeRequest', $listener);
-        //        $instance->getConnector()->addListener('AfterRequest', $listener);
         return $instance;
     }
 
