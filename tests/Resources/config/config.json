@@ -11,6 +11,11 @@
             "cvv": "000",
             "expire_month": "12",
             "expire_year": "2015"
+        },
+        "currencyCodes": {
+            "TRY": 949,
+            "USD": 840,
+            "EUR": 978
         }
     },
     "garantibank": {
@@ -28,6 +33,11 @@
             "cvv": "000",
             "expire_month": "01",
             "expire_year": "2020"
+        },
+        "currencyCodes": {
+            "TRY": 949,
+            "USD": 840,
+            "EUR": 978
         }
     },
     "posnetbank": {
