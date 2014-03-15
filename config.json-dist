@@ -18,4 +18,12 @@
     "refund_password": "",
     "mode": ""
   }
+  "posnetbank": {
+      "adapter": "Posnet",
+      "api_url": "https://www.posnet.ykb.com/PosnetWebService/XML",
+      "client_id": "",
+      "terminal_id": "",
+      "username": "",
+      "password": "",
+  }
 }

@@ -2,15 +2,14 @@
 namespace Paranoia\Communication;
 
 use Paranoia\Communication\Exception\UnknownCommunicationAdapter;
-
 use Paranoia\EventManager\Listener\ListenerAbstract;
 use Paranoia\Communication\Adapter\Http;
 use Paranoia\Communication\Adapter\Soap;
 
 class Connector
 {
-    private $_adapter;
 
+    private $_adapter;
     const CONNECTOR_TYPE_SOAP = 'Soap';
     const CONNECTOR_TYPE_HTTP = 'Http';
 
@@ -18,11 +17,12 @@ class Connector
      * determines communication strategy.
      *
      * @param $connectorType
+     *
      * @throws UnknownCommunicationAdapter
      */
-    public function __construct($connectorType)
+    public function __construct( $connectorType )
     {
-        switch($connectorType) {
+        switch ($connectorType) {
             case self::CONNECTOR_TYPE_HTTP:
                 $this->_adapter = new Http();
                 break;
@@ -30,16 +30,14 @@ class Connector
                 $this->_adapter = new Soap();
                 break;
             default:
-                throw new UnknownCommunicationAdapter('Unknown communication ' .
-                                                     'adapter: ' .
-                                                     $connectorType);
+                throw new UnknownCommunicationAdapter( 'Unknown communication ' . 'adapter: ' . $connectorType );
         }
     }
 
     /**
      * @see Paranoia\Communication\Adapter\AdapterInterface::sendRequest()
      */
-    public function sendRequest($url, $data, $options=null)
+    public function sendRequest( $url, $data, $options = null )
     {
         return $this->_adapter->sendRequest($url, $data, $options);
     }
@@ -47,9 +45,9 @@ class Connector
     /**
      * @see Paranoia\EventManager\EventManagerAbstract::addListener()
      */
-    public function addListener($eventName,  ListenerAbstract $listener)
+    public function addListener( $eventName, ListenerAbstract $listener )
     {
-        return $this->_adapter->addListener($eventName, $listener);
+        $this->_adapter->addListener($eventName, $listener);
     }
 
     /**

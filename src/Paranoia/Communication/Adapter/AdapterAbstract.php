@@ -5,6 +5,7 @@ use Paranoia\EventManager\EventManagerAbstract;
 
 abstract class AdapterAbstract extends EventManagerAbstract
 {
+
     /**
      * @return string
      */

@@ -29,5 +29,25 @@
             "expire_month": "01",
             "expire_year": "2020"
         }
+    },
+    "posnetbank": {
+        "adapter": "Posnet",
+        "api_url": "http://setmpos.ykb.com/PosnetWebService/XML",
+        "client_id": "6700000067",
+        "terminal_id": "67067067",
+        "username": "",
+        "password": "",
+        "testcard": {
+            "number": "4506341010205499",
+            "cvv": "000",
+            "expire_month": "03",
+            "expire_year": "2015"
+        },
+        "testcard2": {
+            "number": "4921301010401941",
+            "cvv": "000",
+            "expire_month": "02",
+            "expire_year": "2015"
+        }
     }
 }

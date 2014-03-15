@@ -5,4 +5,5 @@ use \ErrorException;
 
 class UndefinedHttpMethod extends ErrorException
 {
+
 }
