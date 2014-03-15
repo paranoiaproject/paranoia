@@ -1,10 +1,9 @@
 <?php
 namespace Paranoia\Payment;
 
-use Paranoia\Payment\TransferInterface;
-
 class Request implements TransferInterface
 {
+
     /**
      * @var string
      */
@@ -26,7 +25,7 @@ class Request implements TransferInterface
     private $_installment;
 
     /**
-     * @var numeric
+     * @var string
      */
     private $_cardNumber;
 
@@ -82,10 +81,12 @@ class Request implements TransferInterface
 
     /**
      * sets order identity to request object.
+     *
      * @param $orderId
+     *
      * @return self
      */
-    public function setOrderId($orderId)
+    public function setOrderId( $orderId )
     {
         $this->_orderId = $orderId;
         return $this;
@@ -93,6 +94,7 @@ class Request implements TransferInterface
 
     /**
      * returns order amount.
+     *
      * @return float
      */
     public function getAmount()
@@ -102,10 +104,12 @@ class Request implements TransferInterface
 
     /**
      * sets order amount to request object.
+     *
      * @param float $amount
+     *
      * @return self
      */
-    public function setAmount($amount)
+    public function setAmount( $amount )
     {
         $this->_amount = $amount;
         return $this;
@@ -113,6 +117,7 @@ class Request implements TransferInterface
 
     /**
      * returns currency code string which is three digit.
+     *
      * @return string
      */
     public function getCurrency()
@@ -122,10 +127,12 @@ class Request implements TransferInterface
 
     /**
      * sets currency code to request object.
+     *
      * @param string $currency
+     *
      * @return self
      */
-    public function setCurrency($currency)
+    public function setCurrency( $currency )
     {
         $this->_currency = $currency;
         return $this;
@@ -133,6 +140,7 @@ class Request implements TransferInterface
 
     /**
      * returns installment amount.
+     *
      * @return integer
      */
     public function getInstallment()
@@ -142,10 +150,12 @@ class Request implements TransferInterface
 
     /**
      * set installment amount to object.
-     * @param integer $installment.
+     *
+     * @param integer $installment
+     *
      * @return self
      */
-    public function setInstallment($installment)
+    public function setInstallment( $installment )
     {
         $this->_installment = $installment;
         return $this;
@@ -153,7 +163,8 @@ class Request implements TransferInterface
 
     /**
      * returns card number.
-     * @return numeric
+     *
+     * @return string
      */
     public function getCardNumber()
     {
@@ -162,10 +173,12 @@ class Request implements TransferInterface
 
     /**
      * sets card number to request object.
-     * @param numeric $cardNumber
+     *
+     * @param string $cardNumber Numeric value
+     *
      * @return self
      */
-    public function setCardNumber($cardNumber)
+    public function setCardNumber( $cardNumber )
     {
         $this->_cardNumber = $cardNumber;
         return $this;
@@ -173,6 +186,7 @@ class Request implements TransferInterface
 
     /**
      * returns card security code.
+     *
      * @return string
      */
     public function getSecurityCode()
@@ -182,10 +196,12 @@ class Request implements TransferInterface
 
     /**
      * sets card security code to request object.
+     *
      * @param string $securityCode
+     *
      * @return self
      */
-    public function setSecurityCode($securityCode)
+    public function setSecurityCode( $securityCode )
     {
         $this->_securityCode = $securityCode;
         return $this;
@@ -193,6 +209,7 @@ class Request implements TransferInterface
 
     /**
      * returns expire month of card.
+     *
      * @return integer
      */
     public function getExpireMonth()
@@ -202,10 +219,12 @@ class Request implements TransferInterface
 
     /**
      * sets card expire month to request object.
+     *
      * @param integer $expireMonth
+     *
      * @return self
      */
-    public function setExpireMonth($expireMonth)
+    public function setExpireMonth( $expireMonth )
     {
         $this->_expireMonth = $expireMonth;
         return $this;
@@ -213,6 +232,7 @@ class Request implements TransferInterface
 
     /**
      * returns expire year of card.
+     *
      * @return integer
      */
     public function getExpireYear()
@@ -222,10 +242,12 @@ class Request implements TransferInterface
 
     /**
      * sets card expire year to request object.
+     *
      * @param integer $expireYear
+     *
      * @return self
      */
-    public function setExpireYear($expireYear)
+    public function setExpireYear( $expireYear )
     {
         $this->_expireYear = $expireYear;
         return $this;
@@ -233,6 +255,7 @@ class Request implements TransferInterface
 
     /**
      * returns transaction id.
+     *
      * @return string
      */
     public function getTransactionId()
@@ -242,10 +265,12 @@ class Request implements TransferInterface
 
     /**
      * sets transaction id to request object.
-     * @return string
+     *
+     * @param string $transactionId
+     *
      * @return self
      */
-    public function setTransactionId($transactionId)
+    public function setTransactionId( $transactionId )
     {
         $this->_transactionId = $transactionId;
         return $this;
@@ -286,17 +311,19 @@ class Request implements TransferInterface
 
     /**
      * sets response data as raw.
+     *
      * @param string $rawData
+     *
      * @return self
      */
-    public function setRawData($rawData)
+    public function setRawData( $rawData )
     {
         $this->_rawData = $rawData;
         return $this;
     }
 
     /**
-     * @see \Payment\TransferInterface::getTransactionType()
+     * @see \Paranoia\Payment\TransferInterface::getTransactionType()
      */
     public function getTransactionType()
     {
@@ -304,14 +331,14 @@ class Request implements TransferInterface
     }
 
     /**
-     * @see \Payment\TransferInterface::setTransactionType()
+     * @see \Paranoia\Payment\TransferInterface::setTransactionType()
      */
-    public function setTransactionType($transactionType)
+    public function setTransactionType( $transactionType )
     {
         $this->_transactionType = $transactionType;
         return $this;
     }
-    
+
     /**
      * @see \Payment\TransferInterface::getTime()
      */
@@ -323,7 +350,7 @@ class Request implements TransferInterface
     /**
      * @see \Payment\TransferInterface::setTime()
      */
-    public function setTime($time)
+    public function setTime( $time )
     {
         $this->_time = $time;
         return $this;
