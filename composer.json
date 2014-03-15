@@ -8,6 +8,10 @@
         "monolog/monolog": "~1.7",
         "phpunit/phpunit": "3.7.*"
     },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "~1.5.2",
+        "phpmd/phpmd" : "1.4.*"
+    },
     "license": "MIT",
     "authors": [
         {

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Paranoia" default="build">
+    <target name="build" depends="prepare,lint,phpcs,phpmd,phpunit" />
+
+    <target name="clean">
+        <delete dir="${basedir}/.build" />
+        <delete dir="${basedir}/.build/log" />
+    </target>
+
+    <target name="prepare" depends="clean">
+        <mkdir dir="${basedir}/.build" />
+        <mkdir dir="${basedir}/.build/log" />
+    </target>
+
+    <target name="phpmd">
+        <exec executable="${basedir}/vendor/bin/phpmd" failonerror="true">
+            <arg path="${basedir}/src" />
+            <arg value="text" />
+            <arg value="codesize,unusedcode,naming" />
+            <arg value="--reportfile" />
+            <arg value="${basedir}/.build/log/phpmd.log" />
+        </exec>
+    </target>
+
+
+    <target name="phpcs">
+        <exec executable="${basedir}/vendor/bin/phpcs">
+            <arg line="--standard=PSR2" />
+            <arg line="--report=full" />
+            <arg line="--report-file=${basedir}/.build/log/cs.log" />
+            <arg line="src/" />
+        </exec>
+    </target>
+
+    <target name="phpunit">
+        <exec executable="${basedir}/vendor/bin/phpunit" failonerror="true">
+            <arg line="--verbose" />
+            <arg line="--verbose" />
+            <arg line="--stderr" />
+            <arg line="--configuration=${basedir}/phpunit.xml" />
+        </exec>
+    </target>
+    <target name="lint">
+        <apply executable="php" failonerror="true">
+            <arg value="-l" />
+            <fileset dir="${basedir}/src">
+                <include name="*/*.php" />
+            </fileset>
+        </apply>
+    </target>
+</project>
