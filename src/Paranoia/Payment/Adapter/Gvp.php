@@ -4,6 +4,8 @@ namespace Paranoia\Payment\Adapter;
 use Paranoia\Common\Serializer\Serializer;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
+use Paranoia\Payment\Adapter\AdapterInterface;
+use Paranoia\Payment\Adapter\AdapterAbstract;
 use Paranoia\Payment\Exception\UnexpectedResponse;
 use Paranoia\Communication\Connector;
 
