@@ -1,21 +1,18 @@
 <?php
 namespace Paranoia\Communication\Adapter;
 
-use Paranoia\Communication\Adapter\AdapterInterface;
-use Paranoia\Communication\Adapter\AdapterAbstract;
-use Paranoia\Communication\Exception\UndefinedHttpMethod;
 use Paranoia\Communication\Exception\CommunicationFailed;
 
 class Soap extends AdapterAbstract implements AdapterInterface
 {
 
     /**
-     *
-     * @see \Communication\CommunicationInterface::sendRequest()
+     * @see \Paranoia\Communication\Adapter\AdapterInterface::sendRequest()
+     * @throws \Paranoia\Communication\Exception\CommunicationFailed
      */
-    public function sendRequest($url, $data, $options = null)
+    public function sendRequest( $url, $data, $options = null )
     {
-        throw new CommunicationFailed('Not Implemented Yet!');
+        throw new CommunicationFailed( 'Not Implemented Yet!' );
     }
 
     /**

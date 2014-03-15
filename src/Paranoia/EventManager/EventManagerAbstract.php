@@ -2,10 +2,10 @@
 namespace Paranoia\EventManager;
 
 use Paranoia\EventManager\Listener\ListenerAbstract;
-use Paranoia\EventManager\EventParameter;
 
 abstract class EventManagerAbstract
 {
+
     /**
      * @var array
      */
@@ -14,12 +14,12 @@ abstract class EventManagerAbstract
     /**
      * add listener to listening the specified event.
      *
-     * @param string $eventName
-     * @param \EventManager\Listener\ListenerAbstract
+     * @param string                    $eventName
+     * @param Listener\ListenerAbstract $listener
      */
-    public function addListener($eventName,  ListenerAbstract $listener)
+    public function addListener( $eventName, ListenerAbstract $listener )
     {
-        if( !isset($this->_listeners[$eventName]) ) {
+        if (!isset( $this->_listeners[$eventName] )) {
             $this->_listeners[$eventName] = array();
         }
         $this->_listeners[$eventName][] = $listener;
@@ -29,11 +29,12 @@ abstract class EventManagerAbstract
      * returns listener collection for the specified eventname.
      *
      * @param string $eventName
+     *
      * @return array
      */
-    private function _getListeners($eventName)
+    private function _getListeners( $eventName )
     {
-        if(isset($this->_listeners[$eventName])) {
+        if (isset( $this->_listeners[$eventName] )) {
             return $this->_listeners[$eventName];
         }
         return array();
@@ -42,16 +43,14 @@ abstract class EventManagerAbstract
     /**
      * trigger listener for the specified event.
      *
-     * @param string $eventName,
-     * @param array $data (optional)
+     * @param string $eventName
+     * @param array  $data (optional)
      */
-    protected function _triggerEvent($eventName, $data = array())
+    protected function _triggerEvent( $eventName, $data = array() )
     {
-        $parameter = new EventParameter($this, $eventName,
-                                        $data, microtime(true));
-
-        /* @var $listener \EventManager\Listener\ListenerAbstract */
-        foreach($this->_getListeners($eventName) as $listener) {
+        $parameter = new EventParameter( $this, $eventName, $data, microtime(true) );
+        /* @var $listener \Paranoia\EventManager\Listener\ListenerAbstract */
+        foreach ($this->_getListeners($eventName) as $listener) {
             $listener->triggerEvent($eventName, $parameter);
         }
     }

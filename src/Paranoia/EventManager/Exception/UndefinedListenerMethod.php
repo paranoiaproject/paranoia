@@ -5,4 +5,5 @@ use \ErrorException;
 
 class UndefinedListenerMethod extends ErrorException
 {
+
 }

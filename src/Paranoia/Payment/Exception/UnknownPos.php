@@ -5,4 +5,5 @@ use \ErrorException;
 
 class UnknownPos extends ErrorException
 {
+
 }
