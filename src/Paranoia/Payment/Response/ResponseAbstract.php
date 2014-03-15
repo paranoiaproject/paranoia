@@ -24,6 +24,11 @@ abstract class ResponseAbstract
     protected $_transactionId;
 
     /**
+     * @var string
+     */
+    protected $_authCode;
+
+    /**
     * @var integer
     */
     protected $_responseCode;
@@ -108,6 +113,29 @@ abstract class ResponseAbstract
     public function setTransactionId($transactionId)
     {
         $this->_transactionId = $transactionId;
+        return $this;
+    }
+
+    /**
+     * returns auth code.
+     *
+     * @return string
+     */
+    public function getAuthCode()
+    {
+        return $this->_authCode;
+    }
+
+    /**
+     * sets auth code to request object.
+     *
+     * @param string $authCode
+     *
+     * @return self
+     */
+    public function setAuthCode( $authCode )
+    {
+        $this->_authCode = $authCode;
         return $this;
     }
 
