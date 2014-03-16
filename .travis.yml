@@ -10,7 +10,7 @@ before_script:
     - composer install --dev
 
 script:
-    - find ./ -name "*.php" -exec php -l {} \;
+    - find ./src/ -name "*.php" -exec php -l {} \;
     - vendor/bin/phpcs --standard=PSR2 --report=full src
     - vendor/bin/phpunit
 
