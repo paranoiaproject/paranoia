@@ -50,20 +50,27 @@ class Xml implements SerializerInterface
      */
     private $encoding = 'UTF-8';
 
-    public function serialize( $data, $options = array() )
+    public function serialize($data, $options = array())
     {
-        $options = $this->_setDefaults((array)$options);
-        return $this->_createXML($options['root_name'], $data)->saveXml();
+        $options = $this->setDefaults((array) $options);
+        return $this->createXML($options['root_name'], $data)->saveXml();
     }
 
-    private function _setDefaults( array $options )
+    private function setDefaults(array $options)
     {
-        if (!isset( $options['root_name'] )) {
-            throw new OptionError( 'root_name is required.' );
+        if (!isset($options['root_name'])) {
+            throw new OptionError('root_name is required.');
         }
-        $options['version']       = !isset( $options['version'] ) ? '1.0' : $options['version'];
-        $options['encoding']      = !isset( $options['encoding'] ) ? 'UTF-8' : $options['encoding'];
-        $options['format_output'] = !isset( $options['format_output'] ) ? true : (bool)$options['format_output'];
+        $defaults = array(
+            'version'       => '1.0',
+            'encoding'      => 'UTF-8',
+            'format_output' => true
+        );
+        if (array_diff(array_keys($defaults), array_keys($options))) {
+            foreach ($defaults as $key => $value) {
+                $options[$key] = $value;
+            }
+        }
         return $options;
     }
 
@@ -74,11 +81,11 @@ class Xml implements SerializerInterface
      * @param $encoding
      * @param $format_output
      */
-    private function _init( $version = '1.0', $encoding = 'UTF-8', $format_output = true )
+    private function init($version = '1.0', $encoding = 'UTF-8', $format_output = true)
     {
-        $this->xml               = new DomDocument( $version, $encoding );
+        $this->xml = new DomDocument($version, $encoding);
         $this->xml->formatOutput = $format_output;
-        $this->encoding          = $encoding;
+        $this->encoding = $encoding;
     }
 
     /**
@@ -89,11 +96,12 @@ class Xml implements SerializerInterface
      *
      * @return DomDocument
      */
-    private function &_createXML( $node_name, $arr = array() )
+
+    private function &createXML($node_name, $arr = array())
     {
-        $xml = $this->_getXMLRoot();
-        $xml->appendChild($this->_convert($node_name, $arr));
-        $this->xml = null; // clear the xml node in the class for 2nd time use.
+        $xml = $this->getXMLRoot();
+        $xml->appendChild($this->convert($node_name, $arr));
+        $this->xml = null;    // clear the xml node in the class for 2nd time use.
         return $xml;
     }
 
@@ -106,32 +114,37 @@ class Xml implements SerializerInterface
      * @throws \Exception
      * @return \DOMNode
      */
-    private function &_convert( $node_name, $arr = array() )
+    private function &convert($node_name, $arr = array())
     {
+
         //print_arr($node_name);
-        $xml  = $this->_getXMLRoot();
+        $xml = $this->getXMLRoot();
         $node = $xml->createElement($node_name);
+
         if (is_array($arr)) {
             // get the attributes first.;
-            if (isset( $arr['@attributes'] )) {
+            if (isset($arr['@attributes'])) {
                 foreach ($arr['@attributes'] as $key => $value) {
-                    if (!$this->_isValidTagName($key)) {
-                        throw new Exception( '[Array2XML] Illegal character in attribute name. attribute: ' . $key . ' in node: ' . $node_name );
+                    if (!$this->isValidTagName($key)) {
+                        throw new Exception(
+                            '[Array2XML] Illegal character in attribute name. attribute: '.
+                            $key.' in node: '.$node_name
+                        );
                     }
-                    $node->setAttribute($key, $this->_bool2str($value));
+                    $node->setAttribute($key, $this->bool2str($value));
                 }
                 unset( $arr['@attributes'] ); //remove the key from the array once done.
             }
             // check if it has a value stored in @value, if yes store the value and return
             // else check if its directly stored as string
-            if (isset( $arr['@value'] )) {
-                $node->appendChild($xml->createTextNode($this->_bool2str($arr['@value'])));
-                unset( $arr['@value'] ); //remove the key from the array once done.
+            if (isset($arr['@value'])) {
+                $node->appendChild($xml->createTextNode($this->bool2str($arr['@value'])));
+                unset($arr['@value']);    //remove the key from the array once done.
                 //return from recursion, as a note with value cannot have child nodes.
                 return $node;
-            } else if (isset( $arr['@cdata'] )) {
-                $node->appendChild($xml->createCDATASection($this->_bool2str($arr['@cdata'])));
-                unset( $arr['@cdata'] ); //remove the key from the array once done.
+            } elseif (isset($arr['@cdata'])) {
+                $node->appendChild($xml->createCDATASection($this->bool2str($arr['@cdata'])));
+                unset($arr['@cdata']);    //remove the key from the array once done.
                 //return from recursion, as a note with cdata cannot have child nodes.
                 return $node;
             }
@@ -140,19 +153,22 @@ class Xml implements SerializerInterface
         if (is_array($arr)) {
             // recurse to get the node for that key
             foreach ($arr as $key => $value) {
-                if (!$this->_isValidTagName($key)) {
-                    throw new Exception( '[Array2XML] Illegal character in tag name. tag: ' . $key . ' in node: ' . $node_name );
+                if (!$this->isValidTagName($key)) {
+                    throw new Exception(
+                        '[Array2XML] Illegal character in tag name. tag: '.
+                        $key.' in node: '.$node_name
+                    );
                 }
                 if (is_array($value) && is_numeric(key($value))) {
                     // MORE THAN ONE NODE OF ITS KIND;
                     // if the new array is numeric index, means it is array of nodes of the same kind
                     // it should follow the parent key name
-                    foreach ($value as $v) {
-                        $node->appendChild($this->_convert($key, $v));
+                    foreach ($value as $k => $v) {
+                        $node->appendChild($this->convert($key, $v));
                     }
                 } else {
                     // ONLY ONE NODE OF ITS KIND
-                    $node->appendChild($this->_convert($key, $value));
+                    $node->appendChild($this->convert($key, $value));
                 }
                 unset( $arr[$key] ); //remove the key from the array once done.
             }
@@ -160,7 +176,7 @@ class Xml implements SerializerInterface
         // after we are done with all the keys in the array (if it is one)
         // we check if it has any text value, if yes, append it.
         if (!is_array($arr)) {
-            $node->appendChild($xml->createTextNode($this->_bool2str($arr)));
+            $node->appendChild($xml->createTextNode($this->bool2str($arr)));
         }
         return $node;
     }
@@ -168,10 +184,10 @@ class Xml implements SerializerInterface
     /*
      * Get the root XML node, if there isn't one, create it.
      */
-    private function _getXMLRoot()
+    private function getXMLRoot()
     {
-        if (empty( $this->xml )) {
-            $this->_init();
+        if (empty($this->xml)) {
+            $this->init();
         }
         return $this->xml;
     }
@@ -179,7 +195,7 @@ class Xml implements SerializerInterface
     /*
      * Get string representation of boolean value
      */
-    private function _bool2str( $v )
+    private function bool2str($v)
     {
         //convert boolean to text value.
         $v = $v === true ? 'true' : $v;
@@ -191,7 +207,7 @@ class Xml implements SerializerInterface
      * Check if the tag name or attribute name contains illegal characters
      * Ref: http://www.w3.org/TR/xml/#sec-common-syn
      */
-    private function _isValidTagName( $tag )
+    private function isValidTagName($tag)
     {
         $pattern = '/^[a-z_]+[a-z0-9\:\-\.\_]*[^:]*$/i';
         return preg_match($pattern, $tag, $matches) && $matches[0] == $tag;

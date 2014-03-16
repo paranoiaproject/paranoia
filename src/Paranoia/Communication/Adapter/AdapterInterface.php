@@ -11,7 +11,7 @@ interface AdapterInterface
      * @param mixed  $data
      * @param array  $options (optional)
      */
-    public function sendRequest( $url, $data, $options = null );
+    public function sendRequest($url, $data, $options = null);
 
     /**
      * returns last sent request.

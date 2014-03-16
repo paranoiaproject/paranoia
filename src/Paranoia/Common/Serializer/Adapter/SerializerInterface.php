@@ -12,5 +12,5 @@ interface SerializerInterface
      *
      * @return string
      */
-    public function serialize( $data, $options = array() );
+    public function serialize($data, $options = array());
 }

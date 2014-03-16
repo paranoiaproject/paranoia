@@ -13,10 +13,10 @@ abstract class ListenerAbstract
      * @param string                                $eventName
      * @param \Paranoia\EventManager\EventParameter $parameter
      */
-    public function triggerEvent( $eventName, EventParameter $parameter )
+    public function triggerEvent($eventName, EventParameter $parameter)
     {
-        $this->_validateEvent($eventName);
-        $method = $this->_getEventMethodName($eventName);
+        $this->validateEvent($eventName);
+        $method = $this->getEventMethodName($eventName);
         $this->{$method}($parameter);
     }
 
@@ -28,9 +28,9 @@ abstract class ListenerAbstract
      *
      * @return string
      */
-    private function _getEventMethodName( $eventName )
+    private function getEventMethodName($eventName)
     {
-        return sprintf('_%s', ucfirst($eventName));
+        return ucfirst($eventName);
     }
 
     /**
@@ -41,11 +41,13 @@ abstract class ListenerAbstract
      * @return boolean
      * @throws \Paranoia\EventManager\Exception\UndefinedListenerMethod
      */
-    private function _validateEvent( $eventName )
+    private function validateEvent($eventName)
     {
-        $method = $this->_getEventMethodName($eventName);
+        $method = $this->getEventMethodName($eventName);
         if (!method_exists($this, $method)) {
-            throw new UndefinedListenerMethod( 'Listener method is not defined for ' . $eventName );
+            throw new UndefinedListenerMethod(
+                'Listener method is not defined for ' . $eventName
+            );
         }
         return true;
     }

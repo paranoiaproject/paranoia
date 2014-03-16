@@ -8,8 +8,8 @@ use Paranoia\Communication\Adapter\Soap;
 
 class Connector
 {
+    private $adapter;
 
-    private $_adapter;
     const CONNECTOR_TYPE_SOAP = 'Soap';
     const CONNECTOR_TYPE_HTTP = 'Http';
 
@@ -20,34 +20,36 @@ class Connector
      *
      * @throws UnknownCommunicationAdapter
      */
-    public function __construct( $connectorType )
+    public function __construct($connectorType)
     {
         switch ($connectorType) {
             case self::CONNECTOR_TYPE_HTTP:
-                $this->_adapter = new Http();
+                $this->adapter = new Http();
                 break;
             case self::CONNECTOR_TYPE_SOAP:
-                $this->_adapter = new Soap();
+                $this->adapter = new Soap();
                 break;
             default:
-                throw new UnknownCommunicationAdapter( 'Unknown communication ' . 'adapter: ' . $connectorType );
+                throw new UnknownCommunicationAdapter(
+                    'Unknown communication adapter: ' . $connectorType
+                );
         }
     }
 
     /**
      * @see Paranoia\Communication\Adapter\AdapterInterface::sendRequest()
      */
-    public function sendRequest( $url, $data, $options = null )
+    public function sendRequest($url, $data, $options = null)
     {
-        return $this->_adapter->sendRequest($url, $data, $options);
+        return $this->adapter->sendRequest($url, $data, $options);
     }
 
     /**
      * @see Paranoia\EventManager\EventManagerAbstract::addListener()
      */
-    public function addListener( $eventName, ListenerAbstract $listener )
+    public function addListener($eventName, ListenerAbstract $listener)
     {
-        $this->_adapter->addListener($eventName, $listener);
+        return $this->adapter->addListener($eventName, $listener);
     }
 
     /**
@@ -55,7 +57,7 @@ class Connector
      */
     public function getLastSentRequest()
     {
-        return $this->_adapter->getLastSentRequest();
+        return $this->adapter->getLastSentRequest();
     }
 
     /**
@@ -63,6 +65,6 @@ class Connector
      */
     public function getLastReceivedResponse()
     {
-        return $this->_adapter->getLastReceivedResponse();
+        return $this->adapter->getLastReceivedResponse();
     }
 }

@@ -18,7 +18,7 @@ interface TransferInterface
      *
      * @return self
      */
-    public function setRawData( $rawData );
+    public function setRawData($rawData);
 
     /**
      * returns transaction time.
@@ -34,7 +34,7 @@ interface TransferInterface
      *
      * @return self
      */
-    public function setTime( $time );
+    public function setTime($time);
 
     /**
      * returns transaction type.
@@ -50,6 +50,5 @@ interface TransferInterface
      *
      * @return self
      */
-    public function setTransactionType( $transactionType );
+    public function setTransactionType($transactionType);
 }
-

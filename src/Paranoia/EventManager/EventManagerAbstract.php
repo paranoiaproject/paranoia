@@ -9,7 +9,7 @@ abstract class EventManagerAbstract
     /**
      * @var array
      */
-    protected $_listeners = array();
+    protected $listeners = array();
 
     /**
      * add listener to listening the specified event.
@@ -17,12 +17,12 @@ abstract class EventManagerAbstract
      * @param string                    $eventName
      * @param Listener\ListenerAbstract $listener
      */
-    public function addListener( $eventName, ListenerAbstract $listener )
+    public function addListener($eventName, ListenerAbstract $listener)
     {
-        if (!isset( $this->_listeners[$eventName] )) {
-            $this->_listeners[$eventName] = array();
+        if (!isset($this->listeners[$eventName])) {
+            $this->listeners[$eventName] = array();
         }
-        $this->_listeners[$eventName][] = $listener;
+        $this->listeners[$eventName][] = $listener;
     }
 
     /**
@@ -32,10 +32,10 @@ abstract class EventManagerAbstract
      *
      * @return array
      */
-    private function _getListeners( $eventName )
+    private function getListeners($eventName)
     {
-        if (isset( $this->_listeners[$eventName] )) {
-            return $this->_listeners[$eventName];
+        if (isset($this->listeners[$eventName])) {
+            return $this->listeners[$eventName];
         }
         return array();
     }
@@ -46,11 +46,17 @@ abstract class EventManagerAbstract
      * @param string $eventName
      * @param array  $data (optional)
      */
-    protected function _triggerEvent( $eventName, $data = array() )
+    protected function triggerEvent($eventName, $data = array())
     {
-        $parameter = new EventParameter( $this, $eventName, $data, microtime(true) );
+        $parameter = new EventParameter(
+            $this,
+            $eventName,
+            $data,
+            microtime(true)
+        );
+
         /* @var $listener \Paranoia\EventManager\Listener\ListenerAbstract */
-        foreach ($this->_getListeners($eventName) as $listener) {
+        foreach ($this->getListeners($eventName) as $listener) {
             $listener->triggerEvent($eventName, $parameter);
         }
     }

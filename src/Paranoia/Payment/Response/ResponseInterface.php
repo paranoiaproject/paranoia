@@ -21,7 +21,7 @@ interface ResponseInterface extends TransferInterface
      *
      * @return self
      */
-    public function setIsSuccess( $isSuccess );
+    public function setIsSuccess($isSuccess);
 
     /**
      * returns transaction type.
@@ -37,7 +37,7 @@ interface ResponseInterface extends TransferInterface
      *
      * @return self
      */
-    public function setTransactionType( $transactionType );
+    public function setTransactionType($transactionType);
 
     /**
      * returns order identity.
@@ -53,7 +53,7 @@ interface ResponseInterface extends TransferInterface
      *
      * @return self
      */
-    public function setOrderId( $orderId );
+    public function setOrderId($orderId);
 
     /**
      * returns transaction identity.
@@ -69,7 +69,7 @@ interface ResponseInterface extends TransferInterface
      *
      * @return self
      */
-    public function setTransactionId( $transactionId );
+    public function setTransactionId($transactionId);
 
     /**
      * returns response code.
@@ -85,7 +85,7 @@ interface ResponseInterface extends TransferInterface
      *
      * @return self
      */
-    public function setResponseCode( $responseCode );
+    public function setResponseCode($responseCode);
 
     /**
      * returns response message.
@@ -101,5 +101,5 @@ interface ResponseInterface extends TransferInterface
      *
      * @return self
      */
-    public function setResponseMessage( $responseMessage );
+    public function setResponseMessage($responseMessage);
 }

@@ -1,13 +1,18 @@
 {
-  "est_bank": {
+  "estbank": {
     "adapter": "Est",
     "api_url": "",
     "client_id": "",
     "username": "",
     "password": "",
-    "mode": ""
+    "mode": "",
+    "currencyCodes": {
+                "TRY": 949,
+                "USD": 840,
+                "EUR": 978
+            }
   },
-  "gvp_bank": {
+  "gvpbank": {
     "adapter": "Gvp",
     "api_url": "",
     "terminal_id": "",
@@ -16,8 +21,13 @@
     "auth_password": "",
     "refund_username": "",
     "refund_password": "",
-    "mode": ""
-  }
+    "mode": "",
+    "currencyCodes": {
+                "TRY": 949,
+                "USD": 840,
+                "EUR": 978
+            }
+  },
   "posnetbank": {
       "adapter": "Posnet",
       "api_url": "https://www.posnet.ykb.com/PosnetWebService/XML",
@@ -25,5 +35,10 @@
       "terminal_id": "",
       "username": "",
       "password": "",
+      "currencyCodes": {
+            "TRY": "YT",
+            "USD": "US",
+            "EUR": "EU"
+        }
   }
 }

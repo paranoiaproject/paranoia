@@ -9,10 +9,10 @@ abstract class AdapterAbstract extends EventManagerAbstract
     /**
      * @return string
      */
-    protected $_lastSentRequest;
+    protected $lastSentRequest;
 
     /**
      * @return string
      */
-    protected $_lastReceivedResponse;
+    protected $lastReceivedResponse;
 }

@@ -2,10 +2,12 @@
 namespace Paranoia\Payment\Adapter;
 
 use Paranoia\Common\Serializer\Serializer;
+use Paranoia\Communication\Connector;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
+use Paranoia\Payment\Adapter\AdapterInterface;
+use Paranoia\Payment\Adapter\AdapterAbstract;
 use Paranoia\Payment\Exception\UnexpectedResponse;
-use Paranoia\Communication\Connector;
 
 class Est extends AdapterAbstract implements AdapterInterface
 {
@@ -13,24 +15,23 @@ class Est extends AdapterAbstract implements AdapterInterface
     const CONNECTOR_TYPE = Connector::CONNECTOR_TYPE_HTTP;
 
     /**
-     * @var array
-     */
-    protected $_transactionMap = array(
+	 * @var array
+	 */
+    protected $transactionMap = array(
         self::TRANSACTION_TYPE_PREAUTHORIZATION  => 'PreAuth',
         self::TRANSACTION_TYPE_POSTAUTHORIZATION => 'PostAuth',
-        self::TRANSACTION_TYPE_SALE              => 'Auth',
-        self::TRANSACTION_TYPE_CANCEL            => 'Void',
-        self::TRANSACTION_TYPE_REFUND            => 'Credit'
+        self::TRANSACTION_TYPE_SALE 			 => 'Auth',
+        self::TRANSACTION_TYPE_CANCEL 			 => 'Void',
+        self::TRANSACTION_TYPE_REFUND 			 => 'Credit'
     );
 
     /**
-     * builds request base with common arguments.
-     *
-     * @return array
-     */
-    private function _buildBaseRequest()
+	 * builds request base with common arguments.
+	 * @return array
+	 */
+    private function buildBaseRequest()
     {
-        $config = $this->_config;
+        $config = $this->config;
         return array(
             'Name'     => $config->username,
             'Password' => $config->password,
@@ -40,15 +41,15 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::_buildRequest()
+     * @see AdapterAbstract::buildRequest()
      */
-    protected function _buildRequest( Request $request, $requestBuilder )
+    protected function buildRequest(Request $request, $requestBuilder)
     {
-        $rawRequest = call_user_func(array( $this, $requestBuilder ), $request);
-        $serializer = new Serializer( Serializer::XML );
-        $xml        = $serializer->serialize(
-                                 array_merge($rawRequest, $this->_buildBaseRequest()),
-                                     array( 'root_name' => 'CC5Request' )
+        $rawRequest = call_user_func(array($this, $requestBuilder), $request);
+        $serializer = new Serializer(Serializer::XML);
+        $xml = $serializer->serialize(
+            array_merge($rawRequest, $this->buildBaseRequest()),
+            array('root_name' => 'CC5Request')
         );
         $data       = array( 'DATA' => $xml );
         $request->setRawData($xml);
@@ -56,15 +57,15 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::_buildPreauthorizationRequest()
+     * @see AdapterAbstract::buildPreauthorizationRequest()
      */
-    protected function _buildPreauthorizationRequest( Request $request )
+    protected function buildPreAuthorizationRequest(Request $request)
     {
-        $amount      = $this->_formatAmount($request->getAmount());
-        $installment = $this->_formatInstallment($request->getInstallment());
-        $currency    = $this->_formatCurrency($request->getCurrency());
-        $expireMonth = $this->_formatExpireDate($request->getExpireMonth(),$request->getExpireYear());
-        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $amount      = $this->formatAmount($request->getAmount());
+        $installment = $this->formatInstallment($request->getInstallment());
+        $currency    = $this->formatCurrency($request->getCurrency());
+        $expireMonth = $this->formatExpireDate($request->getExpireMonth(), $request->getExpireYear());
+        $type        = $this->getProviderTransactionType($request->getTransactionType());
         $requestData = array(
             'Type'     => $type,
             'Total'    => $amount,
@@ -79,11 +80,11 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::_buildPostAuthorizationRequest()
+     * @see AdapterAbstract::buildPostAuthorizationRequest()
      */
-    protected function _buildPostAuthorizationRequest( Request $request )
+    protected function buildPostAuthorizationRequest(Request $request)
     {
-        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $type        = $this->getProviderTransactionType($request->getTransactionType());
         $requestData = array(
             'Type'    => $type,
             'OrderId' => $request->getOrderId(),
@@ -92,15 +93,15 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::_buildSaleRequest()
+     * @see AdapterAbstract::buildSaleRequest()
      */
-    protected function _buildSaleRequest( Request $request )
+    protected function buildSaleRequest(Request $request)
     {
-        $amount      = $this->_formatAmount($request->getAmount());
-        $installment = $this->_formatInstallment($request->getInstallment());
-        $currency    = $this->_formatCurrency($request->getCurrency());
-        $expireMonth = $this->_formatExpireDate($request->getExpireMonth(),$request->getExpireYear());
-        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $amount      = $this->formatAmount($request->getAmount());
+        $installment = $this->formatInstallment($request->getInstallment());
+        $currency    = $this->formatCurrency($request->getCurrency());
+        $expireMonth = $this->formatExpireDate($request->getExpireMonth(), $request->getExpireYear());
+        $type        = $this->getProviderTransactionType($request->getTransactionType());
         $requestData = array(
             'Type'     => $type,
             'Total'    => $amount,
@@ -115,13 +116,13 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::_buildRefundRequest()
+     * @see AdapterAbstract::buildRefundRequest()
      */
-    protected function _buildRefundRequest( Request $request )
+    protected function buildRefundRequest(Request $request)
     {
-        $amount      = $this->_formatAmount($request->getAmount());
-        $currency    = $this->_formatCurrency($request->getCurrency());
-        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $amount      = $this->formatAmount($request->getAmount());
+        $currency    = $this->formatCurrency($request->getCurrency());
+        $type        = $this->getProviderTransactionType($request->getTransactionType());
         $requestData = array(
             'Type'     => $type,
             'Total'    => $amount,
@@ -132,11 +133,11 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::_buildCancelRequest()
+     * @see AdapterAbstract::buildCancelRequest()
      */
-    protected function _buildCancelRequest( Request $request )
+    protected function buildCancelRequest(Request $request)
     {
-        $type        = $this->_getProviderTransactionType($request->getTransactionType());
+        $type        = $this->getProviderTransactionType($request->getTransactionType());
         $requestData = array(
             'Type'    => $type,
             'OrderId' => $request->getOrderId(),
@@ -148,24 +149,24 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::_parseResponse()
+     * @see AdapterAbstract::parseResponse()
      */
-    protected function _parseResponse( $rawResponse )
+    protected function parseResponse($rawResponse)
     {
         $response = new PaymentResponse();
         try {
-            /**
-             * @var object $xml
-             */
-            $xml = new \SimpleXmlElement( $rawResponse );
-        } catch ( \Exception $e ) {
-            $exception = new UnexpectedResponse( 'Provider is returned unexpected ' . 'response. Response data:' . $rawResponse );
-            $this->_triggerEvent(
-                 self::EVENT_ON_EXCEPTION,
-                     array_merge(
-                         $this->_collectTransactionInformation(),
-                         array( 'exception' => $exception )
-                     )
+            $xml = new \SimpleXmlElement($rawResponse);
+        } catch (\Exception $e) {
+            $exception = new UnexpectedResponse(
+                'Provider is returned unexpected ' .
+                'response. Response data:' . $rawResponse
+            );
+            $this->triggerEvent(
+                self::EVENT_ON_EXCEPTION,
+                array_merge(
+                    $this->collectTransactionInformation(),
+                    array('exception' => $exception)
+                )
             );
             throw $exception;
         }
@@ -196,9 +197,11 @@ class Est extends AdapterAbstract implements AdapterInterface
             $response->setTransactionId((string)$xml->TransId);
         }
         $response->setRawData($rawResponse);
-        $eventData = $this->_collectTransactionInformation();
-        $eventName = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
-        $this->_triggerEvent($eventName, $eventData);
+        $eventData = $this->collectTransactionInformation();
+        $eventName = $response->isSuccess() ?
+                     self::EVENT_ON_TRANSACTION_SUCCESSFUL :
+                     self::EVENT_ON_TRANSACTION_FAILED;
+        $this->triggerEvent($eventName, $eventData);
         return $response;
     }
 }

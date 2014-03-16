@@ -10,7 +10,7 @@ class Serializer
     const XML = 1;
     const JSON = 2;
 
-    private $_serializer;
+    private $serializer;
 
     /**
      * class constructor.
@@ -22,10 +22,10 @@ class Serializer
     {
         switch($type) {
             case self::XML:
-                $this->_serializer = new Xml();
+                $this->serializer = new Xml();
                 break;
             case self::JSON:
-                $this->_serializer = new Json();
+                $this->serializer = new Json();
                 break;
             default:
                 throw new UnknownSerializer('Unknown serializer: ' . $type);
@@ -35,8 +35,8 @@ class Serializer
     /**
      * @see \Pext\Serializer\Adapter\SerializerInterface::serialize()
      */
-    public function serialize($data, $options=array())
+    public function serialize($data, $options = array())
     {
-        return $this->_serializer->serialize($data, $options);
+        return $this->serializer->serialize($data, $options);
     }
 }
