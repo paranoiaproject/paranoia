@@ -5,6 +5,7 @@ use Paranoia\Common\Serializer\Serializer;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
 use Paranoia\Payment\Exception\UnexpectedResponse;
+use Paranoia\Payment\Exception\UnimplementedMethod;
 use Paranoia\Communication\Connector;
 
 class Posnet extends AdapterAbstract implements AdapterInterface
@@ -19,7 +20,9 @@ class Posnet extends AdapterAbstract implements AdapterInterface
         self::TRANSACTION_TYPE_POSTAUTHORIZATION => 'capt',
         self::TRANSACTION_TYPE_SALE              => 'sale',
         self::TRANSACTION_TYPE_CANCEL            => 'reverse',
-        self::TRANSACTION_TYPE_REFUND            => 'return'
+        self::TRANSACTION_TYPE_REFUND            => 'return',
+        self::TRANSACTION_TYPE_POINT_QUERY       => 'pointinquiry',
+        self::TRANSACTION_TYPE_POINT_USAGE       => 'pointusage',
     );
 
     /**
@@ -39,15 +42,15 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::_buildRequest()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRequest()
      */
-    protected function buildRequest(Request $request, $requestBuilder)
+    protected function buildRequest( Request $request, $requestBuilder )
     {
         $rawRequest = call_user_func(array( $this, $requestBuilder ), $request);
-        $serializer = new Serializer(Serializer::XML);
+        $serializer = new Serializer( Serializer::XML );
         $xml        = $serializer->serialize(
-            array_merge($rawRequest, $this->buildBaseRequest()),
-            array( 'root_name' => 'posnetRequest' )
+                                 array_merge($rawRequest, $this->buildBaseRequest()),
+                                     array( 'root_name' => 'posnetRequest' )
         );
         $data       = array( 'xmldata' => $xml );
         $request->setRawData($xml);
@@ -55,9 +58,9 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::_buildPreauthorizationRequest()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPreauthorizationRequest()
      */
-    protected function buildPreauthorizationRequest(Request $request)
+    protected function buildPreauthorizationRequest( Request $request )
     {
         $amount      = $this->formatAmount($request->getAmount());
         $installment = $this->formatInstallment($request->getInstallment());
@@ -81,9 +84,9 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::_buildPostAuthorizationRequest()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPostAuthorizationRequest()
      */
-    protected function buildPostAuthorizationRequest(Request $request)
+    protected function buildPostAuthorizationRequest( Request $request )
     {
         $amount      = $this->formatAmount($request->getAmount());
         $installment = $this->formatInstallment($request->getInstallment());
@@ -104,9 +107,9 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::_buildSaleRequest()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildSaleRequest()
      */
-    protected function buildSaleRequest(Request $request)
+    protected function buildSaleRequest( Request $request )
     {
         $amount      = $this->formatAmount($request->getAmount());
         $installment = $this->formatInstallment($request->getInstallment());
@@ -130,9 +133,9 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::_buildRefundRequest()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRefundRequest()
      */
-    protected function buildRefundRequest(Request $request)
+    protected function buildRefundRequest( Request $request )
     {
         $amount      = $this->formatAmount($request->getAmount());
         $currency    = $this->formatCurrency($request->getCurrency());
@@ -148,9 +151,9 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::_buildCancelRequest()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildCancelRequest()
      */
-    protected function buildCancelRequest(Request $request)
+    protected function buildCancelRequest( Request $request )
     {
         $type        = $this->getProviderTransactionType($request->getTransactionType());
         $requestData = array(
@@ -164,23 +167,44 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::_parseResponse()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
      */
-    protected function parseResponse($rawResponse)
+    protected function buildPointQueryRequest( Request $request )
+    {
+        $exception = new UnimplementedMethod( 'Provider method not implemented: ' . $request->getTransactionType() );
+        $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
+        throw $exception;
+    }
+
+    /**
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPointUsageRequest()
+     */
+    protected function buildPointUsageRequest( Request $request )
+    {
+        $exception = new UnimplementedMethod( 'Provider method not implemented: ' . $request->getTransactionType() );
+        $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
+        throw $exception;
+    }
+
+    /**
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
+     */
+    protected function parseResponse( $rawResponse )
     {
         $response = new PaymentResponse();
         try {
-            $xml = (object)new \SimpleXmlElement($rawResponse);
+            /**
+             * @var object $xml
+             */
+            $xml = new \SimpleXmlElement( $rawResponse );
         } catch ( \Exception $e ) {
-            $exception = new UnexpectedResponse(
-                'Provider is returned unexpected response. Response data:' . $rawResponse
-            );
+            $exception = new UnexpectedResponse( 'Provider is returned unexpected response. Response data:' . $rawResponse );
             $this->triggerEvent(
-                self::EVENT_ON_EXCEPTION,
-                array_merge(
-                    $this->collectTransactionInformation(),
-                    array('exception' => $exception)
-                )
+                 self::EVENT_ON_EXCEPTION,
+                     array_merge(
+                         $this->collectTransactionInformation(),
+                         array( 'exception' => $exception )
+                     )
             );
             throw $exception;
         }
@@ -215,11 +239,25 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * Posnet tutar değerinde nokta istemiyor. Örnek:15.00TL için 1500 gönderilmesi gerekiyor.
+     *
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::formatAmount()
+     */
+    protected function formatAmount( $amount, $reverse = false )
+    {
+        if (!$reverse) {
+            return ceil($amount * 100);
+        } else {
+            return (float)sprintf('%s.%s', substr($amount, 0, -2), substr($amount, -2));
+        }
+    }
+
+    /**
      * Posnet Son Kullanma Tarihini YYMM formatında istiyor. Örnek:03/2014 için 1403
      *
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::_formatExpireDate()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::formatExpireDate()
      */
-    protected function formatExpireDate($month, $year)
+    protected function formatExpireDate( $month, $year )
     {
         return sprintf('%02s%02s', substr($year, -2), $month);
     }
@@ -227,13 +265,32 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     /**
      * Postnet Taksit sayısında daima 2 rakam gönderilmesini istiyor.
      *
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::_formatInstallment()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::formatInstallment()
      */
-    protected function formatInstallment($installment)
+    protected function formatInstallment( $installment )
     {
         if (!is_numeric($installment) || intval($installment) <= 1) {
             return '00';
         }
         return sprintf('%02s', $installment);
+    }
+
+    /**
+     * Posnet currency kodları yerine ilk iki harfi istiyor.
+     *
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::formatCurrency()
+     */
+    protected function formatCurrency( $currency )
+    {
+        switch ($currency) {
+            case self::CURRENCY_TRY:
+                return 'YT';
+            case self::CURRENCY_USD:
+                return 'US';
+            case self::CURRENCY_EUR:
+                return 'EU';
+            default:
+                return 'YT';
+        }
     }
 }
