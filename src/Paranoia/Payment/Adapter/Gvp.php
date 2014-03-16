@@ -348,7 +348,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
              */
             $xml = new \SimpleXmlElement($rawResponse);
         } catch ( \Exception $e ) {
-            throw new UnexpectedResponse('Provider is returned unexpected response. Response data:' . $rawResponse);
+            throw new UnexpectedResponse('Provider returned unexpected response: ' . $rawResponse);
         }
         $response->setIsSuccess((string)$xml->Transaction->Response->Code == '00');
         $response->setResponseCode((string)$xml->Transaction->ReasonCode);
@@ -382,10 +382,11 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     protected function formatAmount($amount, $reverse = false)
     {
-        return (!$reverse) ? number_format($amount, 2, '', '') : (float)substr($amount, 0, -2) . '.' . substr(
-                $amount,
-                -2
-            );
+        if (!$reverse) {
+            return number_format($amount, 2, '', '');
+        } else {
+            return (float)sprintf('%s.%s', substr($amount, 0, -2), substr($amount, -2));
+        }
     }
 
     /**

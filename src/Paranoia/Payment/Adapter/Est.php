@@ -181,7 +181,7 @@ class Est extends AdapterAbstract implements AdapterInterface
              */
             $xml = new \SimpleXmlElement($rawResponse);
         } catch ( \Exception $e ) {
-            $exception = new UnexpectedResponse('Provider is returned unexpected ' . 'response. Response data:' . $rawResponse);
+            $exception = new UnexpectedResponse('Provider returned unexpected response: ' . $rawResponse);
             $this->triggerEvent(
                 self::EVENT_ON_EXCEPTION,
                 array_merge(
