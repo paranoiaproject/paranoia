@@ -44,7 +44,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     public function __construct(StdClass $config)
     {
         $this->config    = $config;
-        $this->connector = new Connector( static::CONNECTOR_TYPE );
+        $this->connector = new Connector(static::CONNECTOR_TYPE);
     }
 
     /**
@@ -129,12 +129,12 @@ abstract class AdapterAbstract extends EventManagerAbstract
             return $this->getConnector()->sendRequest($url, $data, $options);
         } catch ( \ErrorException $e ) {
             $this->triggerEvent(
-                 self::EVENT_ON_EXCEPTION,
-                     array(
-                         'exception' => $e,
-                         'request'   => $this->maskRequest($this->getConnector()->getLastSentRequest()),
-                         'response'  => $this->getConnector()->getLastReceivedResponse()
-                     )
+                self::EVENT_ON_EXCEPTION,
+                array(
+                    'exception' => $e,
+                    'request'   => $this->maskRequest($this->getConnector()->getLastSentRequest()),
+                    'response'  => $this->getConnector()->getLastReceivedResponse()
+                )
             );
             throw $e;
         }
@@ -151,10 +151,10 @@ abstract class AdapterAbstract extends EventManagerAbstract
     protected function formatCurrency($currency)
     {
         if (!property_exists($this->config, 'currencyCodes')) {
-            throw new ConfigurationError( 'Currency codes are not defined in configuration.' );
+            throw new ConfigurationError('Currency codes are not defined in configuration.');
         }
         if (!property_exists($this->config->currencyCodes, $currency)) {
-            throw new UnknownCurrencyCode( sprintf('%s is unknown currency.', $currency) );
+            throw new UnknownCurrencyCode(sprintf('%s is unknown currency.', $currency));
         }
         return $this->config->currencyCodes->{$currency};
     }
@@ -196,7 +196,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     protected function formatInstallment($installment)
     {
-        return ( !is_numeric($installment) || intval($installment) <= 1 ) ? '' : $installment;
+        return (!is_numeric($installment) || intval($installment) <= 1) ? '' : $installment;
     }
 
     /**
@@ -221,7 +221,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     protected function getProviderTransactionType($transactionType)
     {
         if (!array_key_exists($transactionType, $this->transactionMap)) {
-            throw new UnknownTransactionType( 'Transaction type is unknown: ' . $transactionType );
+            throw new UnknownTransactionType('Transaction type is unknown: ' . $transactionType);
         }
         return $this->transactionMap[$transactionType];
     }

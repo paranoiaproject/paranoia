@@ -56,8 +56,8 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     private function buildTerminal(Request $request)
     {
         $config = $this->config;
-        list( $username, $password ) = $this->getApiCredentialsByRequest(
-                                            $request->getTransactionType()
+        list($username, $password) = $this->getApiCredentialsByRequest(
+            $request->getTransactionType()
         );
         $hash = $this->getTransactionHash($request, $password);
         return array(
@@ -95,8 +95,8 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     private function buildCard(Request $request)
     {
         $expireMonth = $this->formatExpireDate(
-                            $request->getExpireMonth(),
-                                $request->getExpireYear()
+            $request->getExpireMonth(),
+            $request->getExpireYear()
         );
         return array(
             'Number'     => $request->getCardNumber(),
@@ -134,9 +134,9 @@ class Gvp extends AdapterAbstract implements AdapterInterface
         $originalRetrefNum = null
     ) {
         $transactionType = $request->getTransactionType();
-        $installment     = ( $request->getInstallment() ) ? $this->formatInstallment($request->getInstallment()) : null;
+        $installment     = ($request->getInstallment()) ? $this->formatInstallment($request->getInstallment()) : null;
         $amount          = $this->isAmountRequired($request) ? $this->formatAmount($request->getAmount()) : '1';
-        $currency        = ( $request->getCurrency() ) ? $this->formatCurrency($request->getCurrency()) : null;
+        $currency        = ($request->getCurrency()) ? $this->formatCurrency($request->getCurrency()) : null;
         $type            = $this->getProviderTransactionType($transactionType);
         return array(
             'Type'                  => $type,
@@ -259,10 +259,10 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     protected function buildRequest(Request $request, $requestBuilder)
     {
         $rawRequest = call_user_func(array( $this, $requestBuilder ), $request);
-        $serializer = new Serializer( Serializer::XML );
+        $serializer = new Serializer(Serializer::XML);
         $xml        = $serializer->serialize(
-                                 $rawRequest,
-                                     array( 'root_name' => 'GVPSRequest' )
+            $rawRequest,
+            array( 'root_name' => 'GVPSRequest' )
         );
         $data       = array( 'data' => $xml );
         $request->setRawData($xml);
@@ -310,7 +310,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     protected function buildCancelRequest(Request $request)
     {
         $requestData                = $this->buildBaseRequest($request);
-        $transactionId              = ( $request->getTransactionId() ) ? $request->getTransactionId() : null;
+        $transactionId              = ($request->getTransactionId()) ? $request->getTransactionId() : null;
         $transaction                = $this->buildTransaction($request, 0, $transactionId);
         $requestData['Transaction'] = $transaction;
         return $requestData;
@@ -321,7 +321,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     protected function buildPointQueryRequest(Request $request)
     {
-        $exception = new UnimplementedMethod( 'Provider method not implemented: ' . $request->getTransactionType() );
+        $exception = new UnimplementedMethod('Provider method not implemented: ' . $request->getTransactionType());
         $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
         throw $exception;
     }
@@ -331,7 +331,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     protected function buildPointUsageRequest(Request $request)
     {
-        $exception = new UnimplementedMethod( 'Provider method not implemented: ' . $request->getTransactionType() );
+        $exception = new UnimplementedMethod('Provider method not implemented: ' . $request->getTransactionType());
         $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
         throw $exception;
     }
@@ -346,9 +346,9 @@ class Gvp extends AdapterAbstract implements AdapterInterface
             /**
              * @var object $xml
              */
-            $xml = new \SimpleXmlElement( $rawResponse );
+            $xml = new \SimpleXmlElement($rawResponse);
         } catch ( \Exception $e ) {
-            throw new UnexpectedResponse( 'Provider is returned unexpected response. Response data:' . $rawResponse );
+            throw new UnexpectedResponse('Provider is returned unexpected response. Response data:' . $rawResponse);
         }
         $response->setIsSuccess((string)$xml->Transaction->Response->Code == '00');
         $response->setResponseCode((string)$xml->Transaction->ReasonCode);
@@ -382,7 +382,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     protected function formatAmount($amount, $reverse = false)
     {
-        return ( !$reverse ) ? number_format($amount, 2, '', '') : (float)substr($amount, 0, -2) . '.' . substr(
+        return (!$reverse) ? number_format($amount, 2, '', '') : (float)substr($amount, 0, -2) . '.' . substr(
                 $amount,
                 -2
             );

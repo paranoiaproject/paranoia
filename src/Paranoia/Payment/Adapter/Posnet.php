@@ -47,10 +47,10 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     protected function buildRequest(Request $request, $requestBuilder)
     {
         $rawRequest = call_user_func(array( $this, $requestBuilder ), $request);
-        $serializer = new Serializer( Serializer::XML );
+        $serializer = new Serializer(Serializer::XML);
         $xml        = $serializer->serialize(
-                                 array_merge($rawRequest, $this->buildBaseRequest()),
-                                     array( 'root_name' => 'posnetRequest' )
+            array_merge($rawRequest, $this->buildBaseRequest()),
+            array( 'root_name' => 'posnetRequest' )
         );
         $data       = array( 'xmldata' => $xml );
         $request->setRawData($xml);
@@ -171,7 +171,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
      */
     protected function buildPointQueryRequest(Request $request)
     {
-        $exception = new UnimplementedMethod( 'Provider method not implemented: ' . $request->getTransactionType() );
+        $exception = new UnimplementedMethod('Provider method not implemented: ' . $request->getTransactionType());
         $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
         throw $exception;
     }
@@ -181,7 +181,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
      */
     protected function buildPointUsageRequest(Request $request)
     {
-        $exception = new UnimplementedMethod( 'Provider method not implemented: ' . $request->getTransactionType() );
+        $exception = new UnimplementedMethod('Provider method not implemented: ' . $request->getTransactionType());
         $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
         throw $exception;
     }
@@ -196,15 +196,15 @@ class Posnet extends AdapterAbstract implements AdapterInterface
             /**
              * @var object $xml
              */
-            $xml = new \SimpleXmlElement( $rawResponse );
+            $xml = new \SimpleXmlElement($rawResponse);
         } catch ( \Exception $e ) {
-            $exception = new UnexpectedResponse( 'Provider is returned unexpected response. Response data:' . $rawResponse );
+            $exception = new UnexpectedResponse('Provider is returned unexpected response. Response data:' . $rawResponse);
             $this->triggerEvent(
-                 self::EVENT_ON_EXCEPTION,
-                     array_merge(
-                         $this->collectTransactionInformation(),
-                         array( 'exception' => $exception )
-                     )
+                self::EVENT_ON_EXCEPTION,
+                array_merge(
+                    $this->collectTransactionInformation(),
+                    array( 'exception' => $exception )
+                )
             );
             throw $exception;
         }
