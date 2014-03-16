@@ -44,7 +44,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     /**
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRequest()
      */
-    protected function buildRequest( Request $request, $requestBuilder )
+    protected function buildRequest(Request $request, $requestBuilder)
     {
         $rawRequest = call_user_func(array( $this, $requestBuilder ), $request);
         $serializer = new Serializer( Serializer::XML );
@@ -60,7 +60,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     /**
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPreauthorizationRequest()
      */
-    protected function buildPreAuthorizationRequest( Request $request )
+    protected function buildPreAuthorizationRequest(Request $request)
     {
         $amount      = $this->formatAmount($request->getAmount());
         $installment = $this->formatInstallment($request->getInstallment());
@@ -83,7 +83,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     /**
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPostAuthorizationRequest()
      */
-    protected function buildPostAuthorizationRequest( Request $request )
+    protected function buildPostAuthorizationRequest(Request $request)
     {
         $type        = $this->getProviderTransactionType($request->getTransactionType());
         $requestData = array(
@@ -96,7 +96,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     /**
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildSaleRequest()
      */
-    protected function buildSaleRequest( Request $request )
+    protected function buildSaleRequest(Request $request)
     {
         $amount      = $this->formatAmount($request->getAmount());
         $installment = $this->formatInstallment($request->getInstallment());
@@ -119,7 +119,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     /**
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRefundRequest()
      */
-    protected function buildRefundRequest( Request $request )
+    protected function buildRefundRequest(Request $request)
     {
         $amount      = $this->formatAmount($request->getAmount());
         $currency    = $this->formatCurrency($request->getCurrency());
@@ -136,7 +136,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     /**
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildCancelRequest()
      */
-    protected function buildCancelRequest( Request $request )
+    protected function buildCancelRequest(Request $request)
     {
         $type        = $this->getProviderTransactionType($request->getTransactionType());
         $requestData = array(
@@ -152,9 +152,9 @@ class Est extends AdapterAbstract implements AdapterInterface
     /**
      * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
      */
-    protected function buildPointQueryRequest( Request $request )
+    protected function buildPointQueryRequest(Request $request)
     {
-        $exception = new UnimplementedMethod( 'Provider method not implemented: '.$request->getTransactionType() );
+        $exception = new UnimplementedMethod( 'Provider method not implemented: ' . $request->getTransactionType() );
         $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
         throw $exception;
     }
@@ -162,9 +162,9 @@ class Est extends AdapterAbstract implements AdapterInterface
     /**
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPointUsageRequest()
      */
-    protected function buildPointUsageRequest( Request $request )
+    protected function buildPointUsageRequest(Request $request)
     {
-        $exception = new UnimplementedMethod( 'Provider method not implemented: '.$request->getTransactionType() );
+        $exception = new UnimplementedMethod( 'Provider method not implemented: ' . $request->getTransactionType() );
         $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
         throw $exception;
     }
@@ -172,7 +172,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     /**
      * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
      */
-    protected function parseResponse( $rawResponse )
+    protected function parseResponse($rawResponse)
     {
         $response = new PaymentResponse();
         try {

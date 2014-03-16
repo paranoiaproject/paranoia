@@ -41,7 +41,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     protected $connector;
 
-    public function __construct( StdClass $config )
+    public function __construct(StdClass $config)
     {
         $this->config    = $config;
         $this->connector = new Connector( static::CONNECTOR_TYPE );
@@ -53,7 +53,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return mixed
      */
-    abstract protected function buildPreAuthorizationRequest( Request $request );
+    abstract protected function buildPreAuthorizationRequest(Request $request);
 
     /**
      * build request data for postauthorization transaction.
@@ -61,7 +61,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return mixed
      */
-    abstract protected function buildPostAuthorizationRequest( Request $request );
+    abstract protected function buildPostAuthorizationRequest(Request $request);
 
     /**
      * build request data for sale transaction.
@@ -69,7 +69,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return mixed
      */
-    abstract protected function buildSaleRequest( Request $request );
+    abstract protected function buildSaleRequest(Request $request);
 
     /**
      * build request data for refund transaction.
@@ -77,7 +77,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return mixed
      */
-    abstract protected function buildRefundRequest( Request $request );
+    abstract protected function buildRefundRequest(Request $request);
 
     /**
      * build request data for cancel transaction.
@@ -85,7 +85,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return mixed
      */
-    abstract protected function buildCancelRequest( Request $request );
+    abstract protected function buildCancelRequest(Request $request);
 
     /**
      *  build complete raw data for the specified request.
@@ -94,7 +94,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param string                    $requestBuilder
      * @return mixed
      */
-    abstract protected function buildRequest( Request $request, $requestBuilder );
+    abstract protected function buildRequest(Request $request, $requestBuilder);
 
     /**
      * parses response from returned provider.
@@ -102,7 +102,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param string $rawResponse
      * @return \Paranoia\Payment\Response\PaymentResponse
      */
-    abstract protected function parseResponse( $rawResponse );
+    abstract protected function parseResponse($rawResponse);
 
     /**
      * returns connector object.
@@ -123,7 +123,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @throws \ErrorException|\Exception
      * @return mixed
      */
-    protected function sendRequest( $url, $data, $options = null )
+    protected function sendRequest($url, $data, $options = null)
     {
         try {
             return $this->getConnector()->sendRequest($url, $data, $options);
@@ -148,7 +148,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @throws \Paranoia\Payment\Exception\UnknownCurrencyCode
      * @return integer
      */
-    protected function formatCurrency( $currency )
+    protected function formatCurrency($currency)
     {
         if (!property_exists($this->config, 'currencyCodes')) {
             throw new ConfigurationError( 'Currency codes are not defined in configuration.' );
@@ -167,7 +167,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param boolean      $reverse
      * @return string
      */
-    protected function formatAmount( $amount, $reverse = false )
+    protected function formatAmount($amount, $reverse = false)
     {
         if (!$reverse) {
             return number_format($amount, 2, '.', '');
@@ -183,7 +183,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param int $year
      * @return string
      */
-    protected function formatExpireDate( $month, $year )
+    protected function formatExpireDate($month, $year)
     {
         return sprintf('%02s/%04s', $month, $year);
     }
@@ -194,7 +194,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param int $installment
      * @return string
      */
-    protected function formatInstallment( $installment )
+    protected function formatInstallment($installment)
     {
         return ( !is_numeric($installment) || intval($installment) <= 1 ) ? '' : $installment;
     }
@@ -205,7 +205,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\TransferInterface $transfer
      * @param string                              $transactionType
      */
-    private function stamp( TransferInterface $transfer, $transactionType )
+    private function stamp(TransferInterface $transfer, $transactionType)
     {
         $transfer->setTime(microtime(true));
         $transfer->setTransactionType($transactionType);
@@ -218,7 +218,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @throws \Paranoia\Payment\Exception\UnknownTransactionType
      * @return string
      */
-    protected function getProviderTransactionType( $transactionType )
+    protected function getProviderTransactionType($transactionType)
     {
         if (!array_key_exists($transactionType, $this->transactionMap)) {
             throw new UnknownTransactionType( 'Transaction type is unknown: ' . $transactionType );
@@ -231,7 +231,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return object
      */
-    public function preAuthorization( Request $request )
+    public function preAuthorization(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildPreAuthorizationRequest');
@@ -246,7 +246,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return object
      */
-    public function postAuthorization( Request $request )
+    public function postAuthorization(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildPostAuthorizationRequest');
@@ -261,7 +261,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return object
      */
-    public function sale( Request $request )
+    public function sale(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildSaleRequest');
@@ -276,7 +276,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return object
      */
-    public function refund( Request $request )
+    public function refund(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildRefundRequest');
@@ -291,7 +291,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return object
      */
-    public function cancel( Request $request )
+    public function cancel(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildCancelRequest');
@@ -306,7 +306,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return object
      */
-    public function pointQuery( Request $request )
+    public function pointQuery(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildPointQueryRequest');
@@ -321,7 +321,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return object
      */
-    public function pointUsage( Request $request )
+    public function pointUsage(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildPointUsageRequest');
@@ -337,7 +337,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param string $rawRequest
      * @return string
      */
-    protected function maskRequest( $rawRequest )
+    protected function maskRequest($rawRequest)
     {
         return $rawRequest;
     }
