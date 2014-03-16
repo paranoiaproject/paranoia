@@ -38,7 +38,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
         $transaction = $this->_buildTransaction($request);
         return array(
             'Version'     => '0.01',
-            'Mode'        => $this->_config->mode,
+            'Mode'        => $this->getConfiguration()->getMode(),
             'Terminal'    => $terminal,
             'Order'       => $order,
             'Customer'    => $customer,
@@ -55,15 +55,14 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     private function _buildTerminal( Request $request )
     {
-        $config = $this->_config;
         list( $username, $password ) = $this->_getApiCredentialsByRequest($request->getTransactionType());
         $hash = $this->_getTransactionHash($request, $password);
         return array(
             'ProvUserID' => $username,
             'HashData'   => $hash,
             'UserID'     => $username,
-            'ID'         => $config->terminal_id,
-            'MerchantID' => $config->merchant_id
+            'ID'         => $this->getConfiguration()->getTerminalId(),
+            'MerchantID' => $this->getConfiguration()->getMerchantId()
         );
     }
 
@@ -202,11 +201,11 @@ class Gvp extends AdapterAbstract implements AdapterInterface
                 self::TRANSACTION_TYPE_POSTAUTHORIZATION,
             )
         );
-        $config = $this->_config;
+
         if ($isAuth) {
-            return array( $config->auth_username, $config->auth_password );
+            return array( $this->getConfiguration()->getAuthorizationUsername(), $this->getConfiguration()->getAuthorizationPassword() );
         } else {
-            return array( $config->refund_username, $config->refund_password );
+            return array( $this->getConfiguration()->getRefundUsername(), $this->getConfiguration()->getRefundPassword() );
         }
     }
 
@@ -219,9 +218,8 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     private function _getSecurityHash( $password )
     {
-        $config     = $this->_config;
-        $tidPrefix  = str_repeat('0', 9 - strlen($config->terminal_id));
-        $terminalId = sprintf('%s%s', $tidPrefix, $config->terminal_id);
+        $tidPrefix  = str_repeat('0', 9 - strlen($this->getConfiguration()->getTerminalId()));
+        $terminalId = sprintf('%s%s', $tidPrefix, $this->getConfiguration()->getTerminalId());
         return strtoupper(SHA1(sprintf('%s%s', $password, $terminalId)));
     }
 
@@ -235,9 +233,8 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     private function _getTransactionHash( Request $request, $password )
     {
-        $config       = $this->_config;
         $orderId      = $request->getOrderId();
-        $terminalId   = $config->terminal_id;
+        $terminalId   = $this->getConfiguration()->getTerminalId();
         $cardNumber   = $this->_isCardNumberRequired($request) ? $request->getCardNumber() : '';
         $amount       = $this->_isAmountRequired($request) ? $this->_formatAmount($request->getAmount()) : '1';
         $securityData = $this->_getSecurityHash($password);

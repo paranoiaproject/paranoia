@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Payment\Adapter;
 
-use \StdClass;
+use Paranoia\Configuration\AbstractConfiguration;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response;
 use Paranoia\Payment\TransferInterface;
@@ -24,19 +24,36 @@ abstract class AdapterAbstract extends EventManagerAbstract
     const TRANSACTION_TYPE_CANCEL            = 'cancel';
     const TRANSACTION_TYPE_REFUND            = 'refund';
     protected $_transactionMap = Array();
+
     /**
-     * @var \StdClass
+     * @var AbstractConfiguration
      */
-    protected $_config;
+    protected $configuration;
     /**
      * @var \Paranoia\Communication\Connector
      */
     protected $_connector;
 
-    public function __construct( StdClass $config )
+    public function __construct(AbstractConfiguration $configuration )
     {
-        $this->_config    = $config;
+        $this->configuration    = $configuration;
         $this->_connector = new Connector( static::CONNECTOR_TYPE );
+    }
+
+    /**
+     * @param \Paranoia\Configuration\AbstractConfiguration $configuration
+     */
+    public function setConfiguration($configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
+    /**
+     * @return \Paranoia\Configuration\AbstractConfiguration
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
     }
 
     /**
@@ -245,7 +262,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     {
         $this->_stamp($request, __FUNCTION__);
         $rawRequest  = $this->_buildRequest($request, '_buildPreauthorizationRequest');
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
+        $rawResponse = $this->_sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
         $response    = $this->_parseResponse($rawResponse);
         $this->_stamp($response, __FUNCTION__);
         return $response;
@@ -262,7 +279,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     {
         $this->_stamp($request, __FUNCTION__);
         $rawRequest  = $this->_buildRequest($request, '_buildPostAuthorizationRequest');
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
+        $rawResponse = $this->_sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
         $response    = $this->_parseResponse($rawResponse);
         $this->_stamp($response, __FUNCTION__);
         return $response;
@@ -279,7 +296,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     {
         $this->_stamp($request, __FUNCTION__);
         $rawRequest  = $this->_buildRequest($request, '_buildSaleRequest');
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
+        $rawResponse = $this->_sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
         $response    = $this->_parseResponse($rawResponse);
         $this->_stamp($response, __FUNCTION__);
         return $response;
@@ -296,7 +313,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     {
         $this->_stamp($request, __FUNCTION__);
         $rawRequest  = $this->_buildRequest($request, '_buildRefundRequest');
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
+        $rawResponse = $this->_sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
         $response    = $this->_parseResponse($rawResponse);
         $this->_stamp($response, __FUNCTION__);
         return $response;
@@ -313,7 +330,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     {
         $this->_stamp($request, __FUNCTION__);
         $rawRequest  = $this->_buildRequest($request, '_buildCancelRequest');
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
+        $rawResponse = $this->_sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
         $response    = $this->_parseResponse($rawResponse);
         $this->_stamp($response, __FUNCTION__);
         return $response;
