@@ -24,14 +24,14 @@ class Http extends AdapterAbstract implements AdapterInterface
     /**
      * @var resource
      */
-    private $_handler;
+    private $handler;
 
     /**
      * constructor
      */
     public function __construct()
     {
-        $this->_handler = curl_init();
+        $this->handler = curl_init();
     }
 
     /**
@@ -42,19 +42,18 @@ class Http extends AdapterAbstract implements AdapterInterface
      * @return bool
      * @throws \Paranoia\Communication\Exception\UndefinedHttpMethod
      */
-    private function _validateMethod( $options )
+    private function validateMethod($options)
     {
-        if (!in_array(
-            $options[CURLOPT_CUSTOMREQUEST],
-            array(
-                self::METHOD_GET,
-                self::METHOD_POST,
-                self::METHOD_PUT,
-                self::METHOD_DELETE
-            )
-        )
-        ) {
-            throw new UndefinedHttpMethod( 'Undefined http method: ' . $options[CURLOPT_CUSTOMREQUEST] );
+        $requestMethods = array(
+            self::METHOD_GET,
+            self::METHOD_POST,
+            self::METHOD_PUT,
+            self::METHOD_DELETE
+        );
+        if (!in_array($options[CURLOPT_CUSTOMREQUEST], $requestMethods)) {
+            throw new UndefinedHttpMethod(
+                'Undefined http method: ' . $options[CURLOPT_CUSTOMREQUEST]
+            );
         }
         return true;
     }
@@ -67,7 +66,7 @@ class Http extends AdapterAbstract implements AdapterInterface
      *
      * @return array
      */
-    private function _attachData( $data, &$curlOptions )
+    private function attachData($data, &$curlOptions)
     {
         $method = $curlOptions[CURLOPT_CUSTOMREQUEST];
         if ($method == self::METHOD_POST || $method == self::METHOD_PUT) {
@@ -82,7 +81,7 @@ class Http extends AdapterAbstract implements AdapterInterface
             $url .= '?' . $data;
             $curlOptions[CURLOPT_URL] = $url;
         }
-        $this->_lastSentRequest = $data;
+        $this->lastSentRequest = $data;
         return $curlOptions;
     }
 
@@ -95,20 +94,18 @@ class Http extends AdapterAbstract implements AdapterInterface
      *
      * @return array
      */
-    private function _setOptions( $url, $data, $options )
+    private function setOptions($url, $data, $options)
     {
-        if (!isset( $options['method'] )) {
+        if (!isset($options['method'])) {
             $options['method'] = self::METHOD_POST;
         }
-        $curlOptions = array(
-            CURLOPT_URL            => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_HEADER         => false,
-            CURLOPT_CUSTOMREQUEST  => $options['method']
-        );
-        $this->_attachData($data, $curlOptions);
-        curl_setopt_array($this->_handler, $curlOptions);
+        $curlOptions = array(CURLOPT_URL            => $url,
+                             CURLOPT_RETURNTRANSFER => true,
+                             CURLOPT_SSL_VERIFYPEER => false,
+                             CURLOPT_HEADER         => false,
+                             CURLOPT_CUSTOMREQUEST => $options['method']);
+        $this->attachData($data, $curlOptions);
+        curl_setopt_array($this->handler, $curlOptions);
         return $curlOptions;
     }
 
@@ -119,29 +116,30 @@ class Http extends AdapterAbstract implements AdapterInterface
      */
     public function sendRequest( $url, $data, $options = null )
     {
-        $curlOptions = $this->_setOptions($url, $data, $options);
-        $this->_validateMethod($curlOptions);
-        $this->_triggerEvent(
-             self::EVENT_BEFORE_REQUEST,
-                 array( 'url' => $url, 'data' => $data )
+        $curlOptions = $this->setOptions($url, $data, $options);
+        $this->validateMethod($curlOptions);
+        $this->triggerEvent(
+            self::EVENT_BEFORE_REQUEST,
+            array('url' => $url, 'data' => $data)
         );
-        $response = curl_exec($this->_handler);
-        $this->_triggerEvent(
-             self::EVENT_AFTER_REQUEST,
-                 array( 'url' => $url, 'data' => $response )
+        $response = curl_exec($this->handler);
+        $this->triggerEvent(
+            self::EVENT_AFTER_REQUEST,
+            array('url' => $url, 'data' => $response)
         );
-        $this->_lastReceivedResponse = $response;
-        $error                       = curl_error($this->_handler);
+        $this->lastReceivedResponse = $response;
+        $error = curl_error($this->handler);
         if ($error) {
-            $exception = new CommunicationFailed( 'Communication error occurred. ' . 'Detail: ' . $error );
-            $this->_triggerEvent(
-                 self::EVENT_ON_EXCEPTION,
-                     array(
-                         'url'           => $url,
-                         'last_request'  => $data,
-                         'last_response' => $response,
-                         'exception'     => $exception
-                     )
+            $exception = new CommunicationFailed(
+                'Communication error occurred. Detail: '. $error
+            );
+
+            $this->triggerEvent(
+                self::EVENT_ON_EXCEPTION,
+                array('url'           => $url,
+                      'last_request'  => $data,
+                      'last_response' => $response,
+                      'exception'     => $exception)
             );
             throw  $exception;
         }
@@ -155,7 +153,7 @@ class Http extends AdapterAbstract implements AdapterInterface
      */
     public function getLastSentRequest()
     {
-        return $this->_lastSentRequest;
+        return $this->lastSentRequest;
     }
 
     /**
@@ -165,6 +163,6 @@ class Http extends AdapterAbstract implements AdapterInterface
      */
     public function getLastReceivedResponse()
     {
-        return $this->_lastReceivedResponse;
+        return $this->lastReceivedResponse;
     }
 }

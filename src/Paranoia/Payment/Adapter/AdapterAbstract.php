@@ -21,14 +21,17 @@ abstract class AdapterAbstract extends EventManagerAbstract
     const EVENT_ON_EXCEPTION                 = 'OnException';
     const TRANSACTION_TYPE_PREAUTHORIZATION  = 'preAuthorization';
     const TRANSACTION_TYPE_POSTAUTHORIZATION = 'postAuthorization';
-    const TRANSACTION_TYPE_SALE              = 'sale';
-    const TRANSACTION_TYPE_CANCEL            = 'cancel';
-    const TRANSACTION_TYPE_REFUND            = 'refund';
-    protected $_transactionMap = Array();
+    const TRANSACTION_TYPE_SALE 			 = 'sale';
+    const TRANSACTION_TYPE_CANCEL 			 = 'cancel';
+    const TRANSACTION_TYPE_REFUND 			 = 'refund';
+
+    protected $transactionMap = array();
+
     /**
      * @var \StdClass
      */
-    protected $_config;
+    protected $config;
+
     /**
      * @var \Paranoia\Communication\Adapter\CommunicationInterface
      */
@@ -36,8 +39,8 @@ abstract class AdapterAbstract extends EventManagerAbstract
 
     public function __construct( StdClass $config )
     {
-        $this->_config    = $config;
-        $this->_connector = new Connector( static::CONNECTOR_TYPE );
+        $this->config = $config;
+        $this->_connector = new Connector(static::CONNECTOR_TYPE);
     }
 
     /**
@@ -46,7 +49,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return mixed
      */
-    abstract protected function _buildPreauthorizationRequest( Request $request );
+    abstract protected function buildPreAuthorizationRequest(Request $request);
 
     /**
      * build request data for postauthorization transaction.
@@ -54,7 +57,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return mixed
      */
-    abstract protected function _buildPostAuthorizationRequest( Request $request );
+    abstract protected function buildPostAuthorizationRequest(Request $request);
 
     /**
      * build request data for sale transaction.
@@ -62,7 +65,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return mixed
      */
-    abstract protected function _buildSaleRequest( Request $request );
+    abstract protected function buildSaleRequest(Request $request);
 
     /**
      * build request data for refund transaction.
@@ -70,7 +73,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return mixed
      */
-    abstract protected function _buildRefundRequest( Request $request );
+    abstract protected function buildRefundRequest(Request $request);
 
     /**
      * build request data for cancel transaction.
@@ -78,7 +81,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\Request $request
      * @return mixed
      */
-    abstract protected function _buildCancelRequest( Request $request );
+    abstract protected function buildCancelRequest(Request $request);
 
     /**
      *  build complete raw data for the specified request.
@@ -88,7 +91,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @internal param $ \Payment\Request
      * @return mixed
      */
-    abstract protected function _buildRequest( Request $request, $requestBuilder );
+    abstract protected function buildRequest(Request $request, $requestBuilder);
 
     /**
      * parses response from returned provider.
@@ -96,7 +99,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param string $rawResponse
      * @return \Paranoia\Payment\Response\PaymentResponse
      */
-    abstract protected function _parseResponse( $rawResponse );
+    abstract protected function parseResponse($rawResponse);
 
     /**
      * returns connector object.
@@ -118,20 +121,15 @@ abstract class AdapterAbstract extends EventManagerAbstract
 
      * @return mixed
      */
-    protected function _sendRequest( $url, $data, $options = null )
+    protected function sendRequest($url, $data, $options=null)
     {
         try {
             return $this->getConnector()->sendRequest($url, $data, $options);
-        } catch ( \ErrorException $e ) {
-            $backtrace = debug_backtrace();
-            $this->_triggerEvent(
-                 self::EVENT_ON_EXCEPTION,
-                     array(
-                         'exception' => $e,
-                         'request'   => $this->_maskRequest($this->getConnector()->getLastSentRequest()),
-                         'response'  => $this->getConnector()->getLastReceivedResponse()
-                     )
-            );
+        } catch(\ErrorException $e) {
+            $this->triggerEvent(self::EVENT_ON_EXCEPTION,
+                                 array('exception' => $e,
+                                       'request'   => $this->_maskRequest($this->getConnector()->getLastSentRequest()),
+                                       'response'  => $this->getConnector()->getLastReceivedResponse()));
             throw $e;
         }
     }
@@ -144,17 +142,17 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @throws \Paranoia\Payment\Exception\UnknownCurrencyCode
      * @return integer
      */
-    protected function _formatCurrency( $currency )
+    protected function formatCurrency($currency)
     {
-        if(!property_exists($this->_config, 'currencyCodes')) {
+        if(!property_exists($this->config, 'currencyCodes')) {
             throw new ConfigurationError(
                 'Currency codes are not defined in configuration.'
             );
         }
-        if(!property_exists($this->_config->currencyCodes, $currency)) {
+        if(!property_exists($this->config->currencyCodes, $currency)) {
             throw new UnknownCurrencyCode(sprintf('%s is unknown currency.', $currency));
         }
-        return $this->_config->currencyCodes->{$currency};
+        return $this->config->currencyCodes->{$currency};
     }
 
     /**
@@ -166,7 +164,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      *
      * @return string
      */
-    protected function _formatAmount( $amount, $reverse = false )
+    protected function formatAmount($amount, $reverse = false)
     {
         if (!$reverse) {
             return number_format($amount, 2, '.', '');
@@ -183,7 +181,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      *
      * @return string
      */
-    protected function _formatExpireDate( $month, $year )
+    protected function formatExpireDate($month, $year)
     {
         return sprintf('%02s/%04s', $month, $year);
     }
@@ -195,7 +193,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      *
      * @return string
      */
-    protected function _formatInstallment( $installment )
+    protected function formatInstallment($installment)
     {
         return ( !is_numeric($installment) || intval($installment) <= 1 ) ? '' : $installment;
     }
@@ -205,7 +203,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @param \Paranoia\Payment\TransferInterface $transfer
      * @param string $transactionType
      */
-    private function _stamp( TransferInterface $transfer, $transactionType )
+    private function stamp(TransferInterface $transfer, $transactionType)
     {
         $transfer->setTime(microtime(true));
         $transfer->setTransactionType($transactionType);
@@ -219,12 +217,13 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @internal param string $transcationType
      * @return string
      */
-    protected function _getProviderTransactionType( $transactionType )
+    protected function getProviderTransactionType($transactionType)
     {
-        if (!array_key_exists($transactionType, $this->_transactionMap)) {
-            throw new UnknownTransactionType( 'Transaction type is unknown: ' . $transactionType );
+        if(! array_key_exists($transactionType, $this->transactionMap)) {
+            throw new UnknownTransactionType('Transaction type is unknown: ' .
+                                             $transactionType);
         }
-        return $this->_transactionMap[$transactionType];
+        return $this->transactionMap[$transactionType];
     }
 
     /**
@@ -236,11 +235,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function preAuthorization( Request $request )
     {
-        $this->_stamp($request, __FUNCTION__);
-        $rawRequest  = $this->_buildRequest($request, '_buildPreauthorizationRequest');
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
-        $response    = $this->_parseResponse($rawResponse);
-        $this->_stamp($response, __FUNCTION__);
+        $this->stamp($request, __FUNCTION__);
+        $rawRequest = $this->buildRequest($request, 'buildPreAuthorizationRequest');
+        $rawResponse = $this->_sendRequest($this->config->api_url, $rawRequest);
+        $response = $this->parseResponse($rawResponse);
+        $this->stamp($response, __FUNCTION__);
         return $response;
     }
 
@@ -253,11 +252,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function postAuthorization( Request $request )
     {
-        $this->_stamp($request, __FUNCTION__);
-        $rawRequest  = $this->_buildRequest($request, '_buildPostAuthorizationRequest');
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
-        $response    = $this->_parseResponse($rawResponse);
-        $this->_stamp($response, __FUNCTION__);
+        $this->stamp($request, __FUNCTION__);
+        $rawRequest = $this->buildRequest($request, 'buildPostAuthorizationRequest');
+        $rawResponse = $this->_sendRequest($this->config->api_url, $rawRequest);
+        $response = $this->parseResponse($rawResponse);
+        $this->stamp($response, __FUNCTION__);
         return $response;
     }
 
@@ -270,11 +269,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function sale( Request $request )
     {
-        $this->_stamp($request, __FUNCTION__);
-        $rawRequest  = $this->_buildRequest($request, '_buildSaleRequest');
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
-        $response    = $this->_parseResponse($rawResponse);
-        $this->_stamp($response, __FUNCTION__);
+        $this->stamp($request, __FUNCTION__);
+        $rawRequest = $this->buildRequest($request, 'buildSaleRequest');
+        $rawResponse = $this->_sendRequest($this->config->api_url, $rawRequest);
+        $response = $this->parseResponse($rawResponse);
+        $this->stamp($response, __FUNCTION__);
         return $response;
     }
 
@@ -287,11 +286,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function refund( Request $request )
     {
-        $this->_stamp($request, __FUNCTION__);
-        $rawRequest  = $this->_buildRequest($request, '_buildRefundRequest');
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
-        $response    = $this->_parseResponse($rawResponse);
-        $this->_stamp($response, __FUNCTION__);
+        $this->stamp($request, __FUNCTION__);
+        $rawRequest = $this->buildRequest($request, 'buildRefundRequest');
+        $rawResponse = $this->_sendRequest($this->config->api_url, $rawRequest);
+        $response = $this->parseResponse($rawResponse);
+        $this->stamp($response, __FUNCTION__);
         return $response;
     }
 
@@ -304,11 +303,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function cancel( Request $request )
     {
-        $this->_stamp($request, __FUNCTION__);
-        $rawRequest  = $this->_buildRequest($request, '_buildCancelRequest');
-        $rawResponse = $this->_sendRequest($this->_config->api_url, $rawRequest);
-        $response    = $this->_parseResponse($rawResponse);
-        $this->_stamp($response, __FUNCTION__);
+        $this->stamp($request, __FUNCTION__);
+        $rawRequest = $this->buildRequest($request, 'buildCancelRequest');
+        $rawResponse = $this->_sendRequest($this->config->api_url, $rawRequest);
+        $response = $this->parseResponse($rawResponse);
+        $this->stamp($response, __FUNCTION__);
         return $response;
     }
 
@@ -319,7 +318,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      *
      * @return string
      */
-    protected function _maskRequest( $rawRequest )
+    protected function maskRequest($rawRequest)
     {
         return $rawRequest;
     }
@@ -329,7 +328,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      *
      * @return array
      */
-    protected function _collectTransactionInformation()
+    protected function collectTransactionInformation()
     {
         $backtrace = debug_backtrace();
         $data      = array(

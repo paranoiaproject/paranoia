@@ -3,32 +3,31 @@ namespace Paranoia\EventManager;
 
 class EventParameter
 {
-
     /**
      * @var \Paranoia\EventManager\EventManagerAbstract
      */
-    private $_source;
+    private $source;
 
     /**
      * @var string
      */
-    private $_eventName;
+    private $eventName;
 
     /**
      * @var array
      */
-    private $_data;
+    private $data;
 
     /**
      * @var double
      */
-    private $_time;
+    private $time;
 
     public function __construct( EventManagerAbstract $source, $eventName, $data = array() )
     {
-        $this->_source    = $source;
-        $this->_eventName = $eventName;
-        $this->_data      = $data;
+        $this->source    = $source;
+        $this->eventName = $eventName;
+        $this->data      = $data;
     }
 
     /**
@@ -38,7 +37,7 @@ class EventParameter
      */
     public function getSource()
     {
-        return $this->_source;
+        return $this->source;
     }
 
     /**
@@ -50,7 +49,7 @@ class EventParameter
      */
     public function setSource( EventManagerAbstract $source )
     {
-        $this->_source = $source;
+        $this->source = $source;
         return $this;
     }
 
@@ -61,7 +60,7 @@ class EventParameter
      */
     public function getEventName()
     {
-        return $this->_eventName;
+        return $this->eventName;
     }
 
     /**
@@ -73,7 +72,7 @@ class EventParameter
      */
     public function setEventName( $eventName )
     {
-        $this->_eventName = $eventName;
+        $this->eventName = $eventName;
         return $this;
     }
 
@@ -84,12 +83,13 @@ class EventParameter
      *
      * @return array
      */
-    public function getData( $key = null )
+    public function getData($key = null)
     {
-        if ($key == null) {
-            return $this->_data;
+        if ($key==null) {
+            return $this->data;
         } else {
-            return ( array_key_exists($key, $this->_data) ) ? $this->_data[$key] : false;
+            return (array_key_exists($key, $this->data)) ?
+                $this->data[$key] : false;
         }
     }
 
@@ -102,7 +102,7 @@ class EventParameter
      */
     public function setData( $data )
     {
-        $this->_data = $data;
+        $this->data = $data;
         return $this;
     }
 
@@ -113,7 +113,7 @@ class EventParameter
      */
     public function getTime()
     {
-        return $this->_time;
+        return $this->time;
     }
 
     /**
@@ -125,7 +125,7 @@ class EventParameter
      */
     public function setTime( $time )
     {
-        $this->_time = $time;
+        $this->time = $time;
         return $this;
     }
 }

@@ -5,8 +5,7 @@ use Paranoia\EventManager\EventParameter;
 
 class CommunicationListener extends ListenerAbstract
 {
-
-    protected function _BeforeRequest( EventParameter $parameter )
+    protected function beforeRequest(EventParameter $parameter)
     {
         print implode(
                 PHP_EOL,
@@ -18,7 +17,7 @@ class CommunicationListener extends ListenerAbstract
             ) . PHP_EOL;
     }
 
-    protected function _AfterRequest( EventParameter $parameter )
+    protected function afterRequest(EventParameter $parameter)
     {
         print implode(
                 PHP_EOL,
@@ -30,7 +29,7 @@ class CommunicationListener extends ListenerAbstract
             ) . PHP_EOL;
     }
 
-    protected function _OnException( EventParameter $parameter )
+    protected function onException(EventParameter $parameter)
     {
     }
 }
