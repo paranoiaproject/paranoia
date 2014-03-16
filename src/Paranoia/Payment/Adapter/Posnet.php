@@ -29,12 +29,11 @@ class Posnet extends AdapterAbstract implements AdapterInterface
      */
     private function _buildBaseRequest()
     {
-        $config = $this->_config;
         return array(
-            'username' => $config->username,
-            'password' => $config->password,
-            'mid'      => $config->client_id,
-            'tid'      => $config->terminal_id
+            'username' => $this->getConfiguration()->getUsername(),
+            'password' => $this->getConfiguration()->getPassword(),
+            'mid'      => $this->getConfiguration()->getMerchantId(),
+            'tid'      => $this->getConfiguration()->getTerminalId()
         );
     }
 
