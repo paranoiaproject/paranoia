@@ -32,12 +32,11 @@ class Est extends AdapterAbstract implements AdapterInterface
      */
     private function buildBaseRequest()
     {
-        $config = $this->config;
         return array(
-            'Name'     => $config->username,
-            'Password' => $config->password,
-            'ClientId' => $config->client_id,
-            'Mode'     => $config->mode
+            'Name'     => $this->getConfiguration()->getUsername(),
+            'Password' => $this->getConfiguration()->getPassword(),
+            'ClientId' => $this->getConfiguration()->getClientId(),
+            'Mode'     => $this->getConfiguration()->getMode()
         );
     }
 
