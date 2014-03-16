@@ -7,67 +7,67 @@ class Request implements TransferInterface
     /**
      * @var string
      */
-    private $_orderId;
+    private $orderId;
 
     /**
      * @var float
      */
-    private $_amount;
+    private $amount;
 
     /**
      * @var string
      */
-    private $_currency;
+    private $currency;
 
     /**
      * @var integer
      */
-    private $_installment;
+    private $installment;
 
     /**
      * @var string
      */
-    private $_cardNumber;
+    private $cardNumber;
 
     /**
      * @var integer
      */
-    private $_securityCode;
+    private $securityCode;
 
     /**
      * @var integer
      */
-    private $_expireYear;
+    private $expireYear;
 
     /**
      * @var integer
      */
-    private $_expireMonth;
+    private $expireMonth;
 
     /**
      * @var string
      */
-    private $_transactionId;
+    private $transactionId;
 
     /**
      * @var string
      */
-    private $_authCode;
+    private $authCode;
 
     /**
      * @var string
      */
-    private $_rawData;
+    private $rawData;
 
     /**
      * @var string
      */
-    private $_transactionType;
+    private $transactionType;
 
     /**
      * @var int
      */
-    private $_time;
+    private $time;
 
     /**
      * returns order identity.
@@ -76,7 +76,7 @@ class Request implements TransferInterface
      */
     public function getOrderId()
     {
-        return $this->_orderId;
+        return $this->orderId;
     }
 
     /**
@@ -86,9 +86,9 @@ class Request implements TransferInterface
      *
      * @return self
      */
-    public function setOrderId( $orderId )
+    public function setOrderId($orderId)
     {
-        $this->_orderId = $orderId;
+        $this->orderId = $orderId;
         return $this;
     }
 
@@ -99,7 +99,7 @@ class Request implements TransferInterface
      */
     public function getAmount()
     {
-        return $this->_amount;
+        return $this->amount;
     }
 
     /**
@@ -109,9 +109,9 @@ class Request implements TransferInterface
      *
      * @return self
      */
-    public function setAmount( $amount )
+    public function setAmount($amount)
     {
-        $this->_amount = $amount;
+        $this->amount = $amount;
         return $this;
     }
 
@@ -122,7 +122,7 @@ class Request implements TransferInterface
      */
     public function getCurrency()
     {
-        return $this->_currency;
+        return $this->currency;
     }
 
     /**
@@ -132,9 +132,9 @@ class Request implements TransferInterface
      *
      * @return self
      */
-    public function setCurrency( $currency )
+    public function setCurrency($currency)
     {
-        $this->_currency = $currency;
+        $this->currency = $currency;
         return $this;
     }
 
@@ -145,7 +145,7 @@ class Request implements TransferInterface
      */
     public function getInstallment()
     {
-        return $this->_installment;
+        return $this->installment;
     }
 
     /**
@@ -155,9 +155,9 @@ class Request implements TransferInterface
      *
      * @return self
      */
-    public function setInstallment( $installment )
+    public function setInstallment($installment)
     {
-        $this->_installment = $installment;
+        $this->installment = $installment;
         return $this;
     }
 
@@ -168,7 +168,7 @@ class Request implements TransferInterface
      */
     public function getCardNumber()
     {
-        return $this->_cardNumber;
+        return $this->cardNumber;
     }
 
     /**
@@ -178,9 +178,9 @@ class Request implements TransferInterface
      *
      * @return self
      */
-    public function setCardNumber( $cardNumber )
+    public function setCardNumber($cardNumber)
     {
-        $this->_cardNumber = $cardNumber;
+        $this->cardNumber = $cardNumber;
         return $this;
     }
 
@@ -191,7 +191,7 @@ class Request implements TransferInterface
      */
     public function getSecurityCode()
     {
-        return $this->_securityCode;
+        return $this->securityCode;
     }
 
     /**
@@ -201,9 +201,9 @@ class Request implements TransferInterface
      *
      * @return self
      */
-    public function setSecurityCode( $securityCode )
+    public function setSecurityCode($securityCode)
     {
-        $this->_securityCode = $securityCode;
+        $this->securityCode = $securityCode;
         return $this;
     }
 
@@ -214,7 +214,7 @@ class Request implements TransferInterface
      */
     public function getExpireMonth()
     {
-        return $this->_expireMonth;
+        return $this->expireMonth;
     }
 
     /**
@@ -224,9 +224,9 @@ class Request implements TransferInterface
      *
      * @return self
      */
-    public function setExpireMonth( $expireMonth )
+    public function setExpireMonth($expireMonth)
     {
-        $this->_expireMonth = $expireMonth;
+        $this->expireMonth = $expireMonth;
         return $this;
     }
 
@@ -237,7 +237,7 @@ class Request implements TransferInterface
      */
     public function getExpireYear()
     {
-        return $this->_expireYear;
+        return $this->expireYear;
     }
 
     /**
@@ -247,9 +247,9 @@ class Request implements TransferInterface
      *
      * @return self
      */
-    public function setExpireYear( $expireYear )
+    public function setExpireYear($expireYear)
     {
-        $this->_expireYear = $expireYear;
+        $this->expireYear = $expireYear;
         return $this;
     }
 
@@ -260,7 +260,7 @@ class Request implements TransferInterface
      */
     public function getTransactionId()
     {
-        return $this->_transactionId;
+        return $this->transactionId;
     }
 
     /**
@@ -270,9 +270,9 @@ class Request implements TransferInterface
      *
      * @return self
      */
-    public function setTransactionId( $transactionId )
+    public function setTransactionId($transactionId)
     {
-        $this->_transactionId = $transactionId;
+        $this->transactionId = $transactionId;
         return $this;
     }
 
@@ -283,7 +283,7 @@ class Request implements TransferInterface
      */
     public function getAuthCode()
     {
-        return $this->_authCode;
+        return $this->authCode;
     }
 
     /**
@@ -293,9 +293,9 @@ class Request implements TransferInterface
      *
      * @return self
      */
-    public function setAuthCode( $authCode )
+    public function setAuthCode($authCode)
     {
-        $this->_authCode = $authCode;
+        $this->authCode = $authCode;
         return $this;
     }
 
@@ -306,7 +306,7 @@ class Request implements TransferInterface
      */
     public function getRawData()
     {
-        return $this->_rawData;
+        return $this->rawData;
     }
 
     /**
@@ -316,9 +316,9 @@ class Request implements TransferInterface
      *
      * @return self
      */
-    public function setRawData( $rawData )
+    public function setRawData($rawData)
     {
-        $this->_rawData = $rawData;
+        $this->rawData = $rawData;
         return $this;
     }
 
@@ -327,15 +327,15 @@ class Request implements TransferInterface
      */
     public function getTransactionType()
     {
-        return $this->_transactionType;
+        return $this->transactionType;
     }
 
     /**
      * @see \Paranoia\Payment\TransferInterface::setTransactionType()
      */
-    public function setTransactionType( $transactionType )
+    public function setTransactionType($transactionType)
     {
-        $this->_transactionType = $transactionType;
+        $this->transactionType = $transactionType;
         return $this;
     }
 
@@ -344,15 +344,15 @@ class Request implements TransferInterface
      */
     public function getTime()
     {
-        return $this->_time;
+        return $this->time;
     }
 
     /**
      * @see \Payment\TransferInterface::setTime()
      */
-    public function setTime( $time )
+    public function setTime($time)
     {
-        $this->_time = $time;
+        $this->time = $time;
         return $this;
     }
 }

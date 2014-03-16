@@ -35,12 +35,12 @@ abstract class AdapterAbstract extends EventManagerAbstract
     /**
      * @var \Paranoia\Communication\Adapter\CommunicationInterface
      */
-    protected $_connector;
+    protected $connector;
 
-    public function __construct( StdClass $config )
+    public function __construct(StdClass $config)
     {
         $this->config = $config;
-        $this->_connector = new Connector(static::CONNECTOR_TYPE);
+        $this->connector = new Connector(static::CONNECTOR_TYPE);
     }
 
     /**
@@ -108,7 +108,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function getConnector()
     {
-        return $this->_connector;
+        return $this->connector;
     }
 
     /**
@@ -121,15 +121,19 @@ abstract class AdapterAbstract extends EventManagerAbstract
 
      * @return mixed
      */
-    protected function sendRequest($url, $data, $options=null)
+    protected function sendRequest($url, $data, $options = null)
     {
         try {
             return $this->getConnector()->sendRequest($url, $data, $options);
-        } catch(\ErrorException $e) {
-            $this->triggerEvent(self::EVENT_ON_EXCEPTION,
-                                 array('exception' => $e,
-                                       'request'   => $this->_maskRequest($this->getConnector()->getLastSentRequest()),
-                                       'response'  => $this->getConnector()->getLastReceivedResponse()));
+        } catch (\ErrorException $e) {
+            $this->triggerEvent(
+                self::EVENT_ON_EXCEPTION,
+                array(
+                    'exception' => $e,
+                    'request'   => $this->maskRequest($this->getConnector()->getLastSentRequest()),
+                    'response'  => $this->getConnector()->getLastReceivedResponse()
+                )
+            );
             throw $e;
         }
     }
@@ -144,12 +148,12 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     protected function formatCurrency($currency)
     {
-        if(!property_exists($this->config, 'currencyCodes')) {
+        if (!property_exists($this->config, 'currencyCodes')) {
             throw new ConfigurationError(
                 'Currency codes are not defined in configuration.'
             );
         }
-        if(!property_exists($this->config->currencyCodes, $currency)) {
+        if (!property_exists($this->config->currencyCodes, $currency)) {
             throw new UnknownCurrencyCode(sprintf('%s is unknown currency.', $currency));
         }
         return $this->config->currencyCodes->{$currency};
@@ -219,9 +223,10 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     protected function getProviderTransactionType($transactionType)
     {
-        if(! array_key_exists($transactionType, $this->transactionMap)) {
-            throw new UnknownTransactionType('Transaction type is unknown: ' .
-                                             $transactionType);
+        if (! array_key_exists($transactionType, $this->transactionMap)) {
+            throw new UnknownTransactionType(
+                'Transaction type is unknown: ' . $transactionType
+            );
         }
         return $this->transactionMap[$transactionType];
     }
@@ -233,11 +238,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
      *
      * @return object
      */
-    public function preAuthorization( Request $request )
+    public function preAuthorization(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
         $rawRequest = $this->buildRequest($request, 'buildPreAuthorizationRequest');
-        $rawResponse = $this->_sendRequest($this->config->api_url, $rawRequest);
+        $rawResponse = $this->sendRequest($this->config->api_url, $rawRequest);
         $response = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
         return $response;
@@ -250,11 +255,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
      *
      * @return object
      */
-    public function postAuthorization( Request $request )
+    public function postAuthorization(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
         $rawRequest = $this->buildRequest($request, 'buildPostAuthorizationRequest');
-        $rawResponse = $this->_sendRequest($this->config->api_url, $rawRequest);
+        $rawResponse = $this->sendRequest($this->config->api_url, $rawRequest);
         $response = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
         return $response;
@@ -267,11 +272,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
      *
      * @return object
      */
-    public function sale( Request $request )
+    public function sale(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
         $rawRequest = $this->buildRequest($request, 'buildSaleRequest');
-        $rawResponse = $this->_sendRequest($this->config->api_url, $rawRequest);
+        $rawResponse = $this->sendRequest($this->config->api_url, $rawRequest);
         $response = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
         return $response;
@@ -284,11 +289,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
      *
      * @return object
      */
-    public function refund( Request $request )
+    public function refund(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
         $rawRequest = $this->buildRequest($request, 'buildRefundRequest');
-        $rawResponse = $this->_sendRequest($this->config->api_url, $rawRequest);
+        $rawResponse = $this->sendRequest($this->config->api_url, $rawRequest);
         $response = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
         return $response;
@@ -301,11 +306,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
      *
      * @return object
      */
-    public function cancel( Request $request )
+    public function cancel(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
         $rawRequest = $this->buildRequest($request, 'buildCancelRequest');
-        $rawResponse = $this->_sendRequest($this->config->api_url, $rawRequest);
+        $rawResponse = $this->sendRequest($this->config->api_url, $rawRequest);
         $response = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
         return $response;
@@ -333,7 +338,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
         $backtrace = debug_backtrace();
         $data      = array(
             'transaction' => $backtrace[2]['function'],
-            'request'     => $this->_maskRequest($this->getConnector()->getLastSentRequest()),
+            'request'     => $this->maskRequest($this->getConnector()->getLastSentRequest()),
             'response'    => $this->getConnector()->getLastReceivedResponse(),
         );
         return $data;

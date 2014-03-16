@@ -13,7 +13,7 @@ abstract class ListenerAbstract
      * @param string                                $eventName
      * @param \Paranoia\EventManager\EventParameter $parameter
      */
-    public function triggerEvent( $eventName, EventParameter $parameter )
+    public function triggerEvent($eventName, EventParameter $parameter)
     {
         $this->validateEvent($eventName);
         $method = $this->getEventMethodName($eventName);

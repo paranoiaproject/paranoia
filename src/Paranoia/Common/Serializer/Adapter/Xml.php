@@ -61,12 +61,16 @@ class Xml implements SerializerInterface
         if (!isset($options['root_name'])) {
             throw new OptionError('root_name is required.');
         }
-        $options['version'] = !isset($options['version']) ?
-            '1.0' : $options['version'];
-        $options['encoding'] = !isset($options['encoding']) ?
-            'UTF-8' : $options['encoding'];
-        $options['format_output'] = !isset($options['format_output']) ?
-            true : (bool) $options['format_output'];
+        $defaults = array(
+            'version'       => '1.0',
+            'encoding'      => 'UTF-8',
+            'format_output' => true
+        );
+        if (array_diff(array_keys($defaults), array_keys($options))) {
+            foreach ($defaults as $key => $value) {
+                $options[$key] = $value;
+            }
+        }
         return $options;
     }
 

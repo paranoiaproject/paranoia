@@ -7,62 +7,62 @@ abstract class ResponseAbstract
     /**
      * @var boolean
      */
-    protected $_isSuccess;
+    protected $isSuccess;
 
     /**
      * @var string
      */
-    protected $_transactionType;
+    protected $transactionType;
 
     /**
      * @var string
      */
-    protected $_orderId;
+    protected $orderId;
 
     /**
      * @var string
      */
-    protected $_transactionId;
+    protected $transactionId;
 
     /**
      * @var string
      */
-    protected $_authCode;
+    protected $authCode;
 
     /**
      * @var integer
      */
-    protected $_responseCode;
+    protected $responseCode;
 
     /**
      * @var string
      */
-    protected $_responseMessage;
+    protected $responseMessage;
 
     /**
      * @var string
      */
-    protected $_rawData;
+    protected $rawData;
 
     /**
      * @var integer
      */
-    protected $_time;
+    protected $time;
 
     /**
      * @see \Payment\Response\ResponseInterface::isSuccess()
      */
     public function isSuccess()
     {
-        return $this->_isSuccess;
+        return $this->isSuccess;
     }
 
     /**
      * @see \Payment\Response\ResponseInterface::setIsSuccess()
      */
-    public function setIsSuccess( $isSuccess )
+    public function setIsSuccess($isSuccess)
     {
-        $this->_isSuccess = $isSuccess;
+        $this->isSuccess = $isSuccess;
         return $this;
     }
 
@@ -71,15 +71,15 @@ abstract class ResponseAbstract
      */
     public function getTransactionType()
     {
-        return $this->_transactionType;
+        return $this->transactionType;
     }
 
     /**
      * @see \Payment\Response\ResponseInterface::setTransactionType()
      */
-    public function setTransactionType( $transactionType )
+    public function setTransactionType($transactionType)
     {
-        $this->_transactionType = $transactionType;
+        $this->transactionType = $transactionType;
         return $this;
     }
 
@@ -88,15 +88,15 @@ abstract class ResponseAbstract
      */
     public function getOrderId()
     {
-        return $this->_orderId;
+        return $this->orderId;
     }
 
     /**
      * @see \Payment\Response\ResponseInterface::setOrderId()
      */
-    public function setOrderId( $orderId )
+    public function setOrderId($orderId)
     {
-        $this->_orderId = $orderId;
+        $this->orderId = $orderId;
         return $this;
     }
 
@@ -105,15 +105,15 @@ abstract class ResponseAbstract
      */
     public function getTransactionId()
     {
-        return $this->_transactionId;
+        return $this->transactionId;
     }
 
     /**
      * @see \Payment\Response\ResponseInterface::setTransactionId()
      */
-    public function setTransactionId( $transactionId )
+    public function setTransactionId($transactionId)
     {
-        $this->_transactionId = $transactionId;
+        $this->transactionId = $transactionId;
         return $this;
     }
 
@@ -124,7 +124,7 @@ abstract class ResponseAbstract
      */
     public function getAuthCode()
     {
-        return $this->_authCode;
+        return $this->authCode;
     }
 
     /**
@@ -134,9 +134,9 @@ abstract class ResponseAbstract
      *
      * @return self
      */
-    public function setAuthCode( $authCode )
+    public function setAuthCode($authCode)
     {
-        $this->_authCode = $authCode;
+        $this->authCode = $authCode;
         return $this;
     }
 
@@ -145,15 +145,15 @@ abstract class ResponseAbstract
      */
     public function getResponseCode()
     {
-        return $this->_responseCode;
+        return $this->responseCode;
     }
 
     /**
      * @see \Payment\Response\ResponseInterface::setResponseCode()
      */
-    public function setResponseCode( $responseCode )
+    public function setResponseCode($responseCode)
     {
-        $this->_responseCode = $responseCode;
+        $this->responseCode = $responseCode;
         return $this;
     }
 
@@ -162,15 +162,15 @@ abstract class ResponseAbstract
      */
     public function getResponseMessage()
     {
-        return $this->_responseMessage;
+        return $this->responseMessage;
     }
 
     /**
      * @see \Payment\Response\ResponseInterface::setResponseMessage()
      */
-    public function setResponseMessage( $responseMessage )
+    public function setResponseMessage($responseMessage)
     {
-        $this->_responseMessage = $responseMessage;
+        $this->responseMessage = $responseMessage;
         return $this;
     }
 
@@ -181,7 +181,7 @@ abstract class ResponseAbstract
      */
     public function getRawData()
     {
-        return $this->_rawData;
+        return $this->rawData;
     }
 
     /**
@@ -191,9 +191,9 @@ abstract class ResponseAbstract
      *
      * @return self
      */
-    public function setRawData( $rawData )
+    public function setRawData($rawData)
     {
-        $this->_rawData = $rawData;
+        $this->rawData = $rawData;
         return $this;
     }
 
@@ -202,15 +202,15 @@ abstract class ResponseAbstract
      */
     public function getTime()
     {
-        return $this->_time;
+        return $this->time;
     }
 
     /**
      * @see \Payment\TransferInterface::setTime()
      */
-    public function setTime( $time )
+    public function setTime($time)
     {
-        $this->_time = $time;
+        $this->time = $time;
         return $this;
     }
 }

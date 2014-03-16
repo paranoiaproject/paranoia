@@ -35,7 +35,7 @@ class Factory
      * @throws Exception\UnknownPos
      * @return AdapterInterface
      */
-    public static function createInstance( StdClass $config, $paymentMethod )
+    public static function createInstance(StdClass$config, $paymentMethod)
     {
         if (! isset($config->{$paymentMethod})) {
             throw new UnknownPos('Unknown pos : ' . $paymentMethod);

@@ -41,7 +41,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
         $transaction     = $this->buildTransaction($request);
 
         return array('Version' 	   => '0.01',
-                     'Mode' 	   => $this->_config->mode,
+                     'Mode' 	   => $this->config->mode,
                      'Terminal'    => $terminal,
                      'Order'       => $order,
                      'Customer'    => $customer,
@@ -57,7 +57,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     private function buildTerminal(Request $request)
     {
-        $config = $this->_config;
+        $config = $this->config;
         list($username, $password) = $this->getApiCredentialsByRequest(
             $request->getTransactionType()
         );
@@ -131,6 +131,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      *
      * @return array
     */
+
     private function buildTransaction(
         Request $request,
         $cardHolderPresentCode = 0,
@@ -138,12 +139,12 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     ) {
         $transactionType = $request->getTransactionType();
         $installment 	= ($request->getInstallment()) ?
-            $this->_formatInstallment($request->getInstallment()) : null;
+            $this->formatInstallment($request->getInstallment()) : null;
         $amount         = $this->isAmountRequired($request) ?
             $this->formatAmount($request->getAmount()) : '1';
         $currency    	=  ($request->getCurrency()) ?
-            $this->_formatCurrency($request->getCurrency()) : null;
-        $type           = $this->_getProviderTransactionType($transactionType);
+            $this->formatCurrency($request->getCurrency()) : null;
+        $type           = $this->getProviderTransactionType($transactionType);
 
         return array('Type'                  => $type,
                      'InstallmentCnt'        => $installment,
@@ -210,7 +211,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
                 self::TRANSACTION_TYPE_POSTAUTHORIZATION,
             )
         );
-        $config = $this->_config;
+        $config = $this->config;
         if ($isAuth) {
             return array($config->auth_username, $config->auth_password);
         } else {
@@ -227,7 +228,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     private function getSecurityHash($password)
     {
-        $config     = $this->_config;
+        $config     = $this->config;
         $tidPrefix  = str_repeat('0', 9 - strlen($config->terminal_id));
         $terminalId = sprintf('%s%s', $tidPrefix, $config->terminal_id);
         return strtoupper(SHA1(sprintf('%s%s', $password, $terminalId)));
@@ -243,7 +244,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     private function getTransactionHash(Request $request, $password)
     {
-        $config     	 = $this->_config;
+        $config     	 = $this->config;
         $orderId    	 = $request->getOrderId();
         $terminalId 	 = $config->terminal_id;
         $cardNumber 	 = $this->isCardNumberRequired($request) ?
@@ -267,10 +268,10 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     protected function buildRequest(Request $request, $requestBuilder)
     {
         $rawRequest = call_user_func(array( $this, $requestBuilder ), $request);
-        $serializer = new Serializer( Serializer::XML );
+        $serializer = new Serializer(Serializer::XML);
         $xml        = $serializer->serialize(
-                                 $rawRequest,
-                                     array( 'root_name' => 'GVPSRequest' )
+            $rawRequest,
+            array( 'root_name' => 'GVPSRequest' )
         );
         $data       = array( 'data' => $xml );
         $request->setRawData($xml);
@@ -374,7 +375,9 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      */
     protected function formatAmount($amount, $reverse = false)
     {
-        return ( !$reverse ) ? number_format($amount, 2, '', '') : (float)substr($amount, 0, -2) . '.' . substr(
+        return (!$reverse ) ?
+            number_format($amount, 2, '', '') :
+            (float)substr($amount, 0, -2) . '.' . substr(
                 $amount,
                 -2
             );

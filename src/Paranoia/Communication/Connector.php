@@ -20,7 +20,7 @@ class Connector
      *
      * @throws UnknownCommunicationAdapter
      */
-    public function __construct( $connectorType )
+    public function __construct($connectorType)
     {
         switch ($connectorType) {
             case self::CONNECTOR_TYPE_HTTP:

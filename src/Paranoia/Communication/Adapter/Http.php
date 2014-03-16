@@ -114,7 +114,7 @@ class Http extends AdapterAbstract implements AdapterInterface
      *
      * @throws \Paranoia\Communication\Exception\CommunicationFailed
      */
-    public function sendRequest( $url, $data, $options = null )
+    public function sendRequest($url, $data, $options = null)
     {
         $curlOptions = $this->setOptions($url, $data, $options);
         $this->validateMethod($curlOptions);

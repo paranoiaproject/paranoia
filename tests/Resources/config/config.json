@@ -58,6 +58,11 @@
             "cvv": "000",
             "expire_month": "02",
             "expire_year": "2015"
+        },
+        "currencyCodes": {
+            "TRY": "YT",
+            "USD": "US",
+            "EUR": "EU"
         }
     }
 }

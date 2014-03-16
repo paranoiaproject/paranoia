@@ -3,7 +3,7 @@ namespace Paranoia\EventManager;
 
 class EventParameter
 {
-    /**
+        /**
      * @var \Paranoia\EventManager\EventManagerAbstract
      */
     private $source;
@@ -23,7 +23,7 @@ class EventParameter
      */
     private $time;
 
-    public function __construct( EventManagerAbstract $source, $eventName, $data = array() )
+    public function __construct(EventManagerAbstract $source, $eventName, $data = array())
     {
         $this->source    = $source;
         $this->eventName = $eventName;
@@ -47,7 +47,7 @@ class EventParameter
      *
      * @return \Paranoia\EventManager\EventParameter
      */
-    public function setSource( EventManagerAbstract $source )
+    public function setSource(EventManagerAbstract $source)
     {
         $this->source = $source;
         return $this;
@@ -70,7 +70,7 @@ class EventParameter
      *
      * @return \Paranoia\EventManager\EventParameter
      */
-    public function setEventName( $eventName )
+    public function setEventName($eventName)
     {
         $this->eventName = $eventName;
         return $this;
@@ -100,7 +100,7 @@ class EventParameter
      *
      * @return \Paranoia\EventManager\EventParameter
      */
-    public function setData( $data )
+    public function setData($data)
     {
         $this->data = $data;
         return $this;
@@ -123,7 +123,7 @@ class EventParameter
      *
      * @return \Paranoia\EventManager\EventParameter
      */
-    public function setTime( $time )
+    public function setTime($time)
     {
         $this->time = $time;
         return $this;
