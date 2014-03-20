@@ -5,30 +5,31 @@ use Paranoia\Common\Serializer\Serializer;
 use Paranoia\Communication\Connector;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
-use Paranoia\Payment\Adapter\AdapterInterface;
-use Paranoia\Payment\Adapter\AdapterAbstract;
 use Paranoia\Payment\Exception\UnexpectedResponse;
+use Paranoia\Payment\Exception\UnimplementedMethod;
 
 class Est extends AdapterAbstract implements AdapterInterface
 {
 
     const CONNECTOR_TYPE = Connector::CONNECTOR_TYPE_HTTP;
-
     /**
-	 * @var array
-	 */
+     * @var array
+     */
     protected $transactionMap = array(
         self::TRANSACTION_TYPE_PREAUTHORIZATION  => 'PreAuth',
         self::TRANSACTION_TYPE_POSTAUTHORIZATION => 'PostAuth',
-        self::TRANSACTION_TYPE_SALE 			 => 'Auth',
-        self::TRANSACTION_TYPE_CANCEL 			 => 'Void',
-        self::TRANSACTION_TYPE_REFUND 			 => 'Credit'
+        self::TRANSACTION_TYPE_SALE              => 'Auth',
+        self::TRANSACTION_TYPE_CANCEL            => 'Void',
+        self::TRANSACTION_TYPE_REFUND            => 'Credit',
+        self::TRANSACTION_TYPE_POINT_QUERY       => '',
+        self::TRANSACTION_TYPE_POINT_USAGE       => '',
     );
 
     /**
-	 * builds request base with common arguments.
-	 * @return array
-	 */
+     * builds request base with common arguments.
+     *
+     * @return array
+     */
     private function buildBaseRequest()
     {
         $config = $this->config;
@@ -41,15 +42,15 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::buildRequest()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRequest()
      */
     protected function buildRequest(Request $request, $requestBuilder)
     {
-        $rawRequest = call_user_func(array($this, $requestBuilder), $request);
+        $rawRequest = call_user_func(array( $this, $requestBuilder ), $request);
         $serializer = new Serializer(Serializer::XML);
-        $xml = $serializer->serialize(
+        $xml        = $serializer->serialize(
             array_merge($rawRequest, $this->buildBaseRequest()),
-            array('root_name' => 'CC5Request')
+            array( 'root_name' => 'CC5Request' )
         );
         $data       = array( 'DATA' => $xml );
         $request->setRawData($xml);
@@ -57,7 +58,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::buildPreauthorizationRequest()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPreauthorizationRequest()
      */
     protected function buildPreAuthorizationRequest(Request $request)
     {
@@ -80,7 +81,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::buildPostAuthorizationRequest()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPostAuthorizationRequest()
      */
     protected function buildPostAuthorizationRequest(Request $request)
     {
@@ -93,7 +94,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::buildSaleRequest()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildSaleRequest()
      */
     protected function buildSaleRequest(Request $request)
     {
@@ -116,7 +117,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::buildRefundRequest()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRefundRequest()
      */
     protected function buildRefundRequest(Request $request)
     {
@@ -133,7 +134,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::buildCancelRequest()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildCancelRequest()
      */
     protected function buildCancelRequest(Request $request)
     {
@@ -149,23 +150,43 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @see AdapterAbstract::parseResponse()
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
+     */
+    protected function buildPointQueryRequest(Request $request)
+    {
+        $exception = new UnimplementedMethod('Provider method not implemented: ' . $request->getTransactionType());
+        $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
+        throw $exception;
+    }
+
+    /**
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPointUsageRequest()
+     */
+    protected function buildPointUsageRequest(Request $request)
+    {
+        $exception = new UnimplementedMethod('Provider method not implemented: ' . $request->getTransactionType());
+        $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
+        throw $exception;
+    }
+
+    /**
+     * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
      */
     protected function parseResponse($rawResponse)
     {
         $response = new PaymentResponse();
         try {
+            /**
+             * @var object $xml
+             */
             $xml = new \SimpleXmlElement($rawResponse);
-        } catch (\Exception $e) {
-            $exception = new UnexpectedResponse(
-                'Provider is returned unexpected ' .
-                'response. Response data:' . $rawResponse
-            );
+        } catch ( \Exception $e ) {
+            $exception = new UnexpectedResponse('Provider returned unexpected response: ' . $rawResponse);
             $this->triggerEvent(
                 self::EVENT_ON_EXCEPTION,
                 array_merge(
                     $this->collectTransactionInformation(),
-                    array('exception' => $exception)
+                    array( 'exception' => $exception )
                 )
             );
             throw $exception;
@@ -198,9 +219,7 @@ class Est extends AdapterAbstract implements AdapterInterface
         }
         $response->setRawData($rawResponse);
         $eventData = $this->collectTransactionInformation();
-        $eventName = $response->isSuccess() ?
-                     self::EVENT_ON_TRANSACTION_SUCCESSFUL :
-                     self::EVENT_ON_TRANSACTION_FAILED;
+        $eventName = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
         $this->triggerEvent($eventName, $eventData);
         return $response;
     }

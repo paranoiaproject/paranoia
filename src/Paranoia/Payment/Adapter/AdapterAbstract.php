@@ -13,33 +13,37 @@ use Paranoia\EventManager\EventManagerAbstract;
 
 abstract class AdapterAbstract extends EventManagerAbstract
 {
-    const CURRENCY_TRY                       = 'TRY';
-    const CURRENCY_USD                       = 'USD';
-    const CURRENCY_EUR                       = 'EUR';
-    const EVENT_ON_TRANSACTION_SUCCESSFUL    = 'OnTransactionSuccessful';
-    const EVENT_ON_TRANSACTION_FAILED        = 'OnTransactionFailed';
-    const EVENT_ON_EXCEPTION                 = 'OnException';
+
+    const CONNECTOR_TYPE = Connector::CONNECTOR_TYPE_HTTP;
+    /* Currency Types */
+    const CURRENCY_TRY = 'TRY';
+    const CURRENCY_USD = 'USD';
+    const CURRENCY_EUR = 'EUR';
+    /* Event Triggers */
+    const EVENT_ON_TRANSACTION_SUCCESSFUL = 'OnTransactionSuccessful';
+    const EVENT_ON_TRANSACTION_FAILED     = 'OnTransactionFailed';
+    const EVENT_ON_EXCEPTION              = 'OnException';
+    /* Transaction Types*/
     const TRANSACTION_TYPE_PREAUTHORIZATION  = 'preAuthorization';
     const TRANSACTION_TYPE_POSTAUTHORIZATION = 'postAuthorization';
-    const TRANSACTION_TYPE_SALE 			 = 'sale';
-    const TRANSACTION_TYPE_CANCEL 			 = 'cancel';
-    const TRANSACTION_TYPE_REFUND 			 = 'refund';
-
+    const TRANSACTION_TYPE_SALE              = 'sale';
+    const TRANSACTION_TYPE_CANCEL            = 'cancel';
+    const TRANSACTION_TYPE_REFUND            = 'refund';
+    const TRANSACTION_TYPE_POINT_QUERY       = 'pointQuery';
+    const TRANSACTION_TYPE_POINT_USAGE       = 'pointUsage';
     protected $transactionMap = array();
-
     /**
      * @var \StdClass
      */
     protected $config;
-
     /**
-     * @var \Paranoia\Communication\Adapter\CommunicationInterface
+     * @var \Paranoia\Communication\Connector
      */
     protected $connector;
 
     public function __construct(StdClass $config)
     {
-        $this->config = $config;
+        $this->config    = $config;
         $this->connector = new Connector(static::CONNECTOR_TYPE);
     }
 
@@ -87,8 +91,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      *  build complete raw data for the specified request.
      *
      * @param \Paranoia\Payment\Request $request
-     * @param string $requestBuilder
-     * @internal param $ \Payment\Request
+     * @param string                    $requestBuilder
      * @return mixed
      */
     abstract protected function buildRequest(Request $request, $requestBuilder);
@@ -115,17 +118,16 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * sends request to remote host.
      *
      * @param string $url
-     * @param mixed $data
-     * @param array $options
+     * @param mixed  $data
+     * @param array  $options
      * @throws \ErrorException|\Exception
-
      * @return mixed
      */
     protected function sendRequest($url, $data, $options = null)
     {
         try {
             return $this->getConnector()->sendRequest($url, $data, $options);
-        } catch (\ErrorException $e) {
+        } catch ( \ErrorException $e ) {
             $this->triggerEvent(
                 self::EVENT_ON_EXCEPTION,
                 array(
@@ -149,9 +151,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     protected function formatCurrency($currency)
     {
         if (!property_exists($this->config, 'currencyCodes')) {
-            throw new ConfigurationError(
-                'Currency codes are not defined in configuration.'
-            );
+            throw new ConfigurationError('Currency codes are not defined in configuration.');
         }
         if (!property_exists($this->config->currencyCodes, $currency)) {
             throw new UnknownCurrencyCode(sprintf('%s is unknown currency.', $currency));
@@ -163,9 +163,8 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * returns formatted amount with doth or without doth.
      * formatted number returns amount default without doth.
      *
-     * @param         string /float $amount
-     * @param boolean $reverse
-     *
+     * @param string|float $amount
+     * @param boolean      $reverse
      * @return string
      */
     protected function formatAmount($amount, $reverse = false)
@@ -182,7 +181,6 @@ abstract class AdapterAbstract extends EventManagerAbstract
      *
      * @param int $month
      * @param int $year
-     *
      * @return string
      */
     protected function formatExpireDate($month, $year)
@@ -194,18 +192,18 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * returns formatted installment amount
      *
      * @param int $installment
-     *
      * @return string
      */
     protected function formatInstallment($installment)
     {
-        return ( !is_numeric($installment) || intval($installment) <= 1 ) ? '' : $installment;
+        return (!is_numeric($installment) || intval($installment) <= 1) ? '' : $installment;
     }
 
     /**
      * stamps transfer objects with time and transaction type.
+     *
      * @param \Paranoia\Payment\TransferInterface $transfer
-     * @param string $transactionType
+     * @param string                              $transactionType
      */
     private function stamp(TransferInterface $transfer, $transactionType)
     {
@@ -216,102 +214,119 @@ abstract class AdapterAbstract extends EventManagerAbstract
     /**
      * returns transaction code by expected provider.
      *
-     * @param $transactionType
+     * @param string $transactionType
      * @throws \Paranoia\Payment\Exception\UnknownTransactionType
-     * @internal param string $transcationType
      * @return string
      */
     protected function getProviderTransactionType($transactionType)
     {
-        if (! array_key_exists($transactionType, $this->transactionMap)) {
-            throw new UnknownTransactionType(
-                'Transaction type is unknown: ' . $transactionType
-            );
+        if (!array_key_exists($transactionType, $this->transactionMap)) {
+            throw new UnknownTransactionType('Transaction type is unknown: ' . $transactionType);
         }
         return $this->transactionMap[$transactionType];
     }
 
     /**
-     * @see AdapterInterface::preAuthorization()
-     *
+     * @see \Paranoia\Payment\Adapter\AdapterInterface::preAuthorization()
      * @param \Paranoia\Payment\Request $request
-     *
      * @return object
      */
     public function preAuthorization(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
-        $rawRequest = $this->buildRequest($request, 'buildPreAuthorizationRequest');
+        $rawRequest  = $this->buildRequest($request, 'buildPreAuthorizationRequest');
         $rawResponse = $this->sendRequest($this->config->api_url, $rawRequest);
-        $response = $this->parseResponse($rawResponse);
+        $response    = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
         return $response;
     }
 
     /**
      * @see \Paranoia\Payment\Adapter\AdapterInterface::postAuthorization()
-     *
      * @param \Paranoia\Payment\Request $request
-     *
      * @return object
      */
     public function postAuthorization(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
-        $rawRequest = $this->buildRequest($request, 'buildPostAuthorizationRequest');
+        $rawRequest  = $this->buildRequest($request, 'buildPostAuthorizationRequest');
         $rawResponse = $this->sendRequest($this->config->api_url, $rawRequest);
-        $response = $this->parseResponse($rawResponse);
+        $response    = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
         return $response;
     }
 
     /**
      * @see \Paranoia\Payment\Adapter\AdapterInterface::sale()
-     *
      * @param \Paranoia\Payment\Request $request
-     *
      * @return object
      */
     public function sale(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
-        $rawRequest = $this->buildRequest($request, 'buildSaleRequest');
+        $rawRequest  = $this->buildRequest($request, 'buildSaleRequest');
         $rawResponse = $this->sendRequest($this->config->api_url, $rawRequest);
-        $response = $this->parseResponse($rawResponse);
+        $response    = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
         return $response;
     }
 
     /**
      * @see \Paranoia\Payment\Adapter\AdapterInterface::refund()
-     *
      * @param \Paranoia\Payment\Request $request
-     *
      * @return object
      */
     public function refund(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
-        $rawRequest = $this->buildRequest($request, 'buildRefundRequest');
+        $rawRequest  = $this->buildRequest($request, 'buildRefundRequest');
         $rawResponse = $this->sendRequest($this->config->api_url, $rawRequest);
-        $response = $this->parseResponse($rawResponse);
+        $response    = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
         return $response;
     }
 
     /**
      * @see \Paranoia\Payment\Adapter\AdapterInterface::cancel()
-     *
      * @param \Paranoia\Payment\Request $request
-     *
      * @return object
      */
     public function cancel(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
-        $rawRequest = $this->buildRequest($request, 'buildCancelRequest');
+        $rawRequest  = $this->buildRequest($request, 'buildCancelRequest');
         $rawResponse = $this->sendRequest($this->config->api_url, $rawRequest);
-        $response = $this->parseResponse($rawResponse);
+        $response    = $this->parseResponse($rawResponse);
+        $this->stamp($response, __FUNCTION__);
+        return $response;
+    }
+
+    /**
+     * @see \Paranoia\Payment\Adapter\AdapterInterface::pointQuery()
+     * @param \Paranoia\Payment\Request $request
+     * @return object
+     */
+    public function pointQuery(Request $request)
+    {
+        $this->stamp($request, __FUNCTION__);
+        $rawRequest  = $this->buildRequest($request, 'buildPointQueryRequest');
+        $rawResponse = $this->sendRequest($this->config->api_url, $rawRequest);
+        $response    = $this->parseResponse($rawResponse);
+        $this->stamp($response, __FUNCTION__);
+        return $response;
+    }
+
+    /**
+     * @see \Paranoia\Payment\Adapter\AdapterInterface::pointUsage()
+     * @param \Paranoia\Payment\Request $request
+     * @return object
+     */
+    public function pointUsage(Request $request)
+    {
+        $this->stamp($request, __FUNCTION__);
+        $rawRequest  = $this->buildRequest($request, 'buildPointUsageRequest');
+        $rawResponse = $this->sendRequest($this->config->api_url, $rawRequest);
+        $response    = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
         return $response;
     }
@@ -320,7 +335,6 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * mask some critical information in transaction request.
      *
      * @param string $rawRequest
-     *
      * @return string
      */
     protected function maskRequest($rawRequest)
