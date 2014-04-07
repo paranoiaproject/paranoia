@@ -1,4 +1,4 @@
-# Paranoia
+# Paranoia - Deneme Yapılıyor
 
 [![Build Status](https://travis-ci.org/ibrahimgunduz34/paranoia.png?branch=master)](https://travis-ci.org/ibrahimgunduz34/paranoia)
 
