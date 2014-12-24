@@ -94,7 +94,7 @@ Katkıda bulunmak için aşağıdaki işlem adımlarını gerçekleştirin:
 
 ### Hazırlık:
 
-* ***git@github.com:ibrahimgunduz34/paranoia.git*** deposunu kendi github hesabınıza fork edin.
+* ***git@github.com:paranoiaproject/paranoia.git*** deposunu kendi github hesabınıza fork edin.
 * Kendi hesabınızdaki fork edilmiş repoyu yerel geliştirme ortamınıza kopyalayın.
 
 ```sh
@@ -102,11 +102,11 @@ Katkıda bulunmak için aşağıdaki işlem adımlarını gerçekleştirin:
 $ git clone git@github.com:youruser/paranoia.github
 
 ```
-* ***git@github.com:ibrahimgunduz34/paranoia.git*** reposunu yerel geliştirme ortamınıza upstream olarak tanımlayın.
+* ***git@github.com:paranoiaproject/paranoia.git*** reposunu yerel geliştirme ortamınıza upstream olarak tanımlayın.
 
 ```sh
 
-$ git remote add upstream https://github.com/ibrahimgunduz34/paranoia
+$ git remote add upstream https://github.com/paranoiaproject/paranoia
 
 ```
 
