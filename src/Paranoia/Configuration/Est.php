@@ -2,7 +2,7 @@
 
 namespace Paranoia\Configuration;
 
-class Est
+class Est extends AbstractConfiguration
 {
 
     /**

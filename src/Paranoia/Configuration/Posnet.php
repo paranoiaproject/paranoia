@@ -3,7 +3,7 @@
 namespace Paranoia\Configuration;
 
 
-class Posnet
+class Posnet extends AbstractConfiguration
 {
 
     /**

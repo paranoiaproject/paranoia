@@ -3,7 +3,7 @@
 namespace Paranoia\Configuration;
 
 
-class Gvp
+class Gvp extends AbstractConfiguration
 {
 
     /**
