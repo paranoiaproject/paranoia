@@ -31,6 +31,7 @@ class Est extends AbstractConfiguration
     public function setClientId($clientId)
     {
         $this->clientId = $clientId;
+        return $this;
     }
 
     /**
@@ -47,6 +48,7 @@ class Est extends AbstractConfiguration
     public function setMode($mode)
     {
         $this->mode = $mode;
+        return $this;
     }
 
     /**
@@ -63,6 +65,7 @@ class Est extends AbstractConfiguration
     public function setPassword($password)
     {
         $this->password = $password;
+        return $this;
     }
 
     /**
@@ -79,6 +82,7 @@ class Est extends AbstractConfiguration
     public function setUsername($username)
     {
         $this->username = $username;
+        return $this;
     }
 
     /**

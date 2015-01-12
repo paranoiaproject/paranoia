@@ -47,6 +47,7 @@ class Gvp extends AbstractConfiguration
     public function setAuthorizationPassword($authorizationPassword)
     {
         $this->authorizationPassword = $authorizationPassword;
+        return $this;
     }
 
     /**
@@ -63,6 +64,7 @@ class Gvp extends AbstractConfiguration
     public function setAuthorizationUsername($authorizationUsername)
     {
         $this->authorizationUsername = $authorizationUsername;
+        return $this;
     }
 
     /**
@@ -79,6 +81,7 @@ class Gvp extends AbstractConfiguration
     public function setMerchantId($merchantId)
     {
         $this->merchantId = $merchantId;
+        return $this;
     }
 
     /**
@@ -95,6 +98,7 @@ class Gvp extends AbstractConfiguration
     public function setMode($mode)
     {
         $this->mode = $mode;
+        return $this;
     }
 
     /**
@@ -111,6 +115,7 @@ class Gvp extends AbstractConfiguration
     public function setRefundPassword($refundPassword)
     {
         $this->refundPassword = $refundPassword;
+        return $this;
     }
 
     /**
@@ -127,6 +132,7 @@ class Gvp extends AbstractConfiguration
     public function setRefundUsername($refundUsername)
     {
         $this->refundUsername = $refundUsername;
+        return $this;
     }
 
     /**
@@ -143,6 +149,7 @@ class Gvp extends AbstractConfiguration
     public function setTerminalId($terminalId)
     {
         $this->terminalId = $terminalId;
+        return $this;
     }
 
     /**
