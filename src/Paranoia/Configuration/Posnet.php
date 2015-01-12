@@ -32,6 +32,7 @@ class Posnet extends AbstractConfiguration
     public function setClientId($clientId)
     {
         $this->clientId = $clientId;
+        return $this;
     }
 
     /**
@@ -48,6 +49,7 @@ class Posnet extends AbstractConfiguration
     public function setPassword($password)
     {
         $this->password = $password;
+        return $this;
     }
 
     /**
@@ -64,6 +66,7 @@ class Posnet extends AbstractConfiguration
     public function setTerminalId($terminalId)
     {
         $this->terminalId = $terminalId;
+        return $this;
     }
 
     /**
@@ -80,6 +83,7 @@ class Posnet extends AbstractConfiguration
     public function setUsername($username)
     {
         $this->username = $username;
+        return $this;
     }
 
     /**
