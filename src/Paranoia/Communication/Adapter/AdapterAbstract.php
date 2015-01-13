@@ -16,4 +16,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     protected $lastReceivedResponse;
 
+    public function __construct()
+    {
+    }
 }
