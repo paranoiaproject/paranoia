@@ -2,8 +2,8 @@
 
 namespace Paranoia\Configuration;
 
-
-class AbstractConfiguration {
+class AbstractConfiguration
+{
 
     /**
      * @var string
@@ -25,5 +25,4 @@ class AbstractConfiguration {
     {
         return $this->apiUrl;
     }
-
-} 
+}

@@ -12,6 +12,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
 {
 
     const CONNECTOR_TYPE = Connector::CONNECTOR_TYPE_HTTP;
+
     /**
      * @var array
      */
@@ -29,6 +30,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      * builds request base with common arguments.
      *
      * @param Request $request
+     *
      * @return array
      */
     private function buildBaseRequest(Request $request)
@@ -51,12 +53,13 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      * builds terminal section of request.
      *
      * @param Request $request
+     *
      * @return array
      */
     private function buildTerminal(Request $request)
     {
-        list( $username, $password ) = $this->_getApiCredentialsByRequest($request->getTransactionType());
-        $hash = $this->_getTransactionHash($request, $password);
+        list($username, $password) = $this->getApiCredentialsByRequest($request->getTransactionType());
+        $hash = $this->getTransactionHash($request, $password);
         return array(
             'ProvUserID' => $username,
             'HashData'   => $hash,
@@ -87,6 +90,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      * builds card section of request.
      *
      * @param Request $request
+     *
      * @return array
      */
     private function buildCard(Request $request)
@@ -106,6 +110,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      * builds order section of request.
      *
      * @param Request $request
+     *
      * @return array
      */
     private function buildOrder(Request $request)
@@ -123,13 +128,11 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      * @param Request $request
      * @param integer $cardHolderPresentCode
      * @param string  $originalRetrefNum
+     *
      * @return array
      */
-    private function buildTransaction(
-        Request $request,
-        $cardHolderPresentCode = 0,
-        $originalRetrefNum = null
-    ) {
+    private function buildTransaction(Request $request, $cardHolderPresentCode = 0, $originalRetrefNum = null)
+    {
         $transactionType = $request->getTransactionType();
         $installment     = ($request->getInstallment()) ? $this->formatInstallment($request->getInstallment()) : null;
         $amount          = $this->isAmountRequired($request) ? $this->formatAmount($request->getAmount()) : '1';
@@ -151,6 +154,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      * for request transaction type.
      *
      * @param Request $request
+     *
      * @return boolean
      */
     private function isAmountRequired(Request $request)
@@ -170,6 +174,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      * for request transaction type.
      *
      * @param Request $request
+     *
      * @return boolean
      */
     private function isCardNumberRequired(Request $request)
@@ -187,6 +192,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      * returns api credentials by transaction type of request.
      *
      * @param string $transactionType
+     *
      * @return array
      */
     private function getApiCredentialsByRequest($transactionType)
@@ -199,11 +205,16 @@ class Gvp extends AdapterAbstract implements AdapterInterface
                 self::TRANSACTION_TYPE_POSTAUTHORIZATION,
             )
         );
-
         if ($isAuth) {
-            return array( $this->getConfiguration()->getAuthorizationUsername(), $this->getConfiguration()->getAuthorizationPassword() );
+            return array(
+                $this->getConfiguration()->getAuthorizationUsername(),
+                $this->getConfiguration()->getAuthorizationPassword()
+            );
         } else {
-            return array( $this->getConfiguration()->getRefundUsername(), $this->getConfiguration()->getRefundPassword() );
+            return array(
+                $this->getConfiguration()->getRefundUsername(),
+                $this->getConfiguration()->getRefundPassword()
+            );
         }
     }
 
@@ -211,6 +222,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      * returns security hash for using in transaction hash.
      *
      * @param string $password
+     *
      * @return string
      */
     private function getSecurityHash($password)
@@ -225,15 +237,16 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      *
      * @param Request $request
      * @param string  $password
+     *
      * @return string
      */
     private function getTransactionHash(Request $request, $password)
     {
         $orderId      = $request->getOrderId();
         $terminalId   = $this->getConfiguration()->getTerminalId();
-        $cardNumber   = $this->_isCardNumberRequired($request) ? $request->getCardNumber() : '';
-        $amount       = $this->_isAmountRequired($request) ? $this->_formatAmount($request->getAmount()) : '1';
-        $securityData = $this->_getSecurityHash($password);
+        $cardNumber   = $this->isCardNumberRequired($request) ? $request->getCardNumber() : '';
+        $amount       = $this->isAmountRequired($request) ? $this->formatAmount($request->getAmount()) : '1';
+        $securityData = $this->getSecurityHash($password);
         return strtoupper(
             sha1(
                 sprintf(
@@ -249,6 +262,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRequest()
      */
     protected function buildRequest(Request $request, $requestBuilder)
@@ -265,6 +279,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPreauthorizationRequest()
      */
     protected function buildPreAuthorizationRequest(Request $request)
@@ -274,6 +289,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPostAuthorizationRequest()
      */
     protected function buildPostAuthorizationRequest(Request $request)
@@ -283,6 +299,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildSaleRequest()
      */
     protected function buildSaleRequest(Request $request)
@@ -292,6 +309,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRefundRequest()
      */
     protected function buildRefundRequest(Request $request)
@@ -300,6 +318,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildCancelRequest()
      */
     protected function buildCancelRequest(Request $request)
@@ -312,6 +331,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
      */
     protected function buildPointQueryRequest(Request $request)
@@ -322,6 +342,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPointUsageRequest()
      */
     protected function buildPointUsageRequest(Request $request)
@@ -332,6 +353,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
      */
     protected function parseResponse($rawResponse)
@@ -373,6 +395,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::formatAmount()
      */
     protected function formatAmount($amount, $reverse = false)
@@ -385,10 +408,19 @@ class Gvp extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::formatExpireDate()
      */
     protected function formatExpireDate($month, $year)
     {
         return sprintf('%02s%s', $month, substr($year, -2));
+    }
+
+    /**
+     * @return \Paranoia\Configuration\Gvp
+     */
+    public function getConfiguration()
+    {
+        return parent::getConfiguration();
     }
 }

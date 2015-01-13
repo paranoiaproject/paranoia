@@ -2,7 +2,7 @@
 
 namespace Paranoia\Configuration;
 
-class Est extends AbstractConfiguration
+class NestPay extends AbstractConfiguration
 {
 
     /**
@@ -27,6 +27,8 @@ class Est extends AbstractConfiguration
 
     /**
      * @param string $clientId
+     *
+     * @return $this
      */
     public function setClientId($clientId)
     {
@@ -44,6 +46,8 @@ class Est extends AbstractConfiguration
 
     /**
      * @param string $mode
+     *
+     * @return $this
      */
     public function setMode($mode)
     {
@@ -61,6 +65,8 @@ class Est extends AbstractConfiguration
 
     /**
      * @param string $password
+     *
+     * @return $this
      */
     public function setPassword($password)
     {
@@ -78,6 +84,8 @@ class Est extends AbstractConfiguration
 
     /**
      * @param string $username
+     *
+     * @return $this
      */
     public function setUsername($username)
     {
@@ -92,7 +100,4 @@ class Est extends AbstractConfiguration
     {
         return $this->username;
     }
-
-
-
-} 
+}

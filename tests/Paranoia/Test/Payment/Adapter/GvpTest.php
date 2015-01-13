@@ -19,19 +19,24 @@ class GvpTest extends PHPUnit_Framework_TestCase
         parent::setUp();
         $configFile = dirname(__FILE__) . '/../../../../Resources/config/config.json';
         if (!file_exists($configFile)) {
-            throw new Exception( 'Configuration file does not exist.' );
+            throw new Exception('Configuration file does not exist.');
         }
         $config       = file_get_contents($configFile);
         $this->config = json_decode($config);
         $this->bank   = 'garantibank';
     }
 
-    private function createNewOrder( $orderId = null, $amount = 10 )
+    /**
+     * @param string $orderId
+     * @param int    $amount
+     * @return Request
+     */
+    private function createNewOrder($orderId = null, $amount = 10)
     {
         $testData = $this->config->{$this->bank}->testcard;
-        $request = new Request();
-        if($orderId == null) {
-            $request->setOrderId(sprintf('PRNY%s%s', time(), rand(1,9999)));
+        $request  = new Request();
+        if ($orderId == null) {
+            $request->setOrderId(sprintf('PRNY%s%s', time(), rand(1, 9999)));
         } else {
             $request->setOrderId($orderId);
         }
@@ -61,8 +66,9 @@ class GvpTest extends PHPUnit_Framework_TestCase
 
     /**
      * @depends testSale
+     * @param Request $saleRequest
      */
-    public function testCancel( Request $saleRequest )
+    public function testCancel(Request $saleRequest)
     {
         $instance = $this->initializeAdapter();
         $request  = $this->createNewOrder($saleRequest->getOrderId());
