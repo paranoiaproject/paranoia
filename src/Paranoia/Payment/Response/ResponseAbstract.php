@@ -50,6 +50,7 @@ abstract class ResponseAbstract
     protected $time;
 
     /**
+     * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::isSuccess()
      */
     public function isSuccess()
@@ -58,6 +59,7 @@ abstract class ResponseAbstract
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::setIsSuccess()
      */
     public function setIsSuccess($isSuccess)
@@ -67,6 +69,7 @@ abstract class ResponseAbstract
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::getTransactionType()
      */
     public function getTransactionType()
@@ -75,6 +78,7 @@ abstract class ResponseAbstract
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::setTransactionType()
      */
     public function setTransactionType($transactionType)
@@ -84,6 +88,7 @@ abstract class ResponseAbstract
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::getOrderId()
      */
     public function getOrderId()
@@ -92,6 +97,7 @@ abstract class ResponseAbstract
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::setOrderId()
      */
     public function setOrderId($orderId)
@@ -101,6 +107,7 @@ abstract class ResponseAbstract
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::getTransactionId()
      */
     public function getTransactionId()
@@ -109,6 +116,7 @@ abstract class ResponseAbstract
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::setTransactionId()
      */
     public function setTransactionId($transactionId)
@@ -149,6 +157,7 @@ abstract class ResponseAbstract
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::setResponseCode()
      */
     public function setResponseCode($responseCode)
@@ -158,6 +167,7 @@ abstract class ResponseAbstract
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::getResponseCode()
      */
     public function getResponseMessage()
@@ -166,6 +176,7 @@ abstract class ResponseAbstract
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::setResponseMessage()
      */
     public function setResponseMessage($responseMessage)
@@ -198,6 +209,7 @@ abstract class ResponseAbstract
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\TransferInterface::getTime()
      */
     public function getTime()
@@ -206,6 +218,7 @@ abstract class ResponseAbstract
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\TransferInterface::setTime()
      */
     public function setTime($time)

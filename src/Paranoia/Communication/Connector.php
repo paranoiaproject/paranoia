@@ -8,10 +8,11 @@ use Paranoia\Communication\Adapter\Soap;
 
 class Connector
 {
-    private $adapter;
 
     const CONNECTOR_TYPE_SOAP = 'Soap';
     const CONNECTOR_TYPE_HTTP = 'Http';
+
+    private $adapter;
 
     /**
      * determines communication strategy.
@@ -37,6 +38,7 @@ class Connector
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Communication\Adapter\AdapterInterface::sendRequest()
      */
     public function sendRequest($url, $data, $options = null)
@@ -45,14 +47,16 @@ class Connector
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\EventManager\EventManagerAbstract::addListener()
      */
     public function addListener($eventName, ListenerAbstract $listener)
     {
-        return $this->adapter->addListener($eventName, $listener);
+        $this->adapter->addListener($eventName, $listener);
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\EventManager\EventManagerAbstract::getLastSentRequest()
      */
     public function getLastSentRequest()
@@ -61,6 +65,7 @@ class Connector
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\EventManager\EventManagerAbstract::getLastReceivedResponse()
      */
     public function getLastReceivedResponse()

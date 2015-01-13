@@ -2,7 +2,6 @@
 
 namespace Paranoia\Configuration;
 
-
 class Gvp extends AbstractConfiguration
 {
 
@@ -43,6 +42,8 @@ class Gvp extends AbstractConfiguration
 
     /**
      * @param string $authorizationPassword
+     *
+     * @return $this
      */
     public function setAuthorizationPassword($authorizationPassword)
     {
@@ -60,6 +61,8 @@ class Gvp extends AbstractConfiguration
 
     /**
      * @param string $authorizationUsername
+     *
+     * @return $this
      */
     public function setAuthorizationUsername($authorizationUsername)
     {
@@ -77,6 +80,8 @@ class Gvp extends AbstractConfiguration
 
     /**
      * @param int $merchantId
+     *
+     * @return $this
      */
     public function setMerchantId($merchantId)
     {
@@ -94,6 +99,8 @@ class Gvp extends AbstractConfiguration
 
     /**
      * @param string $mode
+     *
+     * @return $this
      */
     public function setMode($mode)
     {
@@ -111,6 +118,8 @@ class Gvp extends AbstractConfiguration
 
     /**
      * @param string $refundPassword
+     *
+     * @return $this
      */
     public function setRefundPassword($refundPassword)
     {
@@ -128,6 +137,8 @@ class Gvp extends AbstractConfiguration
 
     /**
      * @param string $refundUsername
+     *
+     * @return $this
      */
     public function setRefundUsername($refundUsername)
     {
@@ -145,6 +156,8 @@ class Gvp extends AbstractConfiguration
 
     /**
      * @param int $terminalId
+     *
+     * @return $this
      */
     public function setTerminalId($terminalId)
     {
@@ -159,5 +172,4 @@ class Gvp extends AbstractConfiguration
     {
         return $this->terminalId;
     }
-
 }

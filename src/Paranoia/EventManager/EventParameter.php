@@ -3,7 +3,8 @@ namespace Paranoia\EventManager;
 
 class EventParameter
 {
-        /**
+
+    /**
      * @var \Paranoia\EventManager\EventManagerAbstract
      */
     private $source;
@@ -85,11 +86,10 @@ class EventParameter
      */
     public function getData($key = null)
     {
-        if ($key==null) {
+        if ($key == null) {
             return $this->data;
         } else {
-            return (array_key_exists($key, $this->data)) ?
-                $this->data[$key] : false;
+            return (array_key_exists($key, $this->data)) ? $this->data[$key] : false;
         }
     }
 

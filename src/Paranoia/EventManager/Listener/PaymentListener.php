@@ -5,6 +5,7 @@ use Paranoia\EventManager\EventParameter;
 
 class PaymentListener extends ListenerAbstract
 {
+
     protected function onTransactionFailed(EventParameter $parameter)
     {
     }

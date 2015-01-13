@@ -15,4 +15,5 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * @return string
      */
     protected $lastReceivedResponse;
+
 }

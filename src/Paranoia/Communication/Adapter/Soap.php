@@ -1,16 +1,13 @@
 <?php
 namespace Paranoia\Communication\Adapter;
 
-use Paranoia\Communication\Adapter\AdapterInterface;
-use Paranoia\Communication\Adapter\AdapterAbstract;
-use Paranoia\Communication\Exception\UndefinedHttpMethod;
 use Paranoia\Communication\Exception\CommunicationFailed;
 
 class Soap extends AdapterAbstract implements AdapterInterface
 {
 
     /**
-     *
+     * {@inheritdoc}
      * @see \Communication\CommunicationInterface::sendRequest()
      */
     public function sendRequest($url, $data, $options = null)

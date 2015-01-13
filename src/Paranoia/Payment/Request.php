@@ -323,6 +323,7 @@ class Request implements TransferInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see \Paranoia\Payment\TransferInterface::getTransactionType()
      */
     public function getTransactionType()
@@ -331,6 +332,7 @@ class Request implements TransferInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see \Paranoia\Payment\TransferInterface::setTransactionType()
      */
     public function setTransactionType($transactionType)
@@ -340,6 +342,7 @@ class Request implements TransferInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\TransferInterface::getTime()
      */
     public function getTime()
@@ -348,6 +351,7 @@ class Request implements TransferInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see \Payment\TransferInterface::setTime()
      */
     public function setTime($time)

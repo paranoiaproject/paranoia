@@ -1,10 +1,9 @@
 <?php
-namespace Paranoia\Payment\Exception {
+namespace Paranoia\Payment\Exception;
 
-    use \ErrorException;
+use \ErrorException;
 
-    class ConfigurationError extends ErrorException
-    {
+class ConfigurationError extends ErrorException
+{
 
-    }
 }
