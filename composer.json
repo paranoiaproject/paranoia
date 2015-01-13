@@ -1,0 +1,29 @@
+{
+    "name": "paranoiaproject/paranoia",
+    "type": "library",
+    "description": "Universal Payment Library",
+    "keywords": ["payment", "e-commerce"],
+    "require": {
+        "php": ">=5.3.0",
+        "monolog/monolog": "~1.7"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "~1.5.2",
+        "phpmd/phpmd" : "1.4.*",
+        "phpunit/phpunit": "3.7.*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ibrahimgunduz34",
+            "email": "ibrahimgunduz34@gmail.com",
+            "homepage": "http://ibrahimgunduz.net"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Paranoia": "src/",
+            "Paranoia\\Tests": "tests/"
+        }
+    }
+}

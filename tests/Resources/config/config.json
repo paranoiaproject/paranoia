@@ -1,0 +1,68 @@
+{
+    "estbank": {
+        "adapter": "Est",
+        "api_url": "https://testsanalpos.est.com.tr/servlet/cc5ApiServer",
+        "client_id": "700100000",
+        "username": "ISBANKAPI",
+        "password": "ISBANK07",
+        "mode": "T",
+        "testcard": {
+            "number": "5406675406675403",
+            "cvv": "000",
+            "expire_month": "12",
+            "expire_year": "2015"
+        },
+        "currencyCodes": {
+            "TRY": 949,
+            "USD": 840,
+            "EUR": 978
+        }
+    },
+    "garantibank": {
+        "adapter": "Gvp",
+        "api_url": "https://sanalposprovtest.garanti.com.tr/VPServlet",
+        "terminal_id": "30691242",
+        "merchant_id": "7000679",
+        "auth_username": "PROVAUT",
+        "auth_password": "123qweASD",
+        "refund_username": "PROVRFN",
+        "refund_password": "123qweASD",
+        "mode": "TEST",
+        "testcard": {
+            "number": "4059175701021869",
+            "cvv": "000",
+            "expire_month": "01",
+            "expire_year": "2020"
+        },
+        "currencyCodes": {
+            "TRY": 949,
+            "USD": 840,
+            "EUR": 978
+        }
+    },
+    "posnetbank": {
+        "adapter": "Posnet",
+        "api_url": "http://setmpos.ykb.com/PosnetWebService/XML",
+        "client_id": "6700000067",
+        "terminal_id": "67067067",
+        "username": "",
+        "password": "",
+        "testcard": {
+            "number": "4506341010205499",
+            "cvv": "000",
+            "expire_month": "03",
+            "expire_year": "2015"
+        },
+        "testcard2": {
+            "number": "4921301010401941",
+            "cvv": "000",
+            "expire_month": "02",
+            "expire_year": "2015"
+        },
+        "currencyCodes": {
+            "TRY": "YT",
+            "USD": "US",
+            "EUR": "EU"
+        }
+    }
+}
