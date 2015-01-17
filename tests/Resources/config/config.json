@@ -33,7 +33,7 @@
         "auth_password": "123qweASD",
         "refund_username": "PROVRFN",
         "refund_password": "123qweASD",
-        "mode": "TEST",
+        "mode": "PROD",
         "testcard": {
             "number": "4059175701021869",
             "cvv": "000",
