@@ -348,6 +348,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
+        return $response;
     }
 
     /**
