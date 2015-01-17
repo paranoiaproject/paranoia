@@ -8,10 +8,11 @@ use Paranoia\Payment\Response\PaymentResponse;
 use Paranoia\Payment\Exception\UnexpectedResponse;
 use Paranoia\Payment\Exception\UnimplementedMethod;
 
-class Est extends AdapterAbstract implements AdapterInterface
+class NestPay extends AdapterAbstract implements AdapterInterface
 {
 
     const CONNECTOR_TYPE = Connector::CONNECTOR_TYPE_HTTP;
+
     /**
      * @var array
      */
@@ -41,6 +42,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRequest()
      */
     protected function buildRequest(Request $request, $requestBuilder)
@@ -57,6 +59,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPreauthorizationRequest()
      */
     protected function buildPreAuthorizationRequest(Request $request)
@@ -80,6 +83,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPostAuthorizationRequest()
      */
     protected function buildPostAuthorizationRequest(Request $request)
@@ -93,6 +97,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildSaleRequest()
      */
     protected function buildSaleRequest(Request $request)
@@ -116,6 +121,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRefundRequest()
      */
     protected function buildRefundRequest(Request $request)
@@ -133,6 +139,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildCancelRequest()
      */
     protected function buildCancelRequest(Request $request)
@@ -149,6 +156,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
      */
     protected function buildPointQueryRequest(Request $request)
@@ -159,6 +167,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPointUsageRequest()
      */
     protected function buildPointUsageRequest(Request $request)
@@ -169,6 +178,7 @@ class Est extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
      */
     protected function parseResponse($rawResponse)
@@ -221,5 +231,13 @@ class Est extends AdapterAbstract implements AdapterInterface
         $eventName = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
         $this->triggerEvent($eventName, $eventData);
         return $response;
+    }
+
+    /**
+     * @return \Paranoia\Configuration\NestPay
+     */
+    public function getConfiguration()
+    {
+        return parent::getConfiguration();
     }
 }

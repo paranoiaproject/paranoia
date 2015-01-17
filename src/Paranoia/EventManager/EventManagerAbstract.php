@@ -48,13 +48,7 @@ abstract class EventManagerAbstract
      */
     protected function triggerEvent($eventName, $data = array())
     {
-        $parameter = new EventParameter(
-            $this,
-            $eventName,
-            $data,
-            microtime(true)
-        );
-
+        $parameter = new EventParameter($this, $eventName, $data, microtime(true));
         /* @var $listener \Paranoia\EventManager\Listener\ListenerAbstract */
         foreach ($this->getListeners($eventName) as $listener) {
             $listener->triggerEvent($eventName, $parameter);

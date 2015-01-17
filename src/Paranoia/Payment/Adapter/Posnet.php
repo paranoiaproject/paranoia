@@ -12,6 +12,16 @@ class Posnet extends AdapterAbstract implements AdapterInterface
 {
 
     const CONNECTOR_TYPE = Connector::CONNECTOR_TYPE_HTTP;
+
+    /**
+     * @var array
+     */
+    protected $currencyCodes = array(
+        self::CURRENCY_TRY => 'YT',
+        self::CURRENCY_EUR => 'EU',
+        self::CURRENCY_USD => 'US',
+    );
+
     /**
      * @var array
      */
@@ -35,12 +45,13 @@ class Posnet extends AdapterAbstract implements AdapterInterface
         return array(
             'username' => $this->getConfiguration()->getUsername(),
             'password' => $this->getConfiguration()->getPassword(),
-            'mid'      => $this->getConfiguration()->getMerchantId(),
+            'mid'      => $this->getConfiguration()->getClientId(),
             'tid'      => $this->getConfiguration()->getTerminalId()
         );
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRequest()
      */
     protected function buildRequest(Request $request, $requestBuilder)
@@ -57,6 +68,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPreauthorizationRequest()
      */
     protected function buildPreauthorizationRequest(Request $request)
@@ -83,6 +95,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPostAuthorizationRequest()
      */
     protected function buildPostAuthorizationRequest(Request $request)
@@ -106,6 +119,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildSaleRequest()
      */
     protected function buildSaleRequest(Request $request)
@@ -132,6 +146,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRefundRequest()
      */
     protected function buildRefundRequest(Request $request)
@@ -150,6 +165,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildCancelRequest()
      */
     protected function buildCancelRequest(Request $request)
@@ -166,6 +182,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
      */
     protected function buildPointQueryRequest(Request $request)
@@ -176,6 +193,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPointUsageRequest()
      */
     protected function buildPointUsageRequest(Request $request)
@@ -186,6 +204,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
      */
     protected function parseResponse($rawResponse)
@@ -238,6 +257,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * Posnet tutar değerinde nokta istemiyor. Örnek:15.00TL için 1500 gönderilmesi gerekiyor.
      *
      * @see Paranoia\Payment\Adapter\AdapterAbstract::formatAmount()
@@ -252,6 +272,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * Posnet Son Kullanma Tarihini YYMM formatında istiyor. Örnek:03/2014 için 1403
      *
      * @see Paranoia\Payment\Adapter\AdapterAbstract::formatExpireDate()
@@ -262,6 +283,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
      * Postnet Taksit sayısında daima 2 rakam gönderilmesini istiyor.
      *
      * @see Paranoia\Payment\Adapter\AdapterAbstract::formatInstallment()
@@ -275,21 +297,10 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * Posnet currency kodları yerine ilk iki harfi istiyor.
-     *
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::formatCurrency()
+     * @return \Paranoia\Configuration\Posnet
      */
-    protected function formatCurrency($currency)
+    public function getConfiguration()
     {
-        switch ($currency) {
-            case self::CURRENCY_TRY:
-                return 'YT';
-            case self::CURRENCY_USD:
-                return 'US';
-            case self::CURRENCY_EUR:
-                return 'EU';
-            default:
-                return 'YT';
-        }
+        return parent::getConfiguration();
     }
 }

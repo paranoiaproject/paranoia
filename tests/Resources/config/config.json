@@ -1,16 +1,22 @@
 {
-    "estbank": {
-        "adapter": "Est",
-        "api_url": "https://testsanalpos.est.com.tr/servlet/cc5ApiServer",
-        "client_id": "700100000",
-        "username": "ISBANKAPI",
-        "password": "ISBANK07",
+    "nestpaybank": {
+        "adapter": "NestPay",
+        "api_url": "https://entegrasyon.asseco-see.com.tr/fim/api",
+        "client_id": "600100000",
+        "username": "FINANSAPI",
+        "password": "FINANS06",
         "mode": "T",
         "testcard": {
-            "number": "5406675406675403",
+            "number": "4022774022774026",
             "cvv": "000",
             "expire_month": "12",
-            "expire_year": "2015"
+            "expire_year": "2018"
+        },
+        "testcard2": {
+            "number": "5456165456165454",
+            "cvv": "000",
+            "expire_month": "12",
+            "expire_year": "2018"
         },
         "currencyCodes": {
             "TRY": 949,
@@ -21,13 +27,13 @@
     "garantibank": {
         "adapter": "Gvp",
         "api_url": "https://sanalposprovtest.garanti.com.tr/VPServlet",
-        "terminal_id": "30691242",
+        "terminal_id": "30691297",
         "merchant_id": "7000679",
         "auth_username": "PROVAUT",
         "auth_password": "123qweASD",
         "refund_username": "PROVRFN",
         "refund_password": "123qweASD",
-        "mode": "TEST",
+        "mode": "PROD",
         "testcard": {
             "number": "4059175701021869",
             "cvv": "000",

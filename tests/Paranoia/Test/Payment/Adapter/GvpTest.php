@@ -3,8 +3,9 @@ namespace Paranoia\Tests\Payment\Adapter;
 
 use \PHPUnit_Framework_TestCase;
 use \Exception;
-use Paranoia\Payment\Factory;
 use Paranoia\Payment\Request;
+use Paranoia\Configuration\Gvp as Configuration;
+use Paranoia\Payment\Adapter\Gvp as Adapter;
 
 class GvpTest extends PHPUnit_Framework_TestCase
 {
@@ -19,35 +20,57 @@ class GvpTest extends PHPUnit_Framework_TestCase
         parent::setUp();
         $configFile = dirname(__FILE__) . '/../../../../Resources/config/config.json';
         if (!file_exists($configFile)) {
-            throw new Exception( 'Configuration file does not exist.' );
+            throw new Exception('Configuration file does not exist.');
         }
         $config       = file_get_contents($configFile);
         $this->config = json_decode($config);
         $this->bank   = 'garantibank';
     }
 
-    private function createNewOrder( $orderId = null, $amount = 10 )
+    /**
+     * @param string $orderId
+     * @param int    $amount
+     *
+     * @return Request
+     */
+    private function createNewOrder($orderId = null, $amount = 10)
     {
         $testData = $this->config->{$this->bank}->testcard;
-        $request = new Request();
-        if($orderId == null) {
-            $request->setOrderId(sprintf('PRNY%s%s', time(), rand(1,9999)));
+        $request  = new Request();
+        if ($orderId == null) {
+            $request->setOrderId(sprintf('PRNY%s%s', time(), rand(1, 9999)));
         } else {
             $request->setOrderId($orderId);
         }
-        $request->setAmount($amount);
-        $request->setCurrency('TRY');
-        $request->setCardNumber($testData->number);
-        $request->setSecurityCode($testData->cvv);
-        $request->setExpireMonth($testData->expire_month);
-        $request->setExpireYear($testData->expire_year);
+        $request->setCardNumber($testData->number)
+            ->setSecurityCode($testData->cvv)
+            ->setExpireMonth($testData->expire_month)
+            ->setExpireYear($testData->expire_year)
+            ->setAmount($amount)
+            ->setCurrency('TRY');
         return $request;
     }
 
     private function initializeAdapter()
     {
-        $instance = Factory::createInstance($this->config, $this->bank);
-        return $instance;
+        $configuration = $this->createConfiguration();
+        $adapter       = new Adapter($configuration);
+        return $adapter;
+    }
+
+    private function createConfiguration()
+    {
+        $bankData      = $this->config->{$this->bank};
+        $configuration = new Configuration();
+        $configuration->setApiUrl($bankData->api_url)
+            ->setMerchantId($bankData->merchant_id)
+            ->setTerminalId($bankData->terminal_id)
+            ->setAuthorizationUsername($bankData->auth_username)
+            ->setAuthorizationPassword($bankData->auth_password)
+            ->setRefundUsername($bankData->refund_username)
+            ->setRefundPassword($bankData->refund_password)
+            ->setMode($bankData->mode);
+        return $configuration;
     }
 
     public function testSale()
@@ -55,14 +78,20 @@ class GvpTest extends PHPUnit_Framework_TestCase
         $instance     = $this->initializeAdapter();
         $orderRequest = $this->createNewOrder();
         $response     = $instance->sale($orderRequest);
+        if (!$response->isSuccess()) {
+            $this->expectOutputString('');
+            echo $response->getRawData();
+        }
         $this->assertTrue($response->isSuccess());
         return $orderRequest;
     }
 
     /**
      * @depends testSale
+     *
+     * @param Request $saleRequest
      */
-    public function testCancel( Request $saleRequest )
+    public function testCancel(Request $saleRequest)
     {
         $instance = $this->initializeAdapter();
         $request  = $this->createNewOrder($saleRequest->getOrderId());

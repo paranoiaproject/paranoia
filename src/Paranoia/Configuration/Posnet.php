@@ -2,7 +2,6 @@
 
 namespace Paranoia\Configuration;
 
-
 class Posnet extends AbstractConfiguration
 {
 
@@ -28,6 +27,8 @@ class Posnet extends AbstractConfiguration
 
     /**
      * @param int $clientId
+     *
+     * @return $this
      */
     public function setClientId($clientId)
     {
@@ -45,6 +46,8 @@ class Posnet extends AbstractConfiguration
 
     /**
      * @param string $password
+     *
+     * @return $this
      */
     public function setPassword($password)
     {
@@ -62,6 +65,8 @@ class Posnet extends AbstractConfiguration
 
     /**
      * @param int $terminalId
+     *
+     * @return $this
      */
     public function setTerminalId($terminalId)
     {
@@ -79,6 +84,8 @@ class Posnet extends AbstractConfiguration
 
     /**
      * @param string $username
+     *
+     * @return $this
      */
     public function setUsername($username)
     {
@@ -93,5 +100,4 @@ class Posnet extends AbstractConfiguration
     {
         return $this->username;
     }
-
-} 
+}

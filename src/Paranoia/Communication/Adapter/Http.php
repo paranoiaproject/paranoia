@@ -7,18 +7,14 @@ use Paranoia\Communication\Exception\CommunicationFailed;
 class Http extends AdapterAbstract implements AdapterInterface
 {
 
+    /* Methods */
     const METHOD_POST = 'POST';
-
     const METHOD_GET = 'GET';
-
     const METHOD_PUT = 'PUT';
-
     const METHOD_DELETE = 'DELETE';
-
+    /* Events */
     const EVENT_BEFORE_REQUEST = 'BeforeRequest';
-
     const EVENT_AFTER_REQUEST = 'AfterRequest';
-
     const EVENT_ON_EXCEPTION = 'OnException';
 
     /**
@@ -99,19 +95,21 @@ class Http extends AdapterAbstract implements AdapterInterface
         if (!isset($options['method'])) {
             $options['method'] = self::METHOD_POST;
         }
-        $curlOptions = array(CURLOPT_URL            => $url,
-                             CURLOPT_RETURNTRANSFER => true,
-                             CURLOPT_SSL_VERIFYPEER => false,
-                             CURLOPT_HEADER         => false,
-                             CURLOPT_CUSTOMREQUEST => $options['method']);
+        $curlOptions = array(
+            CURLOPT_URL            => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_HEADER         => false,
+            CURLOPT_CUSTOMREQUEST  => $options['method']
+        );
         $this->attachData($data, $curlOptions);
         curl_setopt_array($this->handler, $curlOptions);
         return $curlOptions;
     }
 
     /**
+     * {@inheritdoc}
      * @see \Paranoia\Communication\Adapter\AdapterInterface::sendRequest()
-     *
      * @throws \Paranoia\Communication\Exception\CommunicationFailed
      */
     public function sendRequest($url, $data, $options = null)
@@ -120,26 +118,27 @@ class Http extends AdapterAbstract implements AdapterInterface
         $this->validateMethod($curlOptions);
         $this->triggerEvent(
             self::EVENT_BEFORE_REQUEST,
-            array('url' => $url, 'data' => $data)
+            array( 'url' => $url, 'data' => $data )
         );
         $response = curl_exec($this->handler);
         $this->triggerEvent(
             self::EVENT_AFTER_REQUEST,
-            array('url' => $url, 'data' => $response)
+            array( 'url' => $url, 'data' => $response )
         );
         $this->lastReceivedResponse = $response;
-        $error = curl_error($this->handler);
+        $error                      = curl_error($this->handler);
         if ($error) {
             $exception = new CommunicationFailed(
-                'Communication error occurred. Detail: '. $error
+                'Communication error occurred. Detail: ' . $error
             );
-
             $this->triggerEvent(
                 self::EVENT_ON_EXCEPTION,
-                array('url'           => $url,
-                      'last_request'  => $data,
-                      'last_response' => $response,
-                      'exception'     => $exception)
+                array(
+                    'url'           => $url,
+                    'last_request'  => $data,
+                    'last_response' => $response,
+                    'exception'     => $exception
+                )
             );
             throw  $exception;
         }

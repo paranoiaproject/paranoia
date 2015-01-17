@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/3.7/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
          colors="true">
-  <testsuite n1ame="factory method design pattern">
-    <directory>tests/</directory>
-  </testsuite>
-  <filter>
-    <whitelist addUncoveredFilesFromWhitelist="true">
-        <directory suffix=".php">./libs</directory>
-        <directory suffix=".php">./src</directory>
-    </whitelist>
-  </filter>
+    <testsuites>
+        <testsuite name="method design pattern">
+            <directory>tests/</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
 </phpunit>
