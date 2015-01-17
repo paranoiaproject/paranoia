@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="vendor/autoload.php"
          colors="true">
-  <testsuite n1ame="factory method design pattern">
+  <testsuite name="method design pattern">
     <directory>tests/</directory>
   </testsuite>
   <filter>
