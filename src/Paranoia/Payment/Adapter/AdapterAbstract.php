@@ -58,7 +58,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     public function __construct(AbstractConfiguration $configuration)
     {
         $this->configuration = $configuration;
-        $this->_connector    = new Connector(static::CONNECTOR_TYPE);
+        $this->connector     = new Connector(static::CONNECTOR_TYPE);
     }
 
     /**
