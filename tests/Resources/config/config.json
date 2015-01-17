@@ -27,7 +27,7 @@
     "garantibank": {
         "adapter": "Gvp",
         "api_url": "https://sanalposprovtest.garanti.com.tr/VPServlet",
-        "terminal_id": "30691242",
+        "terminal_id": "30691297",
         "merchant_id": "7000679",
         "auth_username": "PROVAUT",
         "auth_password": "123qweASD",
