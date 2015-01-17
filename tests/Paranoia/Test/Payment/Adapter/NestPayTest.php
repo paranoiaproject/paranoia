@@ -3,13 +3,15 @@ namespace Paranoia\Tests\Payment\Adapter;
 
 use \PHPUnit_Framework_TestCase;
 use \Exception;
-use Paranoia\Payment\Factory;
 use Paranoia\Payment\Request;
+use Paranoia\Configuration\NestPay as Configuration;
+use Paranoia\Payment\Adapter\NestPay as Adapter;
 
-class EstTest extends PHPUnit_Framework_TestCase
+class NestPayTest extends PHPUnit_Framework_TestCase
 {
 
     private $config;
+
     private $bank;
 
     public function setUp()
@@ -28,6 +30,7 @@ class EstTest extends PHPUnit_Framework_TestCase
     /**
      * @param string $orderId
      * @param int    $amount
+     *
      * @return Request
      */
     private function createNewOrder($orderId = null, $amount = 10)
@@ -39,19 +42,32 @@ class EstTest extends PHPUnit_Framework_TestCase
         } else {
             $request->setOrderId($orderId);
         }
-        $request->setAmount($amount);
-        $request->setCurrency('TRY');
-        $request->setCardNumber($testData->number);
-        $request->setSecurityCode($testData->cvv);
-        $request->setExpireMonth($testData->expire_month);
-        $request->setExpireYear($testData->expire_year);
+        $request->setCardNumber($testData->number)
+            ->setSecurityCode($testData->cvv)
+            ->setExpireMonth($testData->expire_month)
+            ->setExpireYear($testData->expire_year)
+            ->setAmount($amount)
+            ->setCurrency('TRY');
         return $request;
     }
 
     private function initializeAdapter()
     {
-        $instance = Factory::createInstance($this->config, $this->bank);
-        return $instance;
+        $configuration = $this->createConfiguration();
+        $adapter       = new Adapter($configuration);
+        return $adapter;
+    }
+
+    private function createConfiguration()
+    {
+        $bankData      = $this->config->{$this->bank};
+        $configuration = new Configuration();
+        $configuration->setApiUrl($bankData->api_url)
+            ->setClientId($bankData->client_id)
+            ->setUsername($bankData->username)
+            ->setPassword($bankData->password)
+            ->setMode($bankData->mode);
+        return $configuration;
     }
 
     public function testSale()
@@ -65,6 +81,7 @@ class EstTest extends PHPUnit_Framework_TestCase
 
     /**
      * @depends testSale
+     *
      * @param Request $saleRequest
      */
     public function testCancel(Request $saleRequest)

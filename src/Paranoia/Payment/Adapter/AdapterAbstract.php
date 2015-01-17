@@ -276,7 +276,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     public function preAuthorization(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
-        $rawRequest  = $this->buildRequest($request, '_buildPreauthorizationRequest');
+        $rawRequest  = $this->buildRequest($request, 'buildPreauthorizationRequest');
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
@@ -293,7 +293,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     public function postAuthorization(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
-        $rawRequest  = $this->buildRequest($request, '_buildPostAuthorizationRequest');
+        $rawRequest  = $this->buildRequest($request, 'buildPostAuthorizationRequest');
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
@@ -310,7 +310,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     public function sale(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
-        $rawRequest  = $this->buildRequest($request, '_buildSaleRequest');
+        $rawRequest  = $this->buildRequest($request, 'buildSaleRequest');
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
@@ -327,7 +327,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     public function refund(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
-        $rawRequest  = $this->buildRequest($request, '_buildRefundRequest');
+        $rawRequest  = $this->buildRequest($request, 'buildRefundRequest');
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);
@@ -344,7 +344,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
     public function cancel(Request $request)
     {
         $this->stamp($request, __FUNCTION__);
-        $rawRequest  = $this->buildRequest($request, '_buildCancelRequest');
+        $rawRequest  = $this->buildRequest($request, 'buildCancelRequest');
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse);
         $this->stamp($response, __FUNCTION__);

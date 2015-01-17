@@ -12,10 +12,13 @@ class AbstractConfiguration
 
     /**
      * @param string $apiUrl
+     *
+     * @return $this
      */
     public function setApiUrl($apiUrl)
     {
         $this->apiUrl = $apiUrl;
+        return $this;
     }
 
     /**
