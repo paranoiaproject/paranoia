@@ -80,7 +80,8 @@ class GvpTest extends PHPUnit_Framework_TestCase
         $response     = $instance->sale($orderRequest);
         $this->assertTrue($response->isSuccess());
         if (!$response->isSuccess()) {
-            fwrite(STDERR, $response->getRawData());
+            $this->expectOutputString('');
+            echo $response->getRawData();
         }
         return $orderRequest;
     }
