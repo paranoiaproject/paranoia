@@ -135,8 +135,12 @@ class Gvp extends AdapterAbstract implements AdapterInterface
      *
      * @return array
      */
-    private function buildTransaction(Request $request, $transactionType, $cardHolderPresentCode = 0, $originalRetrefNum = null)
-    {
+    private function buildTransaction(
+        Request $request,
+        $transactionType,
+        $cardHolderPresentCode = 0,
+        $originalRetrefNum = null
+    ) {
         $installment     = ($request->getInstallment()) ? $this->formatInstallment($request->getInstallment()) : null;
         $amount          = $this->isAmountRequired($transactionType) ? $this->formatAmount($request->getAmount()) : '1';
         $currency        = ($request->getCurrency()) ? $this->formatCurrency($request->getCurrency()) : null;

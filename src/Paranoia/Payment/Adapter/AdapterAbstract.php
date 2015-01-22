@@ -87,7 +87,7 @@ abstract class AdapterAbstract
      */
     protected function getDispatcher()
     {
-        if(!$this->dispatcher) {
+        if (!$this->dispatcher) {
             $this->dispatcher = new EventDispatcher();
         }
         return $this->dispatcher;
