@@ -7,13 +7,9 @@ use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
 use Paranoia\Payment\Exception\UnexpectedResponse;
 use Paranoia\Payment\Exception\UnimplementedMethod;
-use Paranoia\Communication\Connector;
 
 class Gvp extends AdapterAbstract implements AdapterInterface
 {
-
-    const CONNECTOR_TYPE = Connector::CONNECTOR_TYPE_HTTP;
-
     /**
      * @var array
      */
@@ -281,8 +277,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
             $rawRequest,
             array( 'root_name' => 'GVPSRequest' )
         );
-        $data       = array( 'data' => $xml );
-        return http_build_query($data);
+        return array( 'data' => $xml );
     }
 
     /**
