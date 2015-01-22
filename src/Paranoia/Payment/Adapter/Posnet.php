@@ -2,6 +2,7 @@
 namespace Paranoia\Payment\Adapter;
 
 use Paranoia\Common\Serializer\Serializer;
+use Paranoia\Payment\PaymentEventArg;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
 use Paranoia\Payment\Exception\UnexpectedResponse;
@@ -43,9 +44,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     private function buildBaseRequest()
     {
         return array(
-            'username' => $this->getConfiguration()->getUsername(),
-            'password' => $this->getConfiguration()->getPassword(),
-            'mid'      => $this->getConfiguration()->getClientId(),
+            'mid'      => $this->getConfiguration()->getMerchantId(),
             'tid'      => $this->getConfiguration()->getTerminalId()
         );
     }
@@ -59,11 +58,10 @@ class Posnet extends AdapterAbstract implements AdapterInterface
         $rawRequest = call_user_func(array( $this, $requestBuilder ), $request);
         $serializer = new Serializer(Serializer::XML);
         $xml        = $serializer->serialize(
-            array_merge($rawRequest, $this->buildBaseRequest()),
+            array_merge($this->buildBaseRequest(), $rawRequest),
             array( 'root_name' => 'posnetRequest' )
         );
         $data       = array( 'xmldata' => $xml );
-        $request->setRawData($xml);
         return http_build_query($data);
     }
 
@@ -77,7 +75,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
         $installment = $this->formatInstallment($request->getInstallment());
         $currency    = $this->formatCurrency($request->getCurrency());
         $expireMonth = $this->formatExpireDate($request->getExpireMonth(), $request->getExpireYear());
-        $type        = $this->getProviderTransactionType($request->getTransactionType());
+        $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_PREAUTHORIZATION);
         $requestData = array(
             $type => array(
                 'ccno'          => $request->getCardNumber(),
@@ -85,10 +83,11 @@ class Posnet extends AdapterAbstract implements AdapterInterface
                 'cvc'           => $request->getSecurityCode(),
                 'amount'        => $amount,
                 'currencyCode'  => $currency,
-                'orderID'       => $request->getOrderId(),
+                'orderID'       => $this->formatOrderId($request->getOrderId()),
                 'installment'   => $installment,
-                'extraPoint'    => "000000",
-                'multiplePoint' => "000000"
+                #TODO: this fields will be used, when point and some bank benefit usage is implemented.
+                // 'extraPoint'    => "000000",
+                // 'multiplePoint' => "000000"
             )
         );
         return $requestData;
@@ -103,7 +102,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
         $amount      = $this->formatAmount($request->getAmount());
         $installment = $this->formatInstallment($request->getInstallment());
         $currency    = $this->formatCurrency($request->getCurrency());
-        $type        = $this->getProviderTransactionType($request->getTransactionType());
+        $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_POSTAUTHORIZATION);
         $requestData = array(
             $type => array(
                 'hostLogKey'    => $request->getTransactionId(),
@@ -111,8 +110,9 @@ class Posnet extends AdapterAbstract implements AdapterInterface
                 'amount'        => $amount,
                 'currencyCode'  => $currency,
                 'installment'   => $installment,
-                'extraPoint'    => "000000",
-                'multiplePoint' => "000000"
+                #TODO: this fields will be used, when point and some bank benefit usage is implemented.
+                // 'extraPoint'    => "000000",
+                // 'multiplePoint' => "000000"
             )
         );
         return $requestData;
@@ -128,7 +128,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
         $installment = $this->formatInstallment($request->getInstallment());
         $currency    = $this->formatCurrency($request->getCurrency());
         $expireMonth = $this->formatExpireDate($request->getExpireMonth(), $request->getExpireYear());
-        $type        = $this->getProviderTransactionType($request->getTransactionType());
+        $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_SALE);
         $requestData = array(
             $type => array(
                 'ccno'          => $request->getCardNumber(),
@@ -136,10 +136,11 @@ class Posnet extends AdapterAbstract implements AdapterInterface
                 'cvc'           => $request->getSecurityCode(),
                 'amount'        => $amount,
                 'currencyCode'  => $currency,
-                'orderID'       => $request->getOrderId(),
+                'orderID'       => $this->formatOrderId($request->getOrderId()),
                 'installment'   => $installment,
-                'extraPoint'    => "000000",
-                'multiplePoint' => "000000"
+                #TODO: this fields will be used, when point and some bank benefit usage is implemented.
+                // 'extraPoint'    => "000000",
+                // 'multiplePoint' => "000000"
             )
         );
         return $requestData;
@@ -153,7 +154,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     {
         $amount      = $this->formatAmount($request->getAmount());
         $currency    = $this->formatCurrency($request->getCurrency());
-        $type        = $this->getProviderTransactionType($request->getTransactionType());
+        $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_REFUND);
         $requestData = array(
             $type => array(
                 'hostLogKey'   => $request->getTransactionId(),
@@ -170,7 +171,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
      */
     protected function buildCancelRequest(Request $request)
     {
-        $type        = $this->getProviderTransactionType($request->getTransactionType());
+        $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_CANCEL);
         $requestData = array(
             $type => array(
                 'transaction' => "sale",
@@ -187,9 +188,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
      */
     protected function buildPointQueryRequest(Request $request)
     {
-        $exception = new UnimplementedMethod('Provider method not implemented: ' . $request->getTransactionType());
-        $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
-        throw $exception;
+        throw new UnimplementedMethod();
     }
 
     /**
@@ -198,16 +197,14 @@ class Posnet extends AdapterAbstract implements AdapterInterface
      */
     protected function buildPointUsageRequest(Request $request)
     {
-        $exception = new UnimplementedMethod('Provider method not implemented: ' . $request->getTransactionType());
-        $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
-        throw $exception;
+        throw new UnimplementedMethod();
     }
 
     /**
      * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
      */
-    protected function parseResponse($rawResponse)
+    protected function parseResponse($rawResponse, $transactionType)
     {
         $response = new PaymentResponse();
         try {
@@ -217,13 +214,9 @@ class Posnet extends AdapterAbstract implements AdapterInterface
             $xml = new \SimpleXmlElement($rawResponse);
         } catch ( \Exception $e ) {
             $exception = new UnexpectedResponse('Provider returned unexpected response: ' . $rawResponse);
-            $this->triggerEvent(
-                self::EVENT_ON_EXCEPTION,
-                array_merge(
-                    $this->collectTransactionInformation(),
-                    array( 'exception' => $exception )
-                )
-            );
+            $this->getDispatcher()->dispatch(self::EVENT_ON_EXCEPTION, new PaymentEventArg(
+                null, null, $transactionType, $exception
+            ));
             throw $exception;
         }
         $response->setIsSuccess((int)$xml->approved > 0);
@@ -249,10 +242,10 @@ class Posnet extends AdapterAbstract implements AdapterInterface
                 $response->setOrderId((string)$xml->authCode);
             }
         }
-        $response->setRawData($rawResponse);
-        $eventData = $this->collectTransactionInformation();
-        $eventName = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
-        $this->triggerEvent($eventName, $eventData);
+        $event = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
+        $this->getDispatcher()->dispatch($event, new PaymentEventArg(
+            null, $response, $transactionType
+        ));
         return $response;
     }
 
@@ -297,10 +290,11 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     }
 
     /**
-     * @return \Paranoia\Configuration\Posnet
+     * @param $orderId
+     * @return mixed|string
      */
-    public function getConfiguration()
+    protected function formatOrderId($orderId)
     {
-        return parent::getConfiguration();
+        return str_repeat('0', 24 - strlen($orderId)) . $orderId;
     }
 }

@@ -55,21 +55,6 @@ class Request implements TransferInterface
     private $authCode;
 
     /**
-     * @var string
-     */
-    private $rawData;
-
-    /**
-     * @var string
-     */
-    private $transactionType;
-
-    /**
-     * @var int
-     */
-    private $time;
-
-    /**
      * returns order identity.
      *
      * @return string
@@ -296,67 +281,6 @@ class Request implements TransferInterface
     public function setAuthCode($authCode)
     {
         $this->authCode = $authCode;
-        return $this;
-    }
-
-    /**
-     * returns request as raw data.
-     *
-     * @return string
-     */
-    public function getRawData()
-    {
-        return $this->rawData;
-    }
-
-    /**
-     * sets response data as raw.
-     *
-     * @param string $rawData
-     *
-     * @return self
-     */
-    public function setRawData($rawData)
-    {
-        $this->rawData = $rawData;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @see \Paranoia\Payment\TransferInterface::getTransactionType()
-     */
-    public function getTransactionType()
-    {
-        return $this->transactionType;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @see \Paranoia\Payment\TransferInterface::setTransactionType()
-     */
-    public function setTransactionType($transactionType)
-    {
-        $this->transactionType = $transactionType;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @see \Payment\TransferInterface::getTime()
-     */
-    public function getTime()
-    {
-        return $this->time;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @see \Payment\TransferInterface::setTime()
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
         return $this;
     }
 }

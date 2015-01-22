@@ -3,6 +3,7 @@ namespace Paranoia\Payment\Adapter;
 
 use Paranoia\Common\Serializer\Serializer;
 use Paranoia\Communication\Connector;
+use Paranoia\Payment\PaymentEventArg;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
 use Paranoia\Payment\Exception\UnexpectedResponse;
@@ -54,7 +55,6 @@ class NestPay extends AdapterAbstract implements AdapterInterface
             array( 'root_name' => 'CC5Request' )
         );
         $data       = array( 'DATA' => $xml );
-        $request->setRawData($xml);
         return http_build_query($data);
     }
 
@@ -68,7 +68,7 @@ class NestPay extends AdapterAbstract implements AdapterInterface
         $installment = $this->formatInstallment($request->getInstallment());
         $currency    = $this->formatCurrency($request->getCurrency());
         $expireMonth = $this->formatExpireDate($request->getExpireMonth(), $request->getExpireYear());
-        $type        = $this->getProviderTransactionType($request->getTransactionType());
+        $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_PREAUTHORIZATION);
         $requestData = array(
             'Type'     => $type,
             'Total'    => $amount,
@@ -77,7 +77,7 @@ class NestPay extends AdapterAbstract implements AdapterInterface
             'Number'   => $request->getCardNumber(),
             'Cvv2Val'  => $request->getSecurityCode(),
             'Expires'  => $expireMonth,
-            'OrderId'  => $request->getOrderId(),
+            'OrderId'  => $this->formatOrderId($request->getOrderId()),
         );
         return $requestData;
     }
@@ -88,10 +88,10 @@ class NestPay extends AdapterAbstract implements AdapterInterface
      */
     protected function buildPostAuthorizationRequest(Request $request)
     {
-        $type        = $this->getProviderTransactionType($request->getTransactionType());
+        $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_POSTAUTHORIZATION);
         $requestData = array(
             'Type'    => $type,
-            'OrderId' => $request->getOrderId(),
+            'OrderId' => $this->formatOrderId($request->getOrderId()),
         );
         return $requestData;
     }
@@ -106,7 +106,7 @@ class NestPay extends AdapterAbstract implements AdapterInterface
         $installment = $this->formatInstallment($request->getInstallment());
         $currency    = $this->formatCurrency($request->getCurrency());
         $expireMonth = $this->formatExpireDate($request->getExpireMonth(), $request->getExpireYear());
-        $type        = $this->getProviderTransactionType($request->getTransactionType());
+        $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_SALE);
         $requestData = array(
             'Type'     => $type,
             'Total'    => $amount,
@@ -115,7 +115,7 @@ class NestPay extends AdapterAbstract implements AdapterInterface
             'Number'   => $request->getCardNumber(),
             'Cvv2Val'  => $request->getSecurityCode(),
             'Expires'  => $expireMonth,
-            'OrderId'  => $request->getOrderId(),
+            'OrderId'  => $this->formatOrderId($request->getOrderId()),
         );
         return $requestData;
     }
@@ -128,12 +128,12 @@ class NestPay extends AdapterAbstract implements AdapterInterface
     {
         $amount      = $this->formatAmount($request->getAmount());
         $currency    = $this->formatCurrency($request->getCurrency());
-        $type        = $this->getProviderTransactionType($request->getTransactionType());
+        $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_REFUND);
         $requestData = array(
             'Type'     => $type,
             'Total'    => $amount,
             'Currency' => $currency,
-            'OrderId'  => $request->getOrderId(),
+            'OrderId'  => $this->formatOrderId($request->getOrderId()),
         );
         return $requestData;
     }
@@ -144,10 +144,10 @@ class NestPay extends AdapterAbstract implements AdapterInterface
      */
     protected function buildCancelRequest(Request $request)
     {
-        $type        = $this->getProviderTransactionType($request->getTransactionType());
+        $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_CANCEL);
         $requestData = array(
             'Type'    => $type,
-            'OrderId' => $request->getOrderId(),
+            'OrderId' => $this->formatOrderId($request->getOrderId()),
         );
         if ($request->getTransactionId()) {
             $requestData['TransId'] = $request->getTransactionId();
@@ -161,9 +161,7 @@ class NestPay extends AdapterAbstract implements AdapterInterface
      */
     protected function buildPointQueryRequest(Request $request)
     {
-        $exception = new UnimplementedMethod('Provider method not implemented: ' . $request->getTransactionType());
-        $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
-        throw $exception;
+        throw new UnimplementedMethod();
     }
 
     /**
@@ -172,16 +170,14 @@ class NestPay extends AdapterAbstract implements AdapterInterface
      */
     protected function buildPointUsageRequest(Request $request)
     {
-        $exception = new UnimplementedMethod('Provider method not implemented: ' . $request->getTransactionType());
-        $this->triggerEvent(self::EVENT_ON_EXCEPTION, array( 'exception' => $exception ));
-        throw $exception;
+        throw new UnimplementedMethod();
     }
 
     /**
      * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
      */
-    protected function parseResponse($rawResponse)
+    protected function parseResponse($rawResponse, $transactionType)
     {
         $response = new PaymentResponse();
         try {
@@ -191,13 +187,9 @@ class NestPay extends AdapterAbstract implements AdapterInterface
             $xml = new \SimpleXmlElement($rawResponse);
         } catch ( \Exception $e ) {
             $exception = new UnexpectedResponse('Provider returned unexpected response: ' . $rawResponse);
-            $this->triggerEvent(
-                self::EVENT_ON_EXCEPTION,
-                array_merge(
-                    $this->collectTransactionInformation(),
-                    array( 'exception' => $exception )
-                )
-            );
+            $this->getDispatcher()->dispatch(self::EVENT_ON_EXCEPTION, new PaymentEventArg(
+                null, null, $transactionType, $exception
+            ));
             throw $exception;
         }
         $response->setIsSuccess((string)$xml->Response == 'Approved');
@@ -226,18 +218,10 @@ class NestPay extends AdapterAbstract implements AdapterInterface
             $response->setOrderId((string)$xml->OrderId);
             $response->setTransactionId((string)$xml->TransId);
         }
-        $response->setRawData($rawResponse);
-        $eventData = $this->collectTransactionInformation();
-        $eventName = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
-        $this->triggerEvent($eventName, $eventData);
+        $event = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
+        $this->getDispatcher()->dispatch($event, new PaymentEventArg(
+            null, $response, $transactionType
+        ));
         return $response;
-    }
-
-    /**
-     * @return \Paranoia\Configuration\NestPay
-     */
-    public function getConfiguration()
-    {
-        return parent::getConfiguration();
     }
 }

@@ -12,5 +12,4 @@ before_script:
 script:
     - find ./src/ -name "*.php" -exec php -l {} \;
     - vendor/bin/phpcs --standard=PSR2 --report=full src
-    - vendor/bin/phpunit
 

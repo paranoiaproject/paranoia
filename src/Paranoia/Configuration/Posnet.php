@@ -1,14 +1,12 @@
 <?php
-
 namespace Paranoia\Configuration;
 
 class Posnet extends AbstractConfiguration
 {
-
     /**
      * @var int
      */
-    private $clientId;
+    private $merchantId;
 
     /**
      * @var int
@@ -16,51 +14,22 @@ class Posnet extends AbstractConfiguration
     private $terminalId;
 
     /**
-     * @var string
-     */
-    private $username;
-
-    /**
-     * @var string
-     */
-    private $password;
-
-    /**
-     * @param int $clientId
+     * @param int $merchantId
      *
      * @return $this
      */
-    public function setClientId($clientId)
+    public function setMerchantId($merchantId)
     {
-        $this->clientId = $clientId;
+        $this->merchantId = $merchantId;
         return $this;
     }
 
     /**
      * @return int
      */
-    public function getClientId()
+    public function getMerchantId()
     {
-        return $this->clientId;
-    }
-
-    /**
-     * @param string $password
-     *
-     * @return $this
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassword()
-    {
-        return $this->password;
+        return $this->merchantId;
     }
 
     /**
@@ -80,24 +49,5 @@ class Posnet extends AbstractConfiguration
     public function getTerminalId()
     {
         return $this->terminalId;
-    }
-
-    /**
-     * @param string $username
-     *
-     * @return $this
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername()
-    {
-        return $this->username;
     }
 }

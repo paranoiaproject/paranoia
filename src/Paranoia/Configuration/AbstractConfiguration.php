@@ -1,5 +1,4 @@
 <?php
-
 namespace Paranoia\Configuration;
 
 class AbstractConfiguration

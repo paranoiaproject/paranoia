@@ -8,9 +8,9 @@ use Paranoia\Payment\TransferInterface;
 use Paranoia\Payment\Exception\UnknownTransactionType;
 use Paranoia\Payment\Exception\UnknownCurrencyCode;
 use Paranoia\Communication\Connector;
-use Paranoia\EventManager\EventManagerAbstract;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
-abstract class AdapterAbstract extends EventManagerAbstract
+abstract class AdapterAbstract
 {
 
     const CONNECTOR_TYPE = Connector::CONNECTOR_TYPE_HTTP;
@@ -55,6 +55,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     protected $connector;
 
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    protected $dispatcher;
+
     public function __construct(AbstractConfiguration $configuration)
     {
         $this->configuration = $configuration;
@@ -75,6 +80,17 @@ abstract class AdapterAbstract extends EventManagerAbstract
     public function getConfiguration()
     {
         return $this->configuration;
+    }
+
+    /**
+     * @return EventDispatcher
+     */
+    protected function getDispatcher()
+    {
+        if(!$this->dispatcher) {
+            $this->dispatcher = new EventDispatcher();
+        }
+        return $this->dispatcher;
     }
 
     /**
@@ -136,10 +152,11 @@ abstract class AdapterAbstract extends EventManagerAbstract
      * parses response from returned provider.
      *
      * @param string $rawResponse
+     * @param string $transactionType
      *
      * @return \Paranoia\Payment\Response\PaymentResponse
      */
-    abstract protected function parseResponse($rawResponse);
+    abstract protected function parseResponse($rawResponse, $transactionType);
 
     /**
      * returns connector object.
@@ -163,19 +180,7 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     protected function sendRequest($url, $data, $options = null)
     {
-        try {
-            return $this->getConnector()->sendRequest($url, $data, $options);
-        } catch ( \ErrorException $e ) {
-            $this->triggerEvent(
-                self::EVENT_ON_EXCEPTION,
-                array(
-                    'exception' => $e,
-                    'request'   => $this->maskRequest($this->getConnector()->getLastSentRequest()),
-                    'response'  => $this->getConnector()->getLastReceivedResponse()
-                )
-            );
-            throw $e;
-        }
+        return $this->getConnector()->sendRequest($url, $data, $options);
     }
 
     /**
@@ -239,15 +244,15 @@ abstract class AdapterAbstract extends EventManagerAbstract
     }
 
     /**
-     * stamps transfer objects with time and transaction type.
+     * returns formatted order number.
      *
-     * @param \Paranoia\Payment\TransferInterface $transfer
-     * @param string                              $transactionType
+     * @param $orderId
+     *
+     * @return mixed
      */
-    private function stamp(TransferInterface $transfer, $transactionType)
+    protected function formatOrderId($orderId)
     {
-        $transfer->setTime(microtime(true));
-        $transfer->setTransactionType($transactionType);
+        return $orderId;
     }
 
     /**
@@ -275,11 +280,9 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function preAuthorization(Request $request)
     {
-        $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildPreauthorizationRequest');
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse);
-        $this->stamp($response, __FUNCTION__);
+        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_PREAUTHORIZATION);
         return $response;
     }
 
@@ -292,11 +295,9 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function postAuthorization(Request $request)
     {
-        $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildPostAuthorizationRequest');
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse);
-        $this->stamp($response, __FUNCTION__);
+        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_POSTAUTHORIZATION);
         return $response;
     }
 
@@ -309,11 +310,9 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function sale(Request $request)
     {
-        $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildSaleRequest');
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse);
-        $this->stamp($response, __FUNCTION__);
+        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_SALE);
         return $response;
     }
 
@@ -326,11 +325,9 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function refund(Request $request)
     {
-        $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildRefundRequest');
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse);
-        $this->stamp($response, __FUNCTION__);
+        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_REFUND);
         return $response;
     }
 
@@ -343,11 +340,9 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function cancel(Request $request)
     {
-        $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildCancelRequest');
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse);
-        $this->stamp($response, __FUNCTION__);
+        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_CANCEL);
         return $response;
     }
 
@@ -360,11 +355,9 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function pointQuery(Request $request)
     {
-        $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildPointQueryRequest');
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse);
-        $this->stamp($response, __FUNCTION__);
+        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_POINT_QUERY);
         return $response;
     }
 
@@ -377,11 +370,9 @@ abstract class AdapterAbstract extends EventManagerAbstract
      */
     public function pointUsage(Request $request)
     {
-        $this->stamp($request, __FUNCTION__);
         $rawRequest  = $this->buildRequest($request, 'buildPointUsageRequest');
         $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse);
-        $this->stamp($response, __FUNCTION__);
+        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_POINT_USAGE);
         return $response;
     }
 
@@ -395,21 +386,5 @@ abstract class AdapterAbstract extends EventManagerAbstract
     protected function maskRequest($rawRequest)
     {
         return $rawRequest;
-    }
-
-    /**
-     * collects transaction information.
-     *
-     * @return array
-     */
-    protected function collectTransactionInformation()
-    {
-        $backtrace = debug_backtrace();
-        $data      = array(
-            'transaction' => $backtrace[2]['function'],
-            'request'     => $this->maskRequest($this->getConnector()->getLastSentRequest()),
-            'response'    => $this->getConnector()->getLastReceivedResponse(),
-        );
-        return $data;
     }
 }

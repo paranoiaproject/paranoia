@@ -40,16 +40,6 @@ abstract class ResponseAbstract
     protected $responseMessage;
 
     /**
-     * @var string
-     */
-    protected $rawData;
-
-    /**
-     * @var integer
-     */
-    protected $time;
-
-    /**
      * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::isSuccess()
      */
@@ -182,48 +172,6 @@ abstract class ResponseAbstract
     public function setResponseMessage($responseMessage)
     {
         $this->responseMessage = $responseMessage;
-        return $this;
-    }
-
-    /**
-     * returns request as raw data.
-     *
-     * @return string
-     */
-    public function getRawData()
-    {
-        return $this->rawData;
-    }
-
-    /**
-     * sets response data as raw.
-     *
-     * @param string $rawData
-     *
-     * @return self
-     */
-    public function setRawData($rawData)
-    {
-        $this->rawData = $rawData;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @see \Payment\TransferInterface::getTime()
-     */
-    public function getTime()
-    {
-        return $this->time;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @see \Payment\TransferInterface::setTime()
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
         return $this;
     }
 }

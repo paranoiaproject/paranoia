@@ -12,10 +12,6 @@ class Http extends AdapterAbstract implements AdapterInterface
     const METHOD_GET = 'GET';
     const METHOD_PUT = 'PUT';
     const METHOD_DELETE = 'DELETE';
-    /* Events */
-    const EVENT_BEFORE_REQUEST = 'BeforeRequest';
-    const EVENT_AFTER_REQUEST = 'AfterRequest';
-    const EVENT_ON_EXCEPTION = 'OnException';
 
     /**
      * @var resource
@@ -116,31 +112,13 @@ class Http extends AdapterAbstract implements AdapterInterface
     {
         $curlOptions = $this->setOptions($url, $data, $options);
         $this->validateMethod($curlOptions);
-        $this->triggerEvent(
-            self::EVENT_BEFORE_REQUEST,
-            array( 'url' => $url, 'data' => $data )
-        );
         $response = curl_exec($this->handler);
-        $this->triggerEvent(
-            self::EVENT_AFTER_REQUEST,
-            array( 'url' => $url, 'data' => $response )
-        );
         $this->lastReceivedResponse = $response;
         $error                      = curl_error($this->handler);
         if ($error) {
-            $exception = new CommunicationFailed(
+            throw  new CommunicationFailed(
                 'Communication error occurred. Detail: ' . $error
             );
-            $this->triggerEvent(
-                self::EVENT_ON_EXCEPTION,
-                array(
-                    'url'           => $url,
-                    'last_request'  => $data,
-                    'last_response' => $response,
-                    'exception'     => $exception
-                )
-            );
-            throw  $exception;
         }
         return $response;
     }

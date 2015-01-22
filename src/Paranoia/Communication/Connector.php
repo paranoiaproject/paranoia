@@ -2,7 +2,6 @@
 namespace Paranoia\Communication;
 
 use Paranoia\Communication\Exception\UnknownCommunicationAdapter;
-use Paranoia\EventManager\Listener\ListenerAbstract;
 use Paranoia\Communication\Adapter\Http;
 use Paranoia\Communication\Adapter\Soap;
 
@@ -39,7 +38,7 @@ class Connector
 
     /**
      * {@inheritdoc}
-     * @see Paranoia\Communication\Adapter\AdapterInterface::sendRequest()
+     * @see \Paranoia\Communication\Adapter\AdapterInterface::sendRequest()
      */
     public function sendRequest($url, $data, $options = null)
     {
@@ -48,16 +47,7 @@ class Connector
 
     /**
      * {@inheritdoc}
-     * @see Paranoia\EventManager\EventManagerAbstract::addListener()
-     */
-    public function addListener($eventName, ListenerAbstract $listener)
-    {
-        $this->adapter->addListener($eventName, $listener);
-    }
-
-    /**
-     * {@inheritdoc}
-     * @see Paranoia\EventManager\EventManagerAbstract::getLastSentRequest()
+     * @see \Paranoia\Communication\Adapter\AdapterInterface::getLastSentRequest()
      */
     public function getLastSentRequest()
     {
@@ -66,7 +56,7 @@ class Connector
 
     /**
      * {@inheritdoc}
-     * @see Paranoia\EventManager\EventManagerAbstract::getLastReceivedResponse()
+     * @see \Paranoia\Communication\Adapter\AdapterInterface::getLastReceivedResponse()
      */
     public function getLastReceivedResponse()
     {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="Paranoia" default="build">
-    <target name="build" depends="prepare,lint,phpcs,phpunit" />
+    <target name="build" depends="prepare,lint,phpcs" />
 
     <target name="clean">
         <delete dir="${basedir}/.build" />
@@ -32,14 +32,6 @@
         </exec>
     </target>
 
-    <target name="phpunit">
-        <exec executable="${basedir}/vendor/bin/phpunit" failonerror="true">
-            <arg line="--verbose" />
-            <arg line="--verbose" />
-            <arg line="--stderr" />
-            <arg line="--configuration=${basedir}/phpunit.xml" />
-        </exec>
-    </target>
     <target name="lint">
         <apply executable="php" failonerror="true">
             <arg value="-l" />
