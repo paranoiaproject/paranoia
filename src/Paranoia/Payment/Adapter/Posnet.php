@@ -214,9 +214,8 @@ class Posnet extends AdapterAbstract implements AdapterInterface
             $xml = new \SimpleXmlElement($rawResponse);
         } catch ( \Exception $e ) {
             $exception = new UnexpectedResponse('Provider returned unexpected response: ' . $rawResponse);
-            $this->getDispatcher()->dispatch(self::EVENT_ON_EXCEPTION, new PaymentEventArg(
-                null, null, $transactionType, $exception
-            ));
+            $eventArg = new PaymentEventArg(null, null, $transactionType, $exception);
+            $this->getDispatcher()->dispatch(self::EVENT_ON_EXCEPTION, $eventArg);
             throw $exception;
         }
         $response->setIsSuccess((int)$xml->approved > 0);
@@ -243,9 +242,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
             }
         }
         $event = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
-        $this->getDispatcher()->dispatch($event, new PaymentEventArg(
-            null, $response, $transactionType
-        ));
+        $this->getDispatcher()->dispatch($event, new PaymentEventArg(null, $response, $transactionType));
         return $response;
     }
 

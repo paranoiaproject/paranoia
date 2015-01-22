@@ -96,4 +96,4 @@ class PaymentEventArg extends Event
     {
         return $this->transactionType;
     }
-} 
+}

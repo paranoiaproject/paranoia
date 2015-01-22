@@ -365,9 +365,8 @@ class Gvp extends AdapterAbstract implements AdapterInterface
             $xml = new \SimpleXmlElement($rawResponse);
         } catch ( \Exception $e ) {
             $exception = new UnexpectedResponse('Provider returned unexpected response: ' . $rawResponse);
-            $this->getDispatcher()->dispatch(self::EVENT_ON_EXCEPTION, new PaymentEventArg(
-                null, null, $transactionType, $exception
-            ));
+            $eventArg = new PaymentEventArg(null, null, $transactionType, $exception);
+            $this->getDispatcher()->dispatch(self::EVENT_ON_EXCEPTION, $eventArg);
             throw $exception;
         }
         $response->setIsSuccess('00' == (string)$xml->Transaction->Response->Code);
@@ -394,9 +393,7 @@ class Gvp extends AdapterAbstract implements AdapterInterface
             $response->setTransactionId((string)$xml->Transaction->RetrefNum);
         }
         $event = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
-        $this->getDispatcher()->dispatch($event, new PaymentEventArg(
-            null, $response, $transactionType
-        ));
+        $this->getDispatcher()->dispatch($event, new PaymentEventArg(null, $response, $transactionType));
         return $response;
     }
 
