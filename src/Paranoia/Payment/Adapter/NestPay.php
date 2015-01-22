@@ -2,7 +2,6 @@
 namespace Paranoia\Payment\Adapter;
 
 use Paranoia\Common\Serializer\Serializer;
-use Paranoia\Communication\Connector;
 use Paranoia\Payment\PaymentEventArg;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
@@ -11,9 +10,6 @@ use Paranoia\Payment\Exception\UnimplementedMethod;
 
 class NestPay extends AdapterAbstract implements AdapterInterface
 {
-
-    const CONNECTOR_TYPE = Connector::CONNECTOR_TYPE_HTTP;
-
     /**
      * @var array
      */
@@ -54,8 +50,7 @@ class NestPay extends AdapterAbstract implements AdapterInterface
             array_merge($rawRequest, $this->buildBaseRequest()),
             array( 'root_name' => 'CC5Request' )
         );
-        $data       = array( 'DATA' => $xml );
-        return http_build_query($data);
+        return array( 'DATA' => $xml );
     }
 
     /**

@@ -7,13 +7,9 @@ use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
 use Paranoia\Payment\Exception\UnexpectedResponse;
 use Paranoia\Payment\Exception\UnimplementedMethod;
-use Paranoia\Communication\Connector;
 
 class Posnet extends AdapterAbstract implements AdapterInterface
 {
-
-    const CONNECTOR_TYPE = Connector::CONNECTOR_TYPE_HTTP;
-
     /**
      * @var array
      */
@@ -61,8 +57,7 @@ class Posnet extends AdapterAbstract implements AdapterInterface
             array_merge($this->buildBaseRequest(), $rawRequest),
             array( 'root_name' => 'posnetRequest' )
         );
-        $data       = array( 'xmldata' => $xml );
-        return http_build_query($data);
+        return array( 'xmldata' => $xml );
     }
 
     /**

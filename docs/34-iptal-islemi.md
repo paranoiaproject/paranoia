@@ -52,10 +52,10 @@ $configuration->setClientId('123456789')
 try {
         $adapter = new \Paranoia\Payment\Adapter\NestPay($configuration);
         $response = $adapter->cancel($request);
-} catch(\Paranoia\Communication\Exception\CommunicationFailed $e) {
+} catch(\Paranoia\Payment\Exception\CommunicationError $e) {
          // Bağlantı hatası durumunda yapılacak işlemleri
          // bu bölümde greçekleştirebilirsiniz.
-} catch(\Paranoia\Communication\Exception\UnexpectedResponse $e) {
+} catch(\Paranoia\Payment\Exception\UnexpectedResponse $e) {
         // Ödeme sistemi sağlayıcısından beklenmedik bir yanıt
         // dönmesi (boş yanıt veya beklenmedik bir hata mesajı gibi)
         // durumunda yapılacak işlemleri bu bölümde gerçekleştirebilirsiniz.

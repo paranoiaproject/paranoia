@@ -1,24 +1,23 @@
 <?php
 namespace Paranoia\Payment\Adapter;
 
+use Guzzle\Http\Client as HttpClient;
 use Paranoia\Configuration\AbstractConfiguration;
+use Paranoia\Payment\Exception\CommunicationError;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response;
-use Paranoia\Payment\TransferInterface;
 use Paranoia\Payment\Exception\UnknownTransactionType;
 use Paranoia\Payment\Exception\UnknownCurrencyCode;
-use Paranoia\Communication\Connector;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Guzzle\Http\Exception\RequestException;
 
 abstract class AdapterAbstract
 {
-
-    const CONNECTOR_TYPE = Connector::CONNECTOR_TYPE_HTTP;
     /* Currency Types */
     const CURRENCY_TRY = 'TRY';
     const CURRENCY_USD = 'USD';
     const CURRENCY_EUR = 'EUR';
-    /* Event Triggers */
+    /* Events */
     const EVENT_ON_TRANSACTION_SUCCESSFUL = 'OnTransactionSuccessful';
     const EVENT_ON_TRANSACTION_FAILED = 'OnTransactionFailed';
     const EVENT_ON_EXCEPTION = 'OnException';
@@ -51,11 +50,6 @@ abstract class AdapterAbstract
     protected $configuration;
 
     /**
-     * @var \Paranoia\Communication\Connector
-     */
-    protected $connector;
-
-    /**
      * @var \Symfony\Component\EventDispatcher\EventDispatcher
      */
     protected $dispatcher;
@@ -63,7 +57,6 @@ abstract class AdapterAbstract
     public function __construct(AbstractConfiguration $configuration)
     {
         $this->configuration = $configuration;
-        $this->connector     = new Connector(static::CONNECTOR_TYPE);
     }
 
     /**
@@ -159,28 +152,31 @@ abstract class AdapterAbstract
     abstract protected function parseResponse($rawResponse, $transactionType);
 
     /**
-     * returns connector object.
-     *
-     * @return \Paranoia\Communication\Adapter\AdapterInterface
-     */
-    public function getConnector()
-    {
-        return $this->connector;
-    }
-
-    /**
-     * sends request to remote host.
+     * Makes http request to remote host.
      *
      * @param string $url
      * @param mixed  $data
-     * @param array  $options
+     * @param array $options
      *
      * @throws \ErrorException|\Exception
      * @return mixed
      */
     protected function sendRequest($url, $data, $options = null)
     {
-        return $this->getConnector()->sendRequest($url, $data, $options);
+        $client = new HttpClient();
+        $client->setConfig(array(
+           'curl.options' => array(
+               CURLOPT_SSL_VERIFYPEER => false,
+               CURLOPT_SSL_VERIFYHOST => false,
+           )
+        ));
+        $request = $client->post($url, null, $data);
+        try {
+            return $request->send()->getBody();
+        } catch (RequestException $e) {
+            throw new CommunicationError('Communication failed: ' . $url);
+        }
+
     }
 
     /**
