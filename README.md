@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/paranoiaproject/paranoia.svg?branch=r15012201)](https://travis-ci.org/paranoiaproject/paranoia)
+[![Build Status](https://travis-ci.org/paranoiaproject/paranoia.svg?branch=master)](https://travis-ci.org/paranoiaproject/paranoia)
 
 # Paranoia Nedir ?
 Paranoia, Türkiye genelinde sanal pos servisi veren banka ve ödeme servisi sağlayıcıların apilerini ortak bir arayüz üzerinden basitce kullanılabilmesini sağlayarak geliştirme maliyetlerini aşağıya çekmeyi hedefleyen açık kaynaklı bir PHP kütüphanesidir.
