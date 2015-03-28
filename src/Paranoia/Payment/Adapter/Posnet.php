@@ -8,7 +8,7 @@ use Paranoia\Payment\Response\PaymentResponse;
 use Paranoia\Payment\Exception\UnexpectedResponse;
 use Paranoia\Payment\Exception\UnimplementedMethod;
 
-class Posnet extends AdapterAbstract implements AdapterInterface
+class Posnet extends AdapterAbstract
 {
     /**
      * @var array
@@ -40,8 +40,8 @@ class Posnet extends AdapterAbstract implements AdapterInterface
     private function buildBaseRequest()
     {
         return array(
-            'mid'      => $this->getConfiguration()->getMerchantId(),
-            'tid'      => $this->getConfiguration()->getTerminalId()
+            'mid'      => $this->configuration->getMerchantId(),
+            'tid'      => $this->configuration->getTerminalId()
         );
     }
 
