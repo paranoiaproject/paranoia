@@ -68,14 +68,6 @@ abstract class AdapterAbstract
     }
 
     /**
-     * @return \Paranoia\Configuration\AbstractConfiguration
-     */
-    public function getConfiguration()
-    {
-        return $this->configuration;
-    }
-
-    /**
      * @return EventDispatcher
      */
     protected function getDispatcher()
@@ -184,7 +176,6 @@ abstract class AdapterAbstract
      *
      * @param string $currency
      *
-     * @throws \Paranoia\Payment\Exception\ConfigurationError
      * @throws \Paranoia\Payment\Exception\UnknownCurrencyCode
      * @return integer
      */
@@ -268,8 +259,6 @@ abstract class AdapterAbstract
     }
 
     /**
-     * @see \Paranoia\Payment\Adapter\AdapterInterface::preAuthorization()
-     *
      * @param \Paranoia\Payment\Request $request
      *
      * @return \Paranoia\Payment\Response\PaymentResponse
@@ -277,14 +266,12 @@ abstract class AdapterAbstract
     public function preAuthorization(Request $request)
     {
         $rawRequest  = $this->buildRequest($request, 'buildPreauthorizationRequest');
-        $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
+        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_PREAUTHORIZATION);
         return $response;
     }
 
     /**
-     * @see \Paranoia\Payment\Adapter\AdapterInterface::postAuthorization()
-     *
      * @param \Paranoia\Payment\Request $request
      *
      * @return \Paranoia\Payment\Response\PaymentResponse
@@ -292,14 +279,12 @@ abstract class AdapterAbstract
     public function postAuthorization(Request $request)
     {
         $rawRequest  = $this->buildRequest($request, 'buildPostAuthorizationRequest');
-        $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
+        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_POSTAUTHORIZATION);
         return $response;
     }
 
     /**
-     * @see \Paranoia\Payment\Adapter\AdapterInterface::sale()
-     *
      * @param \Paranoia\Payment\Request $request
      *
      * @return \Paranoia\Payment\Response\PaymentResponse
@@ -307,14 +292,12 @@ abstract class AdapterAbstract
     public function sale(Request $request)
     {
         $rawRequest  = $this->buildRequest($request, 'buildSaleRequest');
-        $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
+        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_SALE);
         return $response;
     }
 
     /**
-     * @see \Paranoia\Payment\Adapter\AdapterInterface::refund()
-     *
      * @param \Paranoia\Payment\Request $request
      *
      * @return \Paranoia\Payment\Response\PaymentResponse
@@ -322,14 +305,12 @@ abstract class AdapterAbstract
     public function refund(Request $request)
     {
         $rawRequest  = $this->buildRequest($request, 'buildRefundRequest');
-        $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
+        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_REFUND);
         return $response;
     }
 
     /**
-     * @see \Paranoia\Payment\Adapter\AdapterInterface::cancel()
-     *
      * @param \Paranoia\Payment\Request $request
      *
      * @return \Paranoia\Payment\Response\PaymentResponse
@@ -337,14 +318,12 @@ abstract class AdapterAbstract
     public function cancel(Request $request)
     {
         $rawRequest  = $this->buildRequest($request, 'buildCancelRequest');
-        $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
+        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_CANCEL);
         return $response;
     }
 
     /**
-     * @see \Paranoia\Payment\Adapter\AdapterInterface::pointQuery()
-     *
      * @param \Paranoia\Payment\Request $request
      *
      * @return \Paranoia\Payment\Response\PaymentResponse
@@ -352,14 +331,12 @@ abstract class AdapterAbstract
     public function pointQuery(Request $request)
     {
         $rawRequest  = $this->buildRequest($request, 'buildPointQueryRequest');
-        $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
+        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_POINT_QUERY);
         return $response;
     }
 
     /**
-     * @see \Paranoia\Payment\Adapter\AdapterInterface::pointUsage()
-     *
      * @param \Paranoia\Payment\Request $request
      *
      * @return \Paranoia\Payment\Response\PaymentResponse
@@ -367,7 +344,7 @@ abstract class AdapterAbstract
     public function pointUsage(Request $request)
     {
         $rawRequest  = $this->buildRequest($request, 'buildPointUsageRequest');
-        $rawResponse = $this->sendRequest($this->getConfiguration()->getApiUrl(), $rawRequest);
+        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_POINT_USAGE);
         return $response;
     }

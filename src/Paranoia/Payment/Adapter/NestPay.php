@@ -8,7 +8,7 @@ use Paranoia\Payment\Response\PaymentResponse;
 use Paranoia\Payment\Exception\UnexpectedResponse;
 use Paranoia\Payment\Exception\UnimplementedMethod;
 
-class NestPay extends AdapterAbstract implements AdapterInterface
+class NestPay extends AdapterAbstract
 {
     /**
      * @var array
@@ -31,10 +31,10 @@ class NestPay extends AdapterAbstract implements AdapterInterface
     private function buildBaseRequest()
     {
         return array(
-            'Name'     => $this->getConfiguration()->getUsername(),
-            'Password' => $this->getConfiguration()->getPassword(),
-            'ClientId' => $this->getConfiguration()->getClientId(),
-            'Mode'     => $this->getConfiguration()->getMode()
+            'Name'     => $this->configuration->getUsername(),
+            'Password' => $this->configuration->getPassword(),
+            'ClientId' => $this->configuration->getClientId(),
+            'Mode'     => $this->configuration->getMode()
         );
     }
 
