@@ -76,5 +76,4 @@ class Iyzico extends AbstractConfiguration
     {
         return $this->mode;
     }
-
 }
