@@ -35,8 +35,8 @@ abstract class AdapterAbstract
      */
     protected $currencyCodes = array(
         self::CURRENCY_TRY => 949,
-        self::CURRENCY_EUR => 840,
-        self::CURRENCY_USD => 978,
+        self::CURRENCY_EUR => 978,
+        self::CURRENCY_USD => 840,
     );
 
     /**
