@@ -40,6 +40,11 @@ abstract class ResponseAbstract
     protected $responseMessage;
 
     /**
+     * @var string
+     */
+    protected $rawResponse;
+
+    /**
      * {@inheritdoc}
      * @see \Payment\Response\ResponseInterface::isSuccess()
      */
@@ -173,5 +178,16 @@ abstract class ResponseAbstract
     {
         $this->responseMessage = $responseMessage;
         return $this;
+    }
+
+    public function setRawResponse($rawResponse)
+    {
+        $this->rawResponse = $rawResponse;
+        return $this;
+    }
+
+    public function getRawResponse()
+    {
+        return $this->rawResponse;
     }
 }

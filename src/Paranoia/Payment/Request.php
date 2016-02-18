@@ -10,6 +10,11 @@ class Request implements TransferInterface
     private $orderId;
 
     /**
+     * @var string
+     */
+    private $groupId;
+
+    /**
      * @var float
      */
     private $amount;
@@ -28,6 +33,11 @@ class Request implements TransferInterface
      * @var string
      */
     private $cardNumber;
+
+    /**
+     * @var string
+     */
+    private $cardHolderName;
 
     /**
      * @var integer
@@ -55,6 +65,16 @@ class Request implements TransferInterface
     private $authCode;
 
     /**
+     * @var string
+     */
+    private $ipAddress;
+
+    /**
+     * @var string
+     */
+    private $email;
+
+    /**
      * returns order identity.
      *
      * @return string
@@ -74,6 +94,29 @@ class Request implements TransferInterface
     public function setOrderId($orderId)
     {
         $this->orderId = $orderId;
+        return $this;
+    }
+
+    /**
+     * returns order group identity. optional.
+     *
+     * @return string
+     */
+    public function getGroupId()
+    {
+        return $this->groupId;
+    }
+
+    /**
+     * sets order identity to request object.
+     *
+     * @param $groupId
+     *
+     * @return self
+     */
+    public function setGroupId($groupId)
+    {
+        $this->groupId = $groupId;
         return $this;
     }
 
@@ -166,6 +209,29 @@ class Request implements TransferInterface
     public function setCardNumber($cardNumber)
     {
         $this->cardNumber = $cardNumber;
+        return $this;
+    }
+
+    /**
+     * returns card holder name.
+     *
+     * @return string
+     */
+    public function getCardHolderName()
+    {
+        return $this->cardHolderName;
+    }
+
+    /**
+     * sets card holder name to request object.
+     *
+     * @param string $cardHolderName Numeric value
+     *
+     * @return self
+     */
+    public function setCardHolderName($cardHolderName)
+    {
+        $this->cardHolderName = $cardHolderName;
         return $this;
     }
 
@@ -281,6 +347,52 @@ class Request implements TransferInterface
     public function setAuthCode($authCode)
     {
         $this->authCode = $authCode;
+        return $this;
+    }
+
+    /**
+     * returns ip address.
+     *
+     * @return string
+     */
+    public function getIPAddress()
+    {
+        return $this->ipAddress;
+    }
+
+    /**
+     * sets ip address to request object.
+     *
+     * @param string $ipAddress
+     *
+     * @return self
+     */
+    public function setIPAddress($ipAddress)
+    {
+        $this->ipAddress = $ipAddress;
+        return $this;
+    }
+
+    /**
+     * returns email.
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * sets email to request object.
+     *
+     * @param string $email
+     *
+     * @return self
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
         return $this;
     }
 }

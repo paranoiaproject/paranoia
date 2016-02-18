@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Payment\Response;
 
-class PaymentResponse extends ResponseAbstract implements ResponseInterface
+class Payment3DResponse extends PaymentResponse
 {
     private $mdStatus;
     private $data;

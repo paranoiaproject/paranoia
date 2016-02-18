@@ -1,11 +1,13 @@
 <?php
 namespace Paranoia\Payment\Adapter;
 
-use Guzzle\Http\Client as HttpClient;
+use GuzzleHttp\Client as HttpClient;
 use Paranoia\Configuration\AbstractConfiguration;
 use Paranoia\Payment\Exception\CommunicationError;
 use Paranoia\Payment\Request;
+use Paranoia\Payment\ConfirmRequest;
 use Paranoia\Payment\Response;
+use Paranoia\Payment\Response\PaymentResponse;
 use Paranoia\Payment\Exception\UnknownTransactionType;
 use Paranoia\Payment\Exception\UnknownCurrencyCode;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -25,6 +27,7 @@ abstract class AdapterAbstract
     const TRANSACTION_TYPE_PREAUTHORIZATION = 'preAuthorization';
     const TRANSACTION_TYPE_POSTAUTHORIZATION = 'postAuthorization';
     const TRANSACTION_TYPE_SALE = 'sale';
+    const TRANSACTION_TYPE_SALE_3D = 'Sale';
     const TRANSACTION_TYPE_CANCEL = 'cancel';
     const TRANSACTION_TYPE_REFUND = 'refund';
     const TRANSACTION_TYPE_POINT_QUERY = 'pointQuery';
@@ -54,7 +57,7 @@ abstract class AdapterAbstract
      */
     protected $dispatcher;
 
-    public function __construct(AbstractConfiguration $configuration)
+    public function __construct(AbstractConfiguration $configuration = null)
     {
         $this->configuration = $configuration;
     }
@@ -133,6 +136,10 @@ abstract class AdapterAbstract
      */
     abstract protected function buildRequest(Request $request, $requestBuilder);
 
+    abstract protected function build3DRequest(Request $request, $requestBuilder);
+
+    abstract protected function check3DHashIntegrity($payload);
+
     /**
      * parses response from returned provider.
      *
@@ -156,19 +163,13 @@ abstract class AdapterAbstract
     protected function sendRequest($url, $data, $options = null)
     {
         $client = new HttpClient();
-        $client->setConfig(array(
-           'curl.options' => array(
-               CURLOPT_SSL_VERIFYPEER => false,
-               CURLOPT_SSL_VERIFYHOST => false,
-           )
-        ));
-        $request = $client->post($url, null, $data);
+
         try {
-            return $request->send()->getBody();
+            $request = $client->post($url, ['form_params' => $data]);
+            return $request->getBody();
         } catch (RequestException $e) {
             throw new CommunicationError('Communication failed: ' . $url);
         }
-
     }
 
     /**
@@ -218,6 +219,16 @@ abstract class AdapterAbstract
         return sprintf('%02s/%04s', $month, $year);
     }
 
+    protected function formatExpireMonth($month)
+    {
+        return sprintf('%02s', $month);
+    }
+
+    protected function formatExpireYear($year)
+    {
+        return sprintf('%s', substr($year, -2));
+    }
+
     /**
      * returns formatted installment amount
      *
@@ -230,6 +241,11 @@ abstract class AdapterAbstract
         return (!is_numeric($installment) || intval($installment) <= 1) ? '' : $installment;
     }
 
+    protected function formatCardNumber($cardNumber)
+    {
+        return str_replace(' ', '', $cardNumber);
+    }
+
     /**
      * returns formatted order number.
      *
@@ -240,6 +256,11 @@ abstract class AdapterAbstract
     protected function formatOrderId($orderId)
     {
         return $orderId;
+    }
+
+    protected function hashBase64($data)
+    {
+        return base64_encode(pack("H*",sha1($data)));
     }
 
     /**
@@ -292,6 +313,30 @@ abstract class AdapterAbstract
     public function sale(Request $request)
     {
         $rawRequest  = $this->buildRequest($request, 'buildSaleRequest');
+        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
+        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_SALE);
+        return $response;
+    }
+
+    public function sale3D(Request $request)
+    {
+        $rawRequest  = $this->build3DRequest($request, 'buildSale3DRequest');
+        $rawResponse = $this->sendRequest($this->configuration->getApi3DUrl(), $rawRequest);
+        return $rawResponse->__toString();
+    }
+
+    public function getBank3DResponse($payload)
+    {
+        return $this->parseBank3DResponse($payload);
+    }
+
+    public function confirm3D(ConfirmRequest $confirmRequest)
+    {
+        $verify = $this->check3DHashIntegrity($confirmRequest->getPayload());
+        if (! $verify) {
+            throw new ResponseVerificationError('Response cannot be verified');
+        }
+        $rawRequest  = $this->buildConfirmRequest($confirmRequest, 'buildSale3DConfirmRequest');
         $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
         $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_SALE);
         return $response;
