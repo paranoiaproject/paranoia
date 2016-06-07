@@ -17,10 +17,12 @@ abstract class AdapterAbstract
     const CURRENCY_TRY = 'TRY';
     const CURRENCY_USD = 'USD';
     const CURRENCY_EUR = 'EUR';
+
     /* Events */
     const EVENT_ON_TRANSACTION_SUCCESSFUL = 'OnTransactionSuccessful';
     const EVENT_ON_TRANSACTION_FAILED = 'OnTransactionFailed';
     const EVENT_ON_EXCEPTION = 'OnException';
+
     /* Transaction Types*/
     const TRANSACTION_TYPE_PREAUTHORIZATION = 'preAuthorization';
     const TRANSACTION_TYPE_POSTAUTHORIZATION = 'postAuthorization';

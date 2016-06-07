@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Payment\Adapter;
 
-use Paranoia\Common\Serializer\Serializer;
+use Paranoia\Helper\Serializer\Serializer;
 use Paranoia\Payment\PaymentEventArg;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
@@ -272,12 +272,8 @@ class Gvp extends AdapterAbstract
     protected function buildRequest(Request $request, $requestBuilder)
     {
         $rawRequest = call_user_func(array( $this, $requestBuilder ), $request);
-        $serializer = new Serializer(Serializer::XML);
-        $xml        = $serializer->serialize(
-            $rawRequest,
-            array( 'root_name' => 'GVPSRequest' )
-        );
-        return array( 'data' => $xml );
+        $xml = Serializer::serialize(new Serializer\Xml(), $rawRequest, array('root_name' => 'GVPSRequest'));
+        return array('data' => $xml);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Payment\Adapter;
 
-use Paranoia\Common\Serializer\Serializer;
+use Paranoia\Helper\Serializer\Serializer;
 use Paranoia\Payment\PaymentEventArg;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
@@ -45,12 +45,9 @@ class NestPay extends AdapterAbstract
     protected function buildRequest(Request $request, $requestBuilder)
     {
         $rawRequest = call_user_func(array( $this, $requestBuilder ), $request);
-        $serializer = new Serializer(Serializer::XML);
-        $xml        = $serializer->serialize(
-            array_merge($rawRequest, $this->buildBaseRequest()),
-            array( 'root_name' => 'CC5Request' )
-        );
-        return array( 'DATA' => $xml );
+        $data = array_merge($rawRequest, $this->buildBaseRequest());
+        $xml = Serializer::serialize(new Serializer\Xml(), $data, array('root_name' => 'CC5Request'));
+        return array('DATA' => $xml );
     }
 
     /**

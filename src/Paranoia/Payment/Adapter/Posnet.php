@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Payment\Adapter;
 
-use Paranoia\Common\Serializer\Serializer;
+use Paranoia\Helper\Serializer\Serializer;
 use Paranoia\Payment\PaymentEventArg;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
@@ -52,12 +52,9 @@ class Posnet extends AdapterAbstract
     protected function buildRequest(Request $request, $requestBuilder)
     {
         $rawRequest = call_user_func(array( $this, $requestBuilder ), $request);
-        $serializer = new Serializer(Serializer::XML);
-        $xml        = $serializer->serialize(
-            array_merge($this->buildBaseRequest(), $rawRequest),
-            array( 'root_name' => 'posnetRequest' )
-        );
-        return array( 'xmldata' => $xml );
+        $data = array_merge($this->buildBaseRequest(), $rawRequest);
+        $xml = Serializer::serialize(new Serializer\Xml(), $data, array('root_name' => 'posnetRequest'));
+        return array('xmldata' => $xml);
     }
 
     /**

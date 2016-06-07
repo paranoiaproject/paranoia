@@ -31,9 +31,9 @@
  *       $xml = Array2XML::createXML('root_node_name', $php_array);
  *       echo $xml->saveXML();
  */
-namespace Paranoia\Common\Serializer\Adapter;
+namespace Paranoia\Helper\Serializer\Serializer;
 
-use Paranoia\Common\Serializer\Exception\OptionError;
+use Paranoia\Helper\Serializer\Exception\OptionError;
 use \DomDocument;
 use \Exception;
 

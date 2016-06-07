@@ -1,5 +1,5 @@
 <?php
-namespace Paranoia\Common\Serializer\Adapter;
+namespace Paranoia\Helper\Serializer\Serializer;
 
 interface SerializerInterface
 {
