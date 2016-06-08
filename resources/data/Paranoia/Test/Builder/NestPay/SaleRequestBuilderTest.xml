@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CC5Request>
+    <Name>APIUSER</Name>
+    <Password>123456</Password>
+    <ClientId>16110</ClientId>
+    <Mode>T</Mode>
+    <Type>Auth</Type>
+    <Total>100.00</Total>
+    <Currency>949</Currency>
+    <Taksit></Taksit>
+    <Number></Number>
+    <Cvv2Val></Cvv2Val>
+    <Expires>00/0000</Expires>
+    <OrderId>0000000001</OrderId>
+</CC5Request>

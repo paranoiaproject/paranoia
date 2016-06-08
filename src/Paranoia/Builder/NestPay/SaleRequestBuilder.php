@@ -1,9 +1,9 @@
 <?php
 namespace Paranoia\Builder\NestPay;
 
-use Paranoia\Formatter\Formatter\MoneyValue;
-use Paranoia\Formatter\Formatter\NoneZeroPositiveIntegerValue;
-use Paranoia\Formatter\Formatter\SlashSeparatedDate;
+use Paranoia\Helper\Formatter\Formatter\MoneyValue;
+use Paranoia\Helper\Formatter\Formatter\NoneZeroPositiveIntegerValue;
+use Paranoia\Helper\Formatter\Formatter\SlashSeparatedDate;
 use Paranoia\Helper\Serializer\Serializer;
 use Paranoia\Helper\Serializer\Serializer\Xml;
 use Paranoia\Transfer\Request\RequestInterface;

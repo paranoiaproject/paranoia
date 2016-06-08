@@ -1,5 +1,5 @@
 <?php
-namespace Paranoia\Helper\Serializer\Exception;
+namespace Paranoia\Exception;
 
 use \ErrorException;
 

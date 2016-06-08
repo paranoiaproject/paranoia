@@ -1,5 +1,5 @@
 <?php
-namespace Paranoia\Formatter;
+namespace Paranoia\Helper\Formatter;
 
 interface FormatterInterface
 {

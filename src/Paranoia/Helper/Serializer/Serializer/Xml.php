@@ -33,7 +33,7 @@
  */
 namespace Paranoia\Helper\Serializer\Serializer;
 
-use Paranoia\Helper\Serializer\Exception\OptionError;
+use Paranoia\Exception\OptionError;
 use \DomDocument;
 use \Exception;
 

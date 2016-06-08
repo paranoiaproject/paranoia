@@ -1,7 +1,7 @@
 <?php
-namespace Paranoia\Formatter\Formatter;
+namespace Paranoia\Helper\Formatter\Formatter;
 
-use Paranoia\Formatter\FormatterInterface;
+use Paranoia\Helper\Formatter\FormatterInterface;
 
 class MoneyValue implements FormatterInterface
 {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CC5Request>
+    <Name>APIUSER</Name>
+    <Password>123456</Password>
+    <ClientId>16110</ClientId>
+    <Mode>T</Mode>
+    <Type>Void</Type>
+    <OrderId>0000000001</OrderId>
+    <TransId>0000000001</TransId>
+</CC5Request>

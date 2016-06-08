@@ -1,6 +1,8 @@
 <?php
 namespace Paranoia\Processor\NestPay;
 
+use Paranoia\Transfer\Response\SaleResponse;
+
 class SaleResponseProcessor extends AbstractNestPayProcessor
 {
     /**
@@ -9,6 +11,8 @@ class SaleResponseProcessor extends AbstractNestPayProcessor
      */
     public function process($rawResponse)
     {
-        // TODO: Implement process() method.
+        $response = new SaleResponse();
+        $this->prepareResponse($rawResponse, $response);
+        return $response;
     }
 }

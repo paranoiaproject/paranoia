@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Configuration;
 
-class AbstractConfiguration
+class AbstractConfiguration implements ConfigurationInterface
 {
 
     /**

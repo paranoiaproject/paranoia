@@ -29,6 +29,7 @@ class CancelRequestBuilder extends AbstractNestPayBuilder
         if($request->getTransactionId()) {
             $data['TransId'] = $request->getTransactionId();
         }
+        return $data;
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Builder\NestPay;
 
-use Paranoia\Formatter\Formatter\MoneyValue;
+use Paranoia\Helper\Formatter\Formatter\MoneyValue;
 use Paranoia\Helper\Serializer\Serializer;
 use Paranoia\Helper\Serializer\Serializer\Xml;
 use Paranoia\Transfer\Request\RefundRequest;
