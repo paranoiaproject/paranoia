@@ -29,7 +29,7 @@ class PaymentEventArg extends Event
     {
         $this->request = $request;
         $this->response = $response;
-        $transactionType = $transactionType;
+        $this->transactionType = $transactionType;
         $this->exception = $exception;
     }
 
