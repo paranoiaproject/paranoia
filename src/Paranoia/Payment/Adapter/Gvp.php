@@ -4,9 +4,11 @@ namespace Paranoia\Payment\Adapter;
 use Paranoia\Common\Serializer\Serializer;
 use Paranoia\Payment\PaymentEventArg;
 use Paranoia\Payment\Request;
+use Paranoia\Payment\ConfirmRequest;
 use Paranoia\Payment\Response\PaymentResponse;
 use Paranoia\Payment\Exception\UnexpectedResponse;
 use Paranoia\Payment\Exception\UnimplementedMethod;
+use Paranoia\Payment\Exception\ResponseVerificationError;
 
 class Gvp extends AdapterAbstract
 {
@@ -17,6 +19,7 @@ class Gvp extends AdapterAbstract
         self::TRANSACTION_TYPE_PREAUTHORIZATION  => 'preauth',
         self::TRANSACTION_TYPE_POSTAUTHORIZATION => 'postauth',
         self::TRANSACTION_TYPE_SALE              => 'sales',
+        self::TRANSACTION_TYPE_SALE_3D           => 'sales',
         self::TRANSACTION_TYPE_CANCEL            => 'void',
         self::TRANSACTION_TYPE_REFUND            => 'refund',
         self::TRANSACTION_TYPE_POINT_QUERY       => 'pointinquiry',
@@ -73,15 +76,15 @@ class Gvp extends AdapterAbstract
      *
      * @return array
      */
-    private function buildCustomer()
+    private function buildCustomer($ipAddress = null, $email = null)
     {
         /**
          * we don't want to share customer information
          * to bank.
          */
         return array(
-            'IPAddress'    => '127.0.0.1',
-            'EmailAddress' => 'dummy@dummy.net'
+            'IPAddress'    => !is_null($ipAddress) ? $ipAddress : '127.0.0.1',
+            'EmailAddress' => !is_null($email)     ? $email     : 'dummy@dummy.net'
         );
     }
 
@@ -99,7 +102,7 @@ class Gvp extends AdapterAbstract
             $request->getExpireYear()
         );
         return array(
-            'Number'     => $request->getCardNumber(),
+            'Number'     => $this->formatCardNumber($request->getCardNumber()),
             'ExpireDate' => $expireMonth,
             'CVV2'       => $request->getSecurityCode()
         );
@@ -116,7 +119,7 @@ class Gvp extends AdapterAbstract
     {
         return array(
             'OrderID'     => $this->formatOrderId($request->getOrderId()),
-            'GroupID'     => null,
+            'GroupID'     => $request->getGroupId(),
             'Description' => null
         );
     }
@@ -152,6 +155,22 @@ class Gvp extends AdapterAbstract
         );
     }
 
+    private function build3DTransaction(ConfirmRequest $confirmRequest, $transactionType)
+    {
+        $transactionData = $this->buildTransaction($confirmRequest->getRequest(), $transactionType);
+
+        $payload = $confirmRequest->getPayload();
+        $secure3D = array(
+            'AuthenticationCode' => $payload['cavv'],
+            'SecurityLevel'      => $payload['eci'],
+            'TxnID'              => $payload['xid'],
+            'Md'                 => $payload['md'],
+        );
+        $transactionData['Secure3D'] = $secure3D;
+
+        return $transactionData;
+    }
+
     /**
      * returns boolean true, when amount field is required
      * for request transaction type.
@@ -166,6 +185,7 @@ class Gvp extends AdapterAbstract
             $transactionType,
             array(
                 self::TRANSACTION_TYPE_SALE,
+                self::TRANSACTION_TYPE_SALE_3D,
                 self::TRANSACTION_TYPE_PREAUTHORIZATION,
                 self::TRANSACTION_TYPE_POSTAUTHORIZATION,
             )
@@ -186,6 +206,7 @@ class Gvp extends AdapterAbstract
             $transactionType,
             array(
                 self::TRANSACTION_TYPE_SALE,
+                self::TRANSACTION_TYPE_SALE_3D,
                 self::TRANSACTION_TYPE_PREAUTHORIZATION,
             )
         );
@@ -204,6 +225,7 @@ class Gvp extends AdapterAbstract
             $transactionType,
             array(
                 self::TRANSACTION_TYPE_SALE,
+                self::TRANSACTION_TYPE_SALE_3D,
                 self::TRANSACTION_TYPE_PREAUTHORIZATION,
                 self::TRANSACTION_TYPE_POSTAUTHORIZATION,
             )
@@ -231,6 +253,7 @@ class Gvp extends AdapterAbstract
     private function getSecurityHash($password)
     {
         $tidPrefix  = str_repeat('0', 9 - strlen($this->configuration->getTerminalId()));
+
         $terminalId = sprintf('%s%s', $tidPrefix, $this->configuration->getTerminalId());
         return strtoupper(SHA1(sprintf('%s%s', $password, $terminalId)));
     }
@@ -248,7 +271,7 @@ class Gvp extends AdapterAbstract
     {
         $orderId      = $this->formatOrderId($request->getOrderId());
         $terminalId   = $this->configuration->getTerminalId();
-        $cardNumber   = $this->isCardNumberRequired($transactionType) ? $request->getCardNumber() : '';
+        $cardNumber   = $this->isCardNumberRequired($transactionType) ? $this->formatCardNumber($request->getCardNumber()) : '';
         $amount       = $this->isAmountRequired($transactionType) ? $this->formatAmount($request->getAmount()) : '1';
         $securityData = $this->getSecurityHash($password);
         return strtoupper(
@@ -259,6 +282,33 @@ class Gvp extends AdapterAbstract
                     $terminalId,
                     $cardNumber,
                     $amount,
+                    $securityData
+                )
+            )
+        );
+    }
+
+    private function getTransaction3DHash(Request $request, $password, $transactionType)
+    {
+        $orderId      = $this->formatOrderId($request->getOrderId());
+        $terminalId   = $this->configuration->getTerminalId();
+        $cardNumber   = $this->isCardNumberRequired($transactionType) ? $this->formatCardNumber($request->getCardNumber()) : '';
+        $amount       = $this->isAmountRequired($transactionType) ? $this->formatAmount($request->getAmount()) : '1';
+        $installment  = $this->formatInstallment($request->getInstallment());
+        $securityData = $this->getSecurityHash($password);
+
+        return strtoupper(
+            sha1(
+                sprintf(
+                    '%s%s%s%s%s%s%s%s%s',
+                    $terminalId,
+                    $orderId,
+                    $amount,
+                    $this->configuration->getSuccessUrl(),
+                    $this->configuration->getErrorUrl(),
+                    $this->getProviderTransactionType(self::TRANSACTION_TYPE_SALE_3D),
+                    $installment,
+                    $this->configuration->getSecureKey(),
                     $securityData
                 )
             )
@@ -278,6 +328,22 @@ class Gvp extends AdapterAbstract
             array( 'root_name' => 'GVPSRequest' )
         );
         return array( 'data' => $xml );
+    }
+
+    protected function buildConfirmRequest(ConfirmRequest $confirmRequest, $requestBuilder)
+    {
+        $rawRequest = call_user_func(array( $this, $requestBuilder ), $confirmRequest);
+        $serializer = new Serializer(Serializer::XML);
+        $xml        = $serializer->serialize(
+            $rawRequest,
+            array( 'root_name' => 'GVPSRequest' )
+        );
+        return array( 'data' => $xml );
+    }
+
+    public function build3DRequest(Request $request, $requestBuilder)
+    {
+        return call_user_func(array( $this, $requestBuilder ), $request);
     }
 
     /**
@@ -308,6 +374,65 @@ class Gvp extends AdapterAbstract
     {
         $requestData = array( 'Card' => $this->buildCard($request) );
         return array_merge($requestData, $this->buildBaseRequest($request, self::TRANSACTION_TYPE_SALE));
+    }
+
+    protected function buildSale3DRequest(Request $request)
+    {
+        $cardNumber  = $this->formatCardNumber($request->getCardNumber());
+        $installment = $this->formatInstallment($request->getInstallment());
+        $amount      = $this->formatAmount($request->getAmount());
+        $cardYear    = $this->formatExpireYear($request->getExpireYear());
+        $cardMonth   = $this->formatExpireMonth($request->getExpireMonth());
+        $currency    = $this->formatCurrency($request->getCurrency());
+
+        $hashData = $this->getTransaction3DHash($request, $this->configuration->getAuthorizationPassword(), self::TRANSACTION_TYPE_SALE_3D);
+
+        $requestData = array(
+            'cardnumber'            => $cardNumber,
+            'cardexpiredatemonth'   => $cardMonth,
+            'cardexpiredateyear'    => $cardYear,
+            'mode'                  => $this->configuration->getMode(),
+            'orderid'               => $request->getOrderId(),
+            'ordergroupid'          => $request->getOrderId(),
+            'cardcvv2'              => $request->getSecurityCode(),
+            'apiversion'            => 'v0.01',
+            'terminalprovuserid'    => $this->configuration->getAuthorizationUsername(),
+            'terminaluserid'        => $this->configuration->getAuthorizationUsername(),
+            'terminalid'            => $this->configuration->getTerminalId(),
+            'terminalmerchantid'    => $this->configuration->getMerchantId(),
+            'customeripaddress'     => $request->getIPAddress(),
+            'customeremailaddress'  => $request->getEmail(),
+            'txntype'               => $this->getProviderTransactionType(self::TRANSACTION_TYPE_SALE_3D),
+            'secure3dsecuritylevel' => '3D',
+            'txnamount'             => $amount,
+            'txncurrencycode'       => $currency,
+            'companyname'           => $this->configuration->getAuthorizationUsername(),
+            'txninstallmentcount'   => $installment,
+            'successurl'            => $this->configuration->getSuccessUrl(),
+            'errorurl'              => $this->configuration->getErrorUrl(),
+            'secure3dhash'          => $hashData,
+            'refreshtime'           => '60',
+            'lang'                  => 'tr',
+            'txnmotoind'            => 'N',
+            'orderdescription'      => ''
+        );
+
+        return $requestData;
+    }
+
+    protected function buildSale3DConfirmRequest(ConfirmRequest $confirmRequest)
+    {
+        $request     = $confirmRequest->getRequest();
+        $payload     = $confirmRequest->getPayload();
+        $amount      = $this->formatAmount($request->getAmount());
+        $installment = $this->formatInstallment($request->getInstallment());
+        $currency    = $this->formatCurrency($request->getCurrency());
+        $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_SALE_3D);
+
+        $requestData                = $this->buildBaseRequest($request, self::TRANSACTION_TYPE_SALE_3D);
+        $requestData['Transaction'] = $this->build3DTransaction($confirmRequest, self::TRANSACTION_TYPE_SALE_3D);
+
+        return $requestData;
     }
 
     /**
@@ -370,6 +495,7 @@ class Gvp extends AdapterAbstract
         }
         $response->setIsSuccess('00' == (string)$xml->Transaction->Response->Code);
         $response->setResponseCode((string)$xml->Transaction->ReasonCode);
+        $response->setRawResponse($xml);
         if (!$response->isSuccess()) {
             $errorMessages = array();
             if (property_exists($xml->Transaction->Response, 'ErrorMsg')) {
@@ -390,9 +516,36 @@ class Gvp extends AdapterAbstract
             $response->setResponseMessage('Success');
             $response->setOrderId((string)$xml->Order->OrderID);
             $response->setTransactionId((string)$xml->Transaction->RetrefNum);
+            $response->setAuthCode((string)$xml->Transaction->AuthCode);
         }
         $event = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
         $this->getDispatcher()->dispatch($event, new PaymentEventArg(null, $response, $transactionType));
+        return $response;
+    }
+
+    protected function check3DHashIntegrity($payload) {
+        $params    = explode(':', $payload['hashparams']);
+        $secureKey = $this->configuration->getSecureKey();
+        $hash      = '';
+
+        foreach($params as $param) {
+            if (!empty($param))
+                $hash .= is_null($payload[$param]) ? '' : $payload[$param];
+        }
+
+        if($this->hashBase64($hash . $secureKey) == $payload['hash'])
+            return true;
+
+        return false;
+    }
+
+    protected function parseBank3DResponse($rawResponse)
+    {
+        $response = new PaymentResponse();
+        $response->setOrderId($rawResponse['orderid']);
+        $response->setTransactionId($rawResponse['orderid']);
+        $response->setMdStatus($rawResponse['mdstatus']);
+        $response->setResponseMessage($rawResponse['mderrormessage']);
         return $response;
     }
 
@@ -402,11 +555,7 @@ class Gvp extends AdapterAbstract
      */
     protected function formatAmount($amount, $reverse = false)
     {
-        if (!$reverse) {
-            return number_format($amount, 2, '', '');
-        } else {
-            return (float)sprintf('%s.%s', substr($amount, 0, -2), substr($amount, -2));
-        }
+        return str_replace(".", "", number_format($amount, 2, '.', ''));
     }
 
     /**

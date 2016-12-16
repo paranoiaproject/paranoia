@@ -41,6 +41,12 @@ class Gvp extends AbstractConfiguration
     private $mode;
 
     /**
+     * @var string
+     */
+    private $securekey;
+
+
+    /**
      * @param string $authorizationPassword
      *
      * @return $this
@@ -171,5 +177,24 @@ class Gvp extends AbstractConfiguration
     public function getTerminalId()
     {
         return $this->terminalId;
+    }
+
+    /**
+     * @param int $securekey
+     *
+     * @return $this
+     */
+    public function setSecureKey($securekey)
+    {
+        $this->securekey = $securekey;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSecureKey()
+    {
+        return $this->securekey;
     }
 }

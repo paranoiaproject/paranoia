@@ -4,6 +4,7 @@ namespace Paranoia\Payment\Adapter;
 use Paranoia\Common\Serializer\Serializer;
 use Paranoia\Payment\PaymentEventArg;
 use Paranoia\Payment\Request;
+use Paranoia\Payment\ConfirmRequest;
 use Paranoia\Payment\Response\PaymentResponse;
 use Paranoia\Payment\Exception\UnexpectedResponse;
 use Paranoia\Payment\Exception\UnimplementedMethod;
@@ -26,6 +27,7 @@ class Posnet extends AdapterAbstract
         self::TRANSACTION_TYPE_PREAUTHORIZATION  => 'auth',
         self::TRANSACTION_TYPE_POSTAUTHORIZATION => 'capt',
         self::TRANSACTION_TYPE_SALE              => 'sale',
+        self::TRANSACTION_TYPE_SALE_3D           => 'Sale',
         self::TRANSACTION_TYPE_CANCEL            => 'reverse',
         self::TRANSACTION_TYPE_REFUND            => 'return',
         self::TRANSACTION_TYPE_POINT_QUERY       => 'pointinquiry',
@@ -37,11 +39,12 @@ class Posnet extends AdapterAbstract
      *
      * @return array
      */
-    private function buildBaseRequest()
+    private function buildBaseRequest($is3D = null)
     {
         return array(
-            'mid'      => $this->configuration->getMerchantId(),
-            'tid'      => $this->configuration->getTerminalId()
+            'mid' => $this->configuration->getMerchantId(),
+            'tid' => !$is3D ? $this->configuration->getTerminalId() :
+                     $this->configuration->getTerminal3DId()
         );
     }
 
@@ -60,12 +63,97 @@ class Posnet extends AdapterAbstract
         return array( 'xmldata' => $xml );
     }
 
+    protected function buildConfirmRequest(ConfirmRequest $confirmRequest, $requestBuilder)
+    {
+        $rawRequest = call_user_func(array( $this, $requestBuilder ), $confirmRequest);
+        $serializer = new Serializer(Serializer::XML);
+        $xml        = $serializer->serialize(
+            array_merge($this->buildBaseRequest(true), $rawRequest),
+            array( 'root_name' => 'posnetRequest' )
+        );
+        return array( 'xmldata' => $xml );
+    }
+
+    protected function buildRawRequest($request, $requestBuilder)
+    {
+        $rawRequest = call_user_func(array( $this, $requestBuilder ), $request);
+        $serializer = new Serializer(Serializer::XML);
+        $xml        = $serializer->serialize(
+            array_merge($this->buildBaseRequest(true), $rawRequest),
+            array( 'root_name' => 'posnetRequest' )
+        );
+        return array( 'xmldata' => $xml );
+    }
+
+    public function sale3D(Request $request)
+    {
+        $rawRequest  = $this->buildRequest($request, 'buildSale3DRequest');
+        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
+        $response    = $this->parse3DRequestResponse($rawResponse);
+
+        if(! $response->isSuccess()) {
+            return $response;
+        }
+
+        $rawRequest  = $this->buildRedirect3DRequest($response);
+        $rawResponse = $this->sendRequest($this->configuration->getApi3DUrl(), $rawRequest);
+        return $rawResponse->__toString();
+    }
+
+    public function confirm3D(ConfirmRequest $confirmRequest)
+    {
+        $request     = $confirmRequest->getRequest();
+        $payload     = $confirmRequest->getPayload();
+
+        $rawRequest  = $this->buildRawRequest($payload, 'buildSale3DResolveRequest');
+        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
+        $response    = $this->parse3DResolveResponse($rawResponse);
+
+        if(! $response->isSuccess()) {
+            return $response;
+        }
+
+        $mdStatus = $response->getMdStatus();
+
+        $rawRequest  = $this->buildRawRequest($payload, 'buildSale3DTranRequest');
+        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
+        $response    =  $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_SALE);
+        $response->setMdStatus($mdStatus);
+
+        return $response;
+    }
+
+    public function build3DRequest(Request $request, $requestBuilder)
+    {
+        // pass
+    }
+
+    protected function buildRedirect3DRequest($response)
+    {
+        $data = $response->getData();
+
+        $requestData = array(
+            'mid'               => $this->configuration->getMerchantId(),
+            'posnetID'          => $this->configuration->getPosnetId(),
+            'posnetData'        => $data['data1'],
+            'posnetData2'       => $data['data2'],
+            'digest'            => $data['sign'],
+            'merchantReturnURL' => $this->configuration->getSuccessUrl(),
+            'lang'              => 'tr',
+            'url'               => $this->configuration->getErrorUrl(),
+            'openANewWindow'    => '0',
+        );
+
+        return $requestData;
+    }
+
     /**
      * {@inheritdoc}
      * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPreauthorizationRequest()
      */
     protected function buildPreauthorizationRequest(Request $request)
     {
+        $cardNumber  = $this->formatCardNumber($request->getCardNumber());
         $amount      = $this->formatAmount($request->getAmount());
         $installment = $this->formatInstallment($request->getInstallment());
         $currency    = $this->formatCurrency($request->getCurrency());
@@ -73,7 +161,7 @@ class Posnet extends AdapterAbstract
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_PREAUTHORIZATION);
         $requestData = array(
             $type => array(
-                'ccno'          => $request->getCardNumber(),
+                'ccno'          => $cardNumber,
                 'expDate'       => $expireMonth,
                 'cvc'           => $request->getSecurityCode(),
                 'amount'        => $amount,
@@ -119,6 +207,7 @@ class Posnet extends AdapterAbstract
      */
     protected function buildSaleRequest(Request $request)
     {
+        $cardNumber  = $this->formatCardNumber($request->getCardNumber());
         $amount      = $this->formatAmount($request->getAmount());
         $installment = $this->formatInstallment($request->getInstallment());
         $currency    = $this->formatCurrency($request->getCurrency());
@@ -126,7 +215,7 @@ class Posnet extends AdapterAbstract
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_SALE);
         $requestData = array(
             $type => array(
-                'ccno'          => $request->getCardNumber(),
+                'ccno'          => $cardNumber,
                 'expDate'       => $expireMonth,
                 'cvc'           => $request->getSecurityCode(),
                 'amount'        => $amount,
@@ -138,7 +227,55 @@ class Posnet extends AdapterAbstract
                 // 'multiplePoint' => "000000"
             )
         );
+
         return $requestData;
+    }
+
+    protected function buildSale3DRequest(Request $request)
+    {
+        $cardNumber  = $this->formatCardNumber($request->getCardNumber());
+        $amount      = $this->formatAmount($request->getAmount());
+        $installment = $this->formatInstallment($request->getInstallment());
+        $currency    = $this->formatCurrency($request->getCurrency());
+        $expireDate  = $this->formatExpireDate($request->getExpireMonth(), $request->getExpireYear());
+        $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_SALE_3D);
+
+        $requestData = array(
+            'oosRequestData' => array(
+                'posnetid'       => $this->configuration->getPosnetId(),
+                'ccno'           => $cardNumber,
+                'expDate'        => $expireDate,
+                'cvc'            => $request->getSecurityCode(),
+                'amount'         => $amount,
+                'currencyCode'   => $currency,
+                'installment'    => $installment,
+                'XID'            => $request->getOrderId(),
+                'cardHolderName' => $request->getCardHolderName(),
+                'tranType'       => $type
+            )
+        );
+
+        return $requestData;
+    }
+
+    protected function buildSale3DResolveRequest($payload)
+    {
+        return array(
+            'oosResolveMerchantData' => array(
+                'bankData'     => $payload['BankPacket'],
+                'merchantData' => $payload['MerchantPacket'],
+                'sign'         => $payload['Sign']
+            )
+        );
+    }
+
+    protected function buildSale3DTranRequest($payload)
+    {
+        return array(
+            'oosTranData' => array(
+                'bankData' => $payload['BankPacket']
+            )
+        );
     }
 
     /**
@@ -213,7 +350,8 @@ class Posnet extends AdapterAbstract
             $this->getDispatcher()->dispatch(self::EVENT_ON_EXCEPTION, $eventArg);
             throw $exception;
         }
-        $response->setIsSuccess((int)$xml->approved > 0);
+        $response->setIsSuccess((int)$xml->approved == 1);
+        $response->setRawResponse($xml);
         if (!$response->isSuccess()) {
             $response->setResponseCode((string)$xml->respCode);
             $errorMessages = array();
@@ -233,12 +371,107 @@ class Posnet extends AdapterAbstract
             }
             $response->setTransactionId((string)$xml->hostlogkey);
             if (property_exists($xml, 'authCode')) {
-                $response->setOrderId((string)$xml->authCode);
+                $response->setAuthCode((string)$xml->authCode);
             }
         }
         $event = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
         $this->getDispatcher()->dispatch($event, new PaymentEventArg(null, $response, $transactionType));
         return $response;
+    }
+
+    public function parse3DResolveResponse($rawResponse) {
+
+        $response = new PaymentResponse();
+
+        try {
+            $xml = simplexml_load_string($rawResponse);
+
+            $approved   = (int) $xml->approved;
+            $orderId    = (string) $xml->oosResolveMerchantDataResponse->xid;
+            $errorMsg   = (string) $xml->respText;
+            $mdStatus   = (int) $xml->oosResolveMerchantDataResponse->mdStatus;
+            $mdErrorMsg = (string) $xml->oosResolveMerchantDataResponse->mdErrorMessage;
+
+            // NOTE: $mdStatus should be 9 for success in test env.
+            $response->setIsSuccess($approved == 1 && $mdStatus == 1);
+            $response->setOrderId($orderId);
+            $response->setMdStatus($mdStatus);
+            $response->setResponseCode($xml->respCode);
+            $response->setResponseMessage(sprintf('%s - %s', utf8_encode($errorMsg), $mdErrorMsg));
+        } catch(Exception $e) {
+            $response->setIsSuccess(false);
+            $response->setResponseMessage($e->getMessage());
+        }
+
+        $response->setRawResponse(utf8_encode($rawResponse));
+
+        return $response;
+    }
+
+    protected function parse3DRequestResponse($rawResponse)
+    {
+        $response = new PaymentResponse();
+
+        try {
+            $resultObject  = simplexml_load_string($rawResponse);
+
+            $approved    = (string) $resultObject->approved;
+            $respCode    = (string) $resultObject->respCode;
+            $respMessage = (string) $resultObject->respText;
+
+            $response->setIsSuccess($approved == 1);
+
+            if($approved == 1) {
+                $data1 = (string) $resultObject->oosRequestDataResponse->data1;
+                $data2 = (string) $resultObject->oosRequestDataResponse->data2;
+                $sign  = (string) $resultObject->oosRequestDataResponse->sign;
+
+                $data = [
+                    'data1' => $data1,
+                    'data2' => $data2,
+                    'sign'  => $sign
+                ];
+
+                $response->setData($data);
+            }
+
+            $response->setResponseCode($respCode);
+            $response->setResponseMessage(utf8_encode($respMessage));
+        } catch(Exception $e){
+            $response->setIsSuccess(false);
+            $response->setResponseMessage($e->getMessage());
+        }
+
+        $response->setRawResponse(utf8_encode($rawResponse));
+
+        return $response;
+    }
+
+    protected function parseBank3DResponse($rawResponse)
+    {
+        $response = new PaymentResponse();
+
+        $response->setOrderId($rawResponse['Xid']);
+        $response->setTransactionId($rawResponse['Xid']);
+
+        // IMPORTANT! in this step, Posnet hasn't sent mdStatus to us yet.
+        // so assume that mdStatus is 1 to continue.
+        $response->setMdStatus(1);
+
+        // extraData is not currently using.
+        $extraData = [
+            'bankPacket'     => $rawResponse['BankPacket'],
+            'merchantPacket' => $rawResponse['MerchantPacket'],
+            'sign'           => $rawResponse['Sign'],
+        ];
+        $response->setData($extraData);
+
+        return $response;
+    }
+
+    public function check3DHashIntegrity($payload)
+    {
+        return true;
     }
 
     /**

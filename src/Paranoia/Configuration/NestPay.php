@@ -26,6 +26,11 @@ class NestPay extends AbstractConfiguration
     private $mode;
 
     /**
+     * @var string
+     */
+    private $storeKey;
+
+    /**
      * @param string $clientId
      *
      * @return $this
@@ -99,5 +104,24 @@ class NestPay extends AbstractConfiguration
     public function getUsername()
     {
         return $this->username;
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return $this
+     */
+    public function setStoreKey($storeKey)
+    {
+        $this->storeKey = $storeKey;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStoreKey()
+    {
+        return $this->storeKey;
     }
 }
