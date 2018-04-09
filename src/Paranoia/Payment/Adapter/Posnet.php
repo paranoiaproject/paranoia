@@ -250,7 +250,7 @@ class Posnet extends AdapterAbstract
     protected function formatAmount($amount, $reverse = false)
     {
         if (!$reverse) {
-            return ceil($amount * 100);
+            return ceil($amount * 10*10);
         } else {
             return (float)sprintf('%s.%s', substr($amount, 0, -2), substr($amount, -2));
         }
