@@ -1,17 +1,17 @@
 <?php
-namespace Paranoia\Payment;
+namespace Paranoia\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class PaymentEventArg extends Event
+class TransactionEvent extends Event
 {
     /**
-     * @var \Paranoia\Payment\Request
+     * @var \Paranoia\Request
      */
     private $request;
 
     /**
-     * @var \Paranoia\Payment\Response\ResponseInterface
+     * @var \Paranoia\Response\ResponseInterface
      */
     private $response;
 
@@ -50,7 +50,7 @@ class PaymentEventArg extends Event
     }
 
     /**
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      */
     public function setRequest($request)
     {
@@ -58,7 +58,7 @@ class PaymentEventArg extends Event
     }
 
     /**
-     * @return \Paranoia\Payment\Request
+     * @return \Paranoia\Request
      */
     public function getRequest()
     {
@@ -66,7 +66,7 @@ class PaymentEventArg extends Event
     }
 
     /**
-     * @param \Paranoia\Payment\Response\ResponseInterface $response
+     * @param \Paranoia\Response\ResponseInterface $response
      */
     public function setResponse($response)
     {
@@ -74,7 +74,7 @@ class PaymentEventArg extends Event
     }
 
     /**
-     * @return \Paranoia\Payment\Response\ResponseInterface
+     * @return \Paranoia\Response\ResponseInterface
      */
     public function getResponse()
     {

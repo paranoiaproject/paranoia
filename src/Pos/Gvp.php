@@ -1,5 +1,5 @@
 <?php
-namespace Paranoia\Payment\Adapter;
+namespace Paranoia\Pos;
 
 use Paranoia\Common\Serializer\Serializer;
 use Paranoia\Configuration\AbstractConfiguration;
@@ -9,13 +9,13 @@ use Paranoia\Formatter\IsoNumericCurrencyCode;
 use Paranoia\Formatter\Money;
 use Paranoia\Formatter\NopeFormatter;
 use Paranoia\Formatter\SingleDigitInstallment;
-use Paranoia\Payment\PaymentEventArg;
-use Paranoia\Payment\Request;
-use Paranoia\Payment\Response\PaymentResponse;
+use Paranoia\Event\TransactionEvent;
+use Paranoia\Request;
+use Paranoia\Response\PaymentResponse;
 use Paranoia\Exception\BadResponseException;
 use Paranoia\Exception\NotImplementedError;
 
-class Gvp extends AdapterAbstract
+class Gvp extends AbstractPos
 {
     /**
      * @var FormatterInterface
@@ -311,7 +311,7 @@ class Gvp extends AdapterAbstract
 
     /**
      * {@inheritdoc}
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRequest()
+     * @see \Paranoia\Pos\AbstractPos::buildRequest()
      */
     protected function buildRequest(Request $request, $requestBuilder)
     {
@@ -326,7 +326,7 @@ class Gvp extends AdapterAbstract
 
     /**
      * {@inheritdoc}
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPreauthorizationRequest()
+     * @see \Paranoia\Pos\AbstractPos::buildPreauthorizationRequest()
      */
     protected function buildPreAuthorizationRequest(Request $request)
     {
@@ -336,7 +336,7 @@ class Gvp extends AdapterAbstract
 
     /**
      * {@inheritdoc}
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPostAuthorizationRequest()
+     * @see \Paranoia\Pos\AbstractPos::buildPostAuthorizationRequest()
      */
     protected function buildPostAuthorizationRequest(Request $request)
     {
@@ -346,7 +346,7 @@ class Gvp extends AdapterAbstract
 
     /**
      * {@inheritdoc}
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildSaleRequest()
+     * @see \Paranoia\Pos\AbstractPos::buildSaleRequest()
      */
     protected function buildSaleRequest(Request $request)
     {
@@ -356,7 +356,7 @@ class Gvp extends AdapterAbstract
 
     /**
      * {@inheritdoc}
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildRefundRequest()
+     * @see \Paranoia\Pos\AbstractPos::buildRefundRequest()
      */
     protected function buildRefundRequest(Request $request)
     {
@@ -365,7 +365,7 @@ class Gvp extends AdapterAbstract
 
     /**
      * {@inheritdoc}
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildCancelRequest()
+     * @see \Paranoia\Pos\AbstractPos::buildCancelRequest()
      */
     protected function buildCancelRequest(Request $request)
     {
@@ -378,7 +378,7 @@ class Gvp extends AdapterAbstract
 
     /**
      * {@inheritdoc}
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
+     * @see \Paranoia\Pos\AbstractPos::parseResponse()
      */
     protected function buildPointQueryRequest(Request $request)
     {
@@ -387,7 +387,7 @@ class Gvp extends AdapterAbstract
 
     /**
      * {@inheritdoc}
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::buildPointUsageRequest()
+     * @see \Paranoia\Pos\AbstractPos::buildPointUsageRequest()
      */
     protected function buildPointUsageRequest(Request $request)
     {
@@ -396,7 +396,7 @@ class Gvp extends AdapterAbstract
 
     /**
      * {@inheritdoc}
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::parseResponse()
+     * @see \Paranoia\Pos\AbstractPos::parseResponse()
      */
     protected function parseResponse($rawResponse, $transactionType)
     {
@@ -408,7 +408,7 @@ class Gvp extends AdapterAbstract
             $xml = new \SimpleXmlElement($rawResponse);
         } catch (\Exception $e) {
             $exception = new BadResponseException('Provider returned unexpected response: ' . $rawResponse);
-            $eventArg = new PaymentEventArg(null, null, $transactionType, $exception);
+            $eventArg = new TransactionEvent(null, null, $transactionType, $exception);
             $this->getDispatcher()->dispatch(self::EVENT_ON_EXCEPTION, $eventArg);
             throw $exception;
         }
@@ -436,7 +436,7 @@ class Gvp extends AdapterAbstract
             $response->setTransactionId((string)$xml->Transaction->RetrefNum);
         }
         $event = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
-        $this->getDispatcher()->dispatch($event, new PaymentEventArg(null, $response, $transactionType));
+        $this->getDispatcher()->dispatch($event, new TransactionEvent(null, $response, $transactionType));
         return $response;
     }
 }

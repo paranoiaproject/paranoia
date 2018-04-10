@@ -1,5 +1,5 @@
 <?php
-namespace Paranoia\Payment\Response;
+namespace Paranoia\Response;
 
 class PaymentResponse extends ResponseAbstract implements ResponseInterface
 {

@@ -1,7 +1,7 @@
 <?php
-namespace Paranoia\Payment\Response;
+namespace Paranoia\Response;
 
-use Paranoia\Payment\TransferInterface;
+use Paranoia\TransferInterface;
 
 interface ResponseInterface extends TransferInterface
 {

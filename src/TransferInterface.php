@@ -1,5 +1,5 @@
 <?php
-namespace Paranoia\Payment;
+namespace Paranoia;
 
 interface TransferInterface
 {

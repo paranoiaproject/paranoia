@@ -1,15 +1,15 @@
 <?php
-namespace Paranoia\Payment\Adapter;
+namespace Paranoia\Pos;
 
 use Guzzle\Http\Client as HttpClient;
 use Paranoia\Configuration\AbstractConfiguration;
 use Paranoia\Exception\InvalidArgumentException;
 use Paranoia\Exception\CommunicationError;
-use Paranoia\Payment\Request;
+use Paranoia\Request;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Guzzle\Http\Exception\RequestException;
 
-abstract class AdapterAbstract
+abstract class AbstractPos
 {
     /* Events */
     const EVENT_ON_TRANSACTION_SUCCESSFUL = 'OnTransactionSuccessful';
@@ -68,7 +68,7 @@ abstract class AdapterAbstract
     /**
      * build request data for preauthorization transaction.
      *
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      *
      * @return mixed
      */
@@ -77,7 +77,7 @@ abstract class AdapterAbstract
     /**
      * build request data for postauthorization transaction.
      *
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      *
      * @return mixed
      */
@@ -86,7 +86,7 @@ abstract class AdapterAbstract
     /**
      * build request data for sale transaction.
      *
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      *
      * @return mixed
      */
@@ -95,7 +95,7 @@ abstract class AdapterAbstract
     /**
      * build request data for refund transaction.
      *
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      *
      * @return mixed
      */
@@ -104,7 +104,7 @@ abstract class AdapterAbstract
     /**
      * build request data for cancel transaction.
      *
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      *
      * @return mixed
      */
@@ -113,7 +113,7 @@ abstract class AdapterAbstract
     /**
      *  build complete raw data for the specified request.
      *
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      * @param string                    $requestBuilder
      *
      * @return mixed
@@ -126,7 +126,7 @@ abstract class AdapterAbstract
      * @param string $rawResponse
      * @param string $transactionType
      *
-     * @return \Paranoia\Payment\Response\PaymentResponse
+     * @return \Paranoia\Response\PaymentResponse
      */
     abstract protected function parseResponse($rawResponse, $transactionType);
 
@@ -174,9 +174,9 @@ abstract class AdapterAbstract
     }
 
     /**
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Payment\Response\PaymentResponse
+     * @return \Paranoia\Response\PaymentResponse
      */
     public function preAuthorization(Request $request)
     {
@@ -187,9 +187,9 @@ abstract class AdapterAbstract
     }
 
     /**
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Payment\Response\PaymentResponse
+     * @return \Paranoia\Response\PaymentResponse
      */
     public function postAuthorization(Request $request)
     {
@@ -200,9 +200,9 @@ abstract class AdapterAbstract
     }
 
     /**
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Payment\Response\PaymentResponse
+     * @return \Paranoia\Response\PaymentResponse
      */
     public function sale(Request $request)
     {
@@ -213,9 +213,9 @@ abstract class AdapterAbstract
     }
 
     /**
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Payment\Response\PaymentResponse
+     * @return \Paranoia\Response\PaymentResponse
      */
     public function refund(Request $request)
     {
@@ -226,9 +226,9 @@ abstract class AdapterAbstract
     }
 
     /**
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Payment\Response\PaymentResponse
+     * @return \Paranoia\Response\PaymentResponse
      */
     public function cancel(Request $request)
     {
@@ -239,9 +239,9 @@ abstract class AdapterAbstract
     }
 
     /**
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Payment\Response\PaymentResponse
+     * @return \Paranoia\Response\PaymentResponse
      */
     public function pointQuery(Request $request)
     {
@@ -252,9 +252,9 @@ abstract class AdapterAbstract
     }
 
     /**
-     * @param \Paranoia\Payment\Request $request
+     * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Payment\Response\PaymentResponse
+     * @return \Paranoia\Response\PaymentResponse
      */
     public function pointUsage(Request $request)
     {

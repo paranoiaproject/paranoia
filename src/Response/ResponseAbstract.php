@@ -1,5 +1,5 @@
 <?php
-namespace Paranoia\Payment\Response;
+namespace Paranoia\Response;
 
 abstract class ResponseAbstract
 {
