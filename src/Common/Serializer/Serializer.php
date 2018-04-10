@@ -3,7 +3,7 @@ namespace Paranoia\Common\Serializer;
 
 use Paranoia\Common\Serializer\Adapter\Xml;
 // use Paranoia\Common\Serializer\Adapter\Json;
-use Paranoia\Common\Serializer\Exception\UnknownSerializer;
+use Paranoia\Exception\InvalidArgumentException;
 
 class Serializer
 {
@@ -14,11 +14,9 @@ class Serializer
     private $serializer;
 
     /**
-     * class constructor.
-     *
+     * Serializer constructor.
      * @param $type
-     *
-     * @throws Exception\UnknownSerializer
+     * @throws InvalidArgumentException
      */
     public function __construct($type)
     {
@@ -33,13 +31,14 @@ class Serializer
                 break;
             */
             default:
-                throw new UnknownSerializer('Unknown serializer: ' . $type);
+                throw new InvalidArgumentException('Unknown serializer: ' . $type);
         }
     }
 
     /**
-     * {@inheritdoc}
-     * @see \Pext\Serializer\Adapter\SerializerInterface::serialize()
+     * @param $data
+     * @param array $options
+     * @return string
      */
     public function serialize($data, $options = array())
     {

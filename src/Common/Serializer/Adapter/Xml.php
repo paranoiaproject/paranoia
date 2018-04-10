@@ -33,9 +33,9 @@
  */
 namespace Paranoia\Common\Serializer\Adapter;
 
-use Paranoia\Common\Serializer\Exception\OptionError;
 use \DomDocument;
 use \Exception;
+use Paranoia\Exception\InvalidArgumentException;
 
 class Xml implements SerializerInterface
 {
@@ -59,7 +59,7 @@ class Xml implements SerializerInterface
     private function setDefaults(array $options)
     {
         if (!isset($options['root_name'])) {
-            throw new OptionError('root_name is required.');
+            throw new InvalidArgumentException('root_name is required.');
         }
         $defaults = array(
             'version'       => '1.0',
@@ -133,7 +133,7 @@ class Xml implements SerializerInterface
                     }
                     $node->setAttribute($key, $this->bool2str($value));
                 }
-                unset( $arr['@attributes'] ); //remove the key from the array once done.
+                unset($arr['@attributes']); //remove the key from the array once done.
             }
             // check if it has a value stored in @value, if yes store the value and return
             // else check if its directly stored as string
@@ -170,7 +170,7 @@ class Xml implements SerializerInterface
                     // ONLY ONE NODE OF ITS KIND
                     $node->appendChild($this->convert($key, $value));
                 }
-                unset( $arr[$key] ); //remove the key from the array once done.
+                unset($arr[$key]); //remove the key from the array once done.
             }
         }
         // after we are done with all the keys in the array (if it is one)

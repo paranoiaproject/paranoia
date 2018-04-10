@@ -6,10 +6,10 @@
 
 ## 3.5.2. İade İsteği Oluşturma
 
-İade isteği, **Paranoia\Payment\Request**  tipinde bir nesnenin sipariş numarası ile doldurulması suretiyle elde edilir.
+İade isteği, **Paranoia\Request**  tipinde bir nesnenin sipariş numarası ile doldurulması suretiyle elde edilir.
 
 ```php
-$request = new \Paranoia\Payment\Request();
+$request = new \Paranoia\Request();
 $request->setOrderId('987654321');
 ```
 
@@ -24,7 +24,7 @@ $request->setOrderId('987654321');
 
 * İade işlemi için yeni bir iade isteği oluşturuyoruz.
 ```php
-$request = new \Paranoia\Payment\Request();
+$request = new \Paranoia\Request();
 $request->setOrderId('1234567890');
 ```
 
@@ -38,15 +38,15 @@ $configuration->setClientId('123456789')
 
 ```
 
-* İade işlemini gerçekleştiriyoruz. Sağlayıcı uyarlamaları, Sağlayıcının [2. Desteklenen Ödeme Sistemleri](/docs/2-desteklenen-odeme-sistemleri.md) dökümanında belirtilen **ödeme sistemi** nin adı ile adlandırılmışlardır. Örnekte belirtilen NestPay uyarlaması için \Paranoia\Payment\Adapter\**NestPay** sınıfını kullanabildiğiniz gibi Posnet uyarlaması için **\Paranoia\Payment\Adapter\**Posnet** sınıfını kullanabilirsiniz.
+* İade işlemini gerçekleştiriyoruz. Sağlayıcı uyarlamaları, Sağlayıcının [2. Desteklenen Ödeme Sistemleri](/docs/2-desteklenen-odeme-sistemleri.md) dökümanında belirtilen **ödeme sistemi** nin adı ile adlandırılmışlardır. Örnekte belirtilen NestPay uyarlaması için \Paranoia\Pos\**NestPay** sınıfını kullanabildiğiniz gibi Posnet uyarlaması için **\Paranoia\Pos\**Posnet** sınıfını kullanabilirsiniz.
 ```php
 try {
-        $adapter = new \Paranoia\Payment\Adapter\NestPay($configuration);
+        $adapter = new \Paranoia\Pos\NestPay($configuration);
         $response = $adapter->cancel($request);
-} catch(\Paranoia\Payment\Exception\CommunicationError $e) {
+} catch(\Paranoia\Exception\CommunicationError $e) {
          // Bağlantı hatası durumunda yapılacak işlemleri
          // bu bölümde greçekleştirebilirsiniz.
-} catch(\Paranoia\Payment\Exception\UnexpectedResponse $e) {
+} catch(\Paranoia\Exception\UnexpectedResponse $e) {
         // Ödeme sistemi sağlayıcısından beklenmedik bir yanıt
         // dönmesi (boş yanıt veya beklenmedik bir hata mesajı gibi)
         // durumunda yapılacak işlemleri bu bölümde gerçekleştirebilirsiniz.
