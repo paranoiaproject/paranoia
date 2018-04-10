@@ -1,7 +1,7 @@
 <?php
-namespace Paranoia\Payment\Exception;
-
+namespace Paranoia\Exception;
 
 class CommunicationError extends \Exception
 {
+
 }

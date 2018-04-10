@@ -2,14 +2,56 @@
 namespace Paranoia\Payment\Adapter;
 
 use Paranoia\Common\Serializer\Serializer;
+use Paranoia\Configuration\AbstractConfiguration;
+use Paranoia\Formatter\Decimal;
+use Paranoia\Formatter\FormatterInterface;
+use Paranoia\Formatter\IsoNumericCurrencyCode;
+use Paranoia\Formatter\NestPay\ExpireDate;
+use Paranoia\Formatter\NopeFormatter;
+use Paranoia\Formatter\SingleDigitInstallment;
 use Paranoia\Payment\PaymentEventArg;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
-use Paranoia\Payment\Exception\UnexpectedResponse;
-use Paranoia\Payment\Exception\UnimplementedMethod;
+use Paranoia\Exception\BadResponseException;
+use Paranoia\Exception\NotImplementedError;
 
 class NestPay extends AdapterAbstract
 {
+    /**
+     * @var FormatterInterface
+     */
+    private $currencyFormatter;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $amountFormatter;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $installmentFormatter;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $expireDateFormatter;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $orderIdFormatter;
+
+    public function __construct(AbstractConfiguration $configuration)
+    {
+        parent::__construct($configuration);
+        $this->currencyFormatter = new IsoNumericCurrencyCode();
+        $this->amountFormatter = new Decimal();
+        $this->installmentFormatter = new SingleDigitInstallment();
+        $this->expireDateFormatter = new ExpireDate();
+        $this->orderIdFormatter = new NopeFormatter();
+    }
+
     /**
      * @var array
      */
@@ -59,10 +101,10 @@ class NestPay extends AdapterAbstract
      */
     protected function buildPreAuthorizationRequest(Request $request)
     {
-        $amount      = $this->formatAmount($request->getAmount());
-        $installment = $this->formatInstallment($request->getInstallment());
-        $currency    = $this->formatCurrency($request->getCurrency());
-        $expireMonth = $this->formatExpireDate($request->getExpireMonth(), $request->getExpireYear());
+        $amount      = $this->amountFormatter->format($request->getAmount());
+        $installment = $this->installmentFormatter->format($request->getInstallment());
+        $currency    = $this->currencyFormatter->format($request->getCurrency());
+        $expireMonth = $this->expireDateFormatter->format($request->getExpireMonth(), $request->getExpireYear());
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_PREAUTHORIZATION);
         $requestData = array(
             'Type'     => $type,
@@ -72,7 +114,7 @@ class NestPay extends AdapterAbstract
             'Number'   => $request->getCardNumber(),
             'Cvv2Val'  => $request->getSecurityCode(),
             'Expires'  => $expireMonth,
-            'OrderId'  => $this->formatOrderId($request->getOrderId()),
+            'OrderId'  => $this->orderIdFormatter->format($request->getOrderId()),
         );
         return $requestData;
     }
@@ -86,7 +128,7 @@ class NestPay extends AdapterAbstract
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_POSTAUTHORIZATION);
         $requestData = array(
             'Type'    => $type,
-            'OrderId' => $this->formatOrderId($request->getOrderId()),
+            'OrderId' => $this->orderIdFormatter->format($request->getOrderId()),
         );
         return $requestData;
     }
@@ -97,10 +139,10 @@ class NestPay extends AdapterAbstract
      */
     protected function buildSaleRequest(Request $request)
     {
-        $amount      = $this->formatAmount($request->getAmount());
-        $installment = $this->formatInstallment($request->getInstallment());
-        $currency    = $this->formatCurrency($request->getCurrency());
-        $expireMonth = $this->formatExpireDate($request->getExpireMonth(), $request->getExpireYear());
+        $amount      = $this->amountFormatter->format($request->getAmount());
+        $installment = $this->installmentFormatter->format($request->getInstallment());
+        $currency    = $this->currencyFormatter->format($request->getCurrency());
+        $expireMonth = $this->expireDateFormatter->format($request->getExpireMonth(), $request->getExpireYear());
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_SALE);
         $requestData = array(
             'Type'     => $type,
@@ -110,7 +152,7 @@ class NestPay extends AdapterAbstract
             'Number'   => $request->getCardNumber(),
             'Cvv2Val'  => $request->getSecurityCode(),
             'Expires'  => $expireMonth,
-            'OrderId'  => $this->formatOrderId($request->getOrderId()),
+            'OrderId'  => $this->orderIdFormatter->format($request->getOrderId()),
         );
         return $requestData;
     }
@@ -121,14 +163,14 @@ class NestPay extends AdapterAbstract
      */
     protected function buildRefundRequest(Request $request)
     {
-        $amount      = $this->formatAmount($request->getAmount());
-        $currency    = $this->formatCurrency($request->getCurrency());
+        $amount      = $this->amountFormatter->format($request->getAmount());
+        $currency    = $this->currencyFormatter->format($request->getCurrency());
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_REFUND);
         $requestData = array(
             'Type'     => $type,
             'Total'    => $amount,
             'Currency' => $currency,
-            'OrderId'  => $this->formatOrderId($request->getOrderId()),
+            'OrderId'  => $this->orderIdFormatter->format($request->getOrderId()),
         );
         return $requestData;
     }
@@ -142,7 +184,7 @@ class NestPay extends AdapterAbstract
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_CANCEL);
         $requestData = array(
             'Type'    => $type,
-            'OrderId' => $this->formatOrderId($request->getOrderId()),
+            'OrderId' => $this->orderIdFormatter->format($request->getOrderId()),
         );
         if ($request->getTransactionId()) {
             $requestData['TransId'] = $request->getTransactionId();
@@ -156,7 +198,7 @@ class NestPay extends AdapterAbstract
      */
     protected function buildPointQueryRequest(Request $request)
     {
-        throw new UnimplementedMethod();
+        throw new NotImplementedError();
     }
 
     /**
@@ -165,7 +207,7 @@ class NestPay extends AdapterAbstract
      */
     protected function buildPointUsageRequest(Request $request)
     {
-        throw new UnimplementedMethod();
+        throw new NotImplementedError();
     }
 
     /**
@@ -180,8 +222,8 @@ class NestPay extends AdapterAbstract
              * @var object $xml
              */
             $xml = new \SimpleXmlElement($rawResponse);
-        } catch ( \Exception $e ) {
-            $exception = new UnexpectedResponse('Provider returned unexpected response: ' . $rawResponse);
+        } catch (\Exception $e) {
+            $exception = new BadResponseException('Provider returned unexpected response: ' . $rawResponse);
             $eventArg = new PaymentEventArg(null, null, $transactionType, $exception);
             $this->getDispatcher()->dispatch(self::EVENT_ON_EXCEPTION, $eventArg);
             throw $exception;

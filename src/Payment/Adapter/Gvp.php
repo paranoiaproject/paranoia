@@ -2,14 +2,46 @@
 namespace Paranoia\Payment\Adapter;
 
 use Paranoia\Common\Serializer\Serializer;
+use Paranoia\Configuration\AbstractConfiguration;
+use Paranoia\Formatter\FormatterInterface;
+use Paranoia\Formatter\Gvp\ExpireDate;
+use Paranoia\Formatter\IsoNumericCurrencyCode;
+use Paranoia\Formatter\Money;
+use Paranoia\Formatter\NopeFormatter;
+use Paranoia\Formatter\SingleDigitInstallment;
 use Paranoia\Payment\PaymentEventArg;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
-use Paranoia\Payment\Exception\UnexpectedResponse;
-use Paranoia\Payment\Exception\UnimplementedMethod;
+use Paranoia\Exception\BadResponseException;
+use Paranoia\Exception\NotImplementedError;
 
 class Gvp extends AdapterAbstract
 {
+    /**
+     * @var FormatterInterface
+     */
+    private $currencyFormatter;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $amountFormatter;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $installmentFormatter;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $expireDateFormatter;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $orderIdFormatter;
+
     /**
      * @var array
      */
@@ -22,6 +54,16 @@ class Gvp extends AdapterAbstract
         self::TRANSACTION_TYPE_POINT_QUERY       => 'pointinquiry',
         self::TRANSACTION_TYPE_POINT_USAGE       => 'pointusage',
     );
+
+    public function __construct(AbstractConfiguration $configuration)
+    {
+        parent::__construct($configuration);
+        $this->currencyFormatter = new IsoNumericCurrencyCode();
+        $this->amountFormatter = new Money();
+        $this->installmentFormatter = new SingleDigitInstallment();
+        $this->expireDateFormatter = new ExpireDate();
+        $this->orderIdFormatter = new NopeFormatter();
+    }
 
     /**
      * builds request base with common arguments.
@@ -94,7 +136,7 @@ class Gvp extends AdapterAbstract
      */
     private function buildCard(Request $request)
     {
-        $expireMonth = $this->formatExpireDate(
+        $expireMonth = $this->expireDateFormatter->format(
             $request->getExpireMonth(),
             $request->getExpireYear()
         );
@@ -115,7 +157,7 @@ class Gvp extends AdapterAbstract
     private function buildOrder(Request $request)
     {
         return array(
-            'OrderID'     => $this->formatOrderId($request->getOrderId()),
+            'OrderID'     => $this->orderIdFormatter->format($request->getOrderId()),
             'GroupID'     => null,
             'Description' => null
         );
@@ -137,9 +179,10 @@ class Gvp extends AdapterAbstract
         $cardHolderPresentCode = 0,
         $originalRetrefNum = null
     ) {
-        $installment     = ($request->getInstallment()) ? $this->formatInstallment($request->getInstallment()) : null;
-        $amount          = $this->isAmountRequired($transactionType) ? $this->formatAmount($request->getAmount()) : '1';
-        $currency        = ($request->getCurrency()) ? $this->formatCurrency($request->getCurrency()) : null;
+        $installment     = $this->installmentFormatter->format($request->getInstallment());
+        $amount          = $this->isAmountRequired($transactionType) ?
+            $this->amountFormatter->format($request->getAmount()) : '1';
+        $currency        = ($request->getCurrency()) ? $this->currencyFormatter->format($request->getCurrency()) : null;
         $type            = $this->getProviderTransactionType($transactionType);
         return array(
             'Type'                  => $type,
@@ -246,10 +289,11 @@ class Gvp extends AdapterAbstract
      */
     private function getTransactionHash(Request $request, $password, $transactionType)
     {
-        $orderId      = $this->formatOrderId($request->getOrderId());
+        $orderId      = $this->orderIdFormatter->format($request->getOrderId());
         $terminalId   = $this->configuration->getTerminalId();
         $cardNumber   = $this->isCardNumberRequired($transactionType) ? $request->getCardNumber() : '';
-        $amount       = $this->isAmountRequired($transactionType) ? $this->formatAmount($request->getAmount()) : '1';
+        $amount       = $this->isAmountRequired($transactionType) ?
+            $this->amountFormatter->format($request->getAmount()) : '1';
         $securityData = $this->getSecurityHash($password);
         return strtoupper(
             sha1(
@@ -338,7 +382,7 @@ class Gvp extends AdapterAbstract
      */
     protected function buildPointQueryRequest(Request $request)
     {
-        throw new UnimplementedMethod();
+        throw new NotImplementedError();
     }
 
     /**
@@ -347,7 +391,7 @@ class Gvp extends AdapterAbstract
      */
     protected function buildPointUsageRequest(Request $request)
     {
-        throw new UnimplementedMethod();
+        throw new NotImplementedError();
     }
 
     /**
@@ -362,8 +406,8 @@ class Gvp extends AdapterAbstract
              * @var object $xml
              */
             $xml = new \SimpleXmlElement($rawResponse);
-        } catch ( \Exception $e ) {
-            $exception = new UnexpectedResponse('Provider returned unexpected response: ' . $rawResponse);
+        } catch (\Exception $e) {
+            $exception = new BadResponseException('Provider returned unexpected response: ' . $rawResponse);
             $eventArg = new PaymentEventArg(null, null, $transactionType, $exception);
             $this->getDispatcher()->dispatch(self::EVENT_ON_EXCEPTION, $eventArg);
             throw $exception;
@@ -394,27 +438,5 @@ class Gvp extends AdapterAbstract
         $event = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
         $this->getDispatcher()->dispatch($event, new PaymentEventArg(null, $response, $transactionType));
         return $response;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::formatAmount()
-     */
-    protected function formatAmount($amount, $reverse = false)
-    {
-        if (!$reverse) {
-            return number_format($amount, 2, '', '');
-        } else {
-            return (float)sprintf('%s.%s', substr($amount, 0, -2), substr($amount, -2));
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::formatExpireDate()
-     */
-    protected function formatExpireDate($month, $year)
-    {
-        return sprintf('%02s%s', $month, substr($year, -2));
     }
 }

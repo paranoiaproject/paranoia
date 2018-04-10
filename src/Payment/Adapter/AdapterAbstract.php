@@ -3,24 +3,19 @@ namespace Paranoia\Payment\Adapter;
 
 use Guzzle\Http\Client as HttpClient;
 use Paranoia\Configuration\AbstractConfiguration;
-use Paranoia\Payment\Exception\CommunicationError;
+use Paranoia\Exception\InvalidArgumentException;
+use Paranoia\Exception\CommunicationError;
 use Paranoia\Payment\Request;
-use Paranoia\Payment\Response;
-use Paranoia\Payment\Exception\UnknownTransactionType;
-use Paranoia\Payment\Exception\UnknownCurrencyCode;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Guzzle\Http\Exception\RequestException;
 
 abstract class AdapterAbstract
 {
-    /* Currency Types */
-    const CURRENCY_TRY = 'TRY';
-    const CURRENCY_USD = 'USD';
-    const CURRENCY_EUR = 'EUR';
     /* Events */
     const EVENT_ON_TRANSACTION_SUCCESSFUL = 'OnTransactionSuccessful';
     const EVENT_ON_TRANSACTION_FAILED = 'OnTransactionFailed';
     const EVENT_ON_EXCEPTION = 'OnException';
+
     /* Transaction Types*/
     const TRANSACTION_TYPE_PREAUTHORIZATION = 'preAuthorization';
     const TRANSACTION_TYPE_POSTAUTHORIZATION = 'postAuthorization';
@@ -29,15 +24,6 @@ abstract class AdapterAbstract
     const TRANSACTION_TYPE_REFUND = 'refund';
     const TRANSACTION_TYPE_POINT_QUERY = 'pointQuery';
     const TRANSACTION_TYPE_POINT_USAGE = 'pointUsage';
-
-    /**
-     * @var array
-     */
-    protected $currencyCodes = array(
-        self::CURRENCY_TRY => 949,
-        self::CURRENCY_EUR => 978,
-        self::CURRENCY_USD => 840,
-    );
 
     /**
      * @var array
@@ -53,6 +39,7 @@ abstract class AdapterAbstract
      * @var \Symfony\Component\EventDispatcher\EventDispatcher
      */
     protected $dispatcher;
+
 
     public function __construct(AbstractConfiguration $configuration)
     {
@@ -168,78 +155,6 @@ abstract class AdapterAbstract
         } catch (RequestException $e) {
             throw new CommunicationError('Communication failed: ' . $url);
         }
-
-    }
-
-    /**
-     * formats the specified string currency code by iso currency codes.
-     *
-     * @param string $currency
-     *
-     * @throws \Paranoia\Payment\Exception\UnknownCurrencyCode
-     * @return integer
-     */
-    protected function formatCurrency($currency)
-    {
-        if (!isset($this->currencyCodes[$currency])) {
-            throw new UnknownCurrencyCode(sprintf('%s is unknown currency.', $currency));
-        }
-        return $this->currencyCodes[$currency];
-    }
-
-    /**
-     * returns formatted amount with doth or without doth.
-     * formatted number returns amount default without doth.
-     *
-     * @param string|float $amount
-     * @param boolean      $reverse
-     *
-     * @return string
-     */
-    protected function formatAmount($amount, $reverse = false)
-    {
-        if (!$reverse) {
-            return number_format($amount, 2, '.', '');
-        } else {
-            return (float)sprintf('%s.%s', substr($amount, 0, -2), substr($amount, -2));
-        }
-    }
-
-    /**
-     * formats expire date as month/year
-     *
-     * @param int $month
-     * @param int $year
-     *
-     * @return string
-     */
-    protected function formatExpireDate($month, $year)
-    {
-        return sprintf('%02s/%04s', $month, $year);
-    }
-
-    /**
-     * returns formatted installment amount
-     *
-     * @param int $installment
-     *
-     * @return string
-     */
-    protected function formatInstallment($installment)
-    {
-        return (!is_numeric($installment) || intval($installment) <= 1) ? '' : $installment;
-    }
-
-    /**
-     * returns formatted order number.
-     *
-     * @param $orderId
-     *
-     * @return mixed
-     */
-    protected function formatOrderId($orderId)
-    {
-        return $orderId;
     }
 
     /**
@@ -247,13 +162,13 @@ abstract class AdapterAbstract
      *
      * @param string $transactionType
      *
-     * @throws \Paranoia\Payment\Exception\UnknownTransactionType
+     * @throws \Paranoia\Exception\InvalidArgumentException
      * @return string
      */
     protected function getProviderTransactionType($transactionType)
     {
         if (!array_key_exists($transactionType, $this->transactionMap)) {
-            throw new UnknownTransactionType('Transaction type is unknown: ' . $transactionType);
+            throw new InvalidArgumentException('Transaction type is unknown: ' . $transactionType);
         }
         return $this->transactionMap[$transactionType];
     }

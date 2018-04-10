@@ -2,22 +2,45 @@
 namespace Paranoia\Payment\Adapter;
 
 use Paranoia\Common\Serializer\Serializer;
+use Paranoia\Configuration\AbstractConfiguration;
+use Paranoia\Formatter\FormatterInterface;
+use Paranoia\Formatter\Money;
+use Paranoia\Formatter\MultiDigitInstallment;
+use Paranoia\Formatter\Posnet\ExpireDate;
+use Paranoia\Formatter\Posnet\OrderId;
+use Paranoia\Formatter\PosnetCurrencyCode;
 use Paranoia\Payment\PaymentEventArg;
 use Paranoia\Payment\Request;
 use Paranoia\Payment\Response\PaymentResponse;
-use Paranoia\Payment\Exception\UnexpectedResponse;
-use Paranoia\Payment\Exception\UnimplementedMethod;
+use Paranoia\Exception\BadResponseException;
+use Paranoia\Exception\NotImplementedError;
 
 class Posnet extends AdapterAbstract
 {
     /**
-     * @var array
+     * @var FormatterInterface
      */
-    protected $currencyCodes = array(
-        self::CURRENCY_TRY => 'YT',
-        self::CURRENCY_EUR => 'EU',
-        self::CURRENCY_USD => 'US',
-    );
+    private $currencyFormatter;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $amountFormatter;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $installmentFormatter;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $expireDateFormatter;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $orderIdFormatter;
 
     /**
      * @var array
@@ -31,6 +54,17 @@ class Posnet extends AdapterAbstract
         self::TRANSACTION_TYPE_POINT_QUERY       => 'pointinquiry',
         self::TRANSACTION_TYPE_POINT_USAGE       => 'pointusage',
     );
+
+    public function __construct(AbstractConfiguration $configuration)
+    {
+        parent::__construct($configuration);
+        $this->currencyFormatter = new PosnetCurrencyCode();
+        $this->amountFormatter = new Money();
+        $this->installmentFormatter = new MultiDigitInstallment();
+        $this->expireDateFormatter = new ExpireDate();
+        $this->orderIdFormatter = new OrderId();
+    }
+
 
     /**
      * builds request base with common arguments.
@@ -66,10 +100,10 @@ class Posnet extends AdapterAbstract
      */
     protected function buildPreauthorizationRequest(Request $request)
     {
-        $amount      = $this->formatAmount($request->getAmount());
-        $installment = $this->formatInstallment($request->getInstallment());
-        $currency    = $this->formatCurrency($request->getCurrency());
-        $expireMonth = $this->formatExpireDate($request->getExpireMonth(), $request->getExpireYear());
+        $amount      = $this->amountFormatter->format($request->getAmount());
+        $installment = $this->installmentFormatter->format($request->getInstallment());
+        $currency    = $this->currencyFormatter->format($request->getCurrency());
+        $expireMonth = $this->expireDateFormatter->format($request->getExpireMonth(), $request->getExpireYear());
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_PREAUTHORIZATION);
         $requestData = array(
             $type => array(
@@ -78,7 +112,7 @@ class Posnet extends AdapterAbstract
                 'cvc'           => $request->getSecurityCode(),
                 'amount'        => $amount,
                 'currencyCode'  => $currency,
-                'orderID'       => $this->formatOrderId($request->getOrderId()),
+                'orderID'       => $this->orderIdFormatter->format($request->getOrderId()),
                 'installment'   => $installment,
                 #TODO: this fields will be used, when point and some bank benefit usage is implemented.
                 // 'extraPoint'    => "000000",
@@ -94,9 +128,9 @@ class Posnet extends AdapterAbstract
      */
     protected function buildPostAuthorizationRequest(Request $request)
     {
-        $amount      = $this->formatAmount($request->getAmount());
-        $installment = $this->formatInstallment($request->getInstallment());
-        $currency    = $this->formatCurrency($request->getCurrency());
+        $amount      = $this->amountFormatter->format($request->getAmount());
+        $installment = $this->installmentFormatter->format($request->getInstallment());
+        $currency    = $this->currencyFormatter->format($request->getCurrency());
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_POSTAUTHORIZATION);
         $requestData = array(
             $type => array(
@@ -119,10 +153,10 @@ class Posnet extends AdapterAbstract
      */
     protected function buildSaleRequest(Request $request)
     {
-        $amount      = $this->formatAmount($request->getAmount());
-        $installment = $this->formatInstallment($request->getInstallment());
-        $currency    = $this->formatCurrency($request->getCurrency());
-        $expireMonth = $this->formatExpireDate($request->getExpireMonth(), $request->getExpireYear());
+        $amount      = $this->amountFormatter->format($request->getAmount());
+        $installment = $this->installmentFormatter->format($request->getInstallment());
+        $currency    = $this->currencyFormatter->format($request->getCurrency());
+        $expireMonth = $this->expireDateFormatter->format($request->getExpireMonth(), $request->getExpireYear());
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_SALE);
         $requestData = array(
             $type => array(
@@ -131,7 +165,7 @@ class Posnet extends AdapterAbstract
                 'cvc'           => $request->getSecurityCode(),
                 'amount'        => $amount,
                 'currencyCode'  => $currency,
-                'orderID'       => $this->formatOrderId($request->getOrderId()),
+                'orderID'       => $this->orderIdFormatter->format($request->getOrderId()),
                 'installment'   => $installment,
                 #TODO: this fields will be used, when point and some bank benefit usage is implemented.
                 // 'extraPoint'    => "000000",
@@ -147,8 +181,8 @@ class Posnet extends AdapterAbstract
      */
     protected function buildRefundRequest(Request $request)
     {
-        $amount      = $this->formatAmount($request->getAmount());
-        $currency    = $this->formatCurrency($request->getCurrency());
+        $amount      = $this->amountFormatter->format($request->getAmount());
+        $currency    = $this->currencyFormatter->format($request->getCurrency());
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_REFUND);
         $requestData = array(
             $type => array(
@@ -183,7 +217,7 @@ class Posnet extends AdapterAbstract
      */
     protected function buildPointQueryRequest(Request $request)
     {
-        throw new UnimplementedMethod();
+        throw new NotImplementedError();
     }
 
     /**
@@ -192,7 +226,7 @@ class Posnet extends AdapterAbstract
      */
     protected function buildPointUsageRequest(Request $request)
     {
-        throw new UnimplementedMethod();
+        throw new NotImplementedError();
     }
 
     /**
@@ -207,8 +241,8 @@ class Posnet extends AdapterAbstract
              * @var object $xml
              */
             $xml = new \SimpleXmlElement($rawResponse);
-        } catch ( \Exception $e ) {
-            $exception = new UnexpectedResponse('Provider returned unexpected response: ' . $rawResponse);
+        } catch (\Exception $e) {
+            $exception = new BadResponseException('Provider returned unexpected response: ' . $rawResponse);
             $eventArg = new PaymentEventArg(null, null, $transactionType, $exception);
             $this->getDispatcher()->dispatch(self::EVENT_ON_EXCEPTION, $eventArg);
             throw $exception;
@@ -239,54 +273,5 @@ class Posnet extends AdapterAbstract
         $event = $response->isSuccess() ? self::EVENT_ON_TRANSACTION_SUCCESSFUL : self::EVENT_ON_TRANSACTION_FAILED;
         $this->getDispatcher()->dispatch($event, new PaymentEventArg(null, $response, $transactionType));
         return $response;
-    }
-
-    /**
-     * {@inheritdoc}
-     * Posnet tutar değerinde nokta istemiyor. Örnek:15.00TL için 1500 gönderilmesi gerekiyor.
-     *
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::formatAmount()
-     */
-    protected function formatAmount($amount, $reverse = false)
-    {
-        if (!$reverse) {
-            return ceil($amount * 100);
-        } else {
-            return (float)sprintf('%s.%s', substr($amount, 0, -2), substr($amount, -2));
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     * Posnet Son Kullanma Tarihini YYMM formatında istiyor. Örnek:03/2014 için 1403
-     *
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::formatExpireDate()
-     */
-    protected function formatExpireDate($month, $year)
-    {
-        return sprintf('%02s%02s', substr($year, -2), $month);
-    }
-
-    /**
-     * {@inheritdoc}
-     * Postnet Taksit sayısında daima 2 rakam gönderilmesini istiyor.
-     *
-     * @see Paranoia\Payment\Adapter\AdapterAbstract::formatInstallment()
-     */
-    protected function formatInstallment($installment)
-    {
-        if (!is_numeric($installment) || intval($installment) <= 1) {
-            return '00';
-        }
-        return sprintf('%02s', $installment);
-    }
-
-    /**
-     * @param $orderId
-     * @return mixed|string
-     */
-    protected function formatOrderId($orderId)
-    {
-        return str_repeat('0', 24 - strlen($orderId)) . $orderId;
     }
 }
