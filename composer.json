@@ -22,9 +22,9 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "Paranoia": "src/",
-            "Paranoia\\Tests": "tests/"
+        "psr-4": {
+            "Paranoia\\": "src/",
+            "Paranoia\\Test\\": "tests/"
         }
     }
 }
