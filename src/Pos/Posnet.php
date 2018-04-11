@@ -103,7 +103,7 @@ class Posnet extends AbstractPos
         $amount      = $this->amountFormatter->format($request->getAmount());
         $installment = $this->installmentFormatter->format($request->getInstallment());
         $currency    = $this->currencyFormatter->format($request->getCurrency());
-        $expireMonth = $this->expireDateFormatter->format($request->getExpireMonth(), $request->getExpireYear());
+        $expireMonth = $this->expireDateFormatter->format([$request->getExpireMonth(), $request->getExpireYear()]);
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_PREAUTHORIZATION);
         $requestData = array(
             $type => array(
@@ -156,7 +156,7 @@ class Posnet extends AbstractPos
         $amount      = $this->amountFormatter->format($request->getAmount());
         $installment = $this->installmentFormatter->format($request->getInstallment());
         $currency    = $this->currencyFormatter->format($request->getCurrency());
-        $expireMonth = $this->expireDateFormatter->format($request->getExpireMonth(), $request->getExpireYear());
+        $expireMonth = $this->expireDateFormatter->format([$request->getExpireMonth(), $request->getExpireYear()]);
         $type        = $this->getProviderTransactionType(self::TRANSACTION_TYPE_SALE);
         $requestData = array(
             $type => array(
