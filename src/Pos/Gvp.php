@@ -136,10 +136,8 @@ class Gvp extends AbstractPos
      */
     private function buildCard(Request $request)
     {
-        $expireMonth = $this->expireDateFormatter->format(
-            $request->getExpireMonth(),
-            $request->getExpireYear()
-        );
+        $expireMonth = $this->expireDateFormatter->format([$request->getExpireMonth(), $request->getExpireYear()]);
+
         return array(
             'Number'     => $request->getCardNumber(),
             'ExpireDate' => $expireMonth,
