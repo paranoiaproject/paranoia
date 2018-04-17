@@ -2,43 +2,18 @@
 namespace Paranoia\Pos;
 
 use Guzzle\Http\Client as HttpClient;
+use Guzzle\Http\Exception\RequestException;
 use Paranoia\Configuration\AbstractConfiguration;
-use Paranoia\Exception\InvalidArgumentException;
 use Paranoia\Exception\CommunicationError;
 use Paranoia\Request;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Guzzle\Http\Exception\RequestException;
+use Paranoia\TransactionType;
 
 abstract class AbstractPos
 {
-    /* Events */
-    const EVENT_ON_TRANSACTION_SUCCESSFUL = 'OnTransactionSuccessful';
-    const EVENT_ON_TRANSACTION_FAILED = 'OnTransactionFailed';
-    const EVENT_ON_EXCEPTION = 'OnException';
-
-    /* Transaction Types*/
-    const TRANSACTION_TYPE_PREAUTHORIZATION = 'preAuthorization';
-    const TRANSACTION_TYPE_POSTAUTHORIZATION = 'postAuthorization';
-    const TRANSACTION_TYPE_SALE = 'sale';
-    const TRANSACTION_TYPE_CANCEL = 'cancel';
-    const TRANSACTION_TYPE_REFUND = 'refund';
-    const TRANSACTION_TYPE_POINT_QUERY = 'pointQuery';
-    const TRANSACTION_TYPE_POINT_USAGE = 'pointUsage';
-
-    /**
-     * @var array
-     */
-    protected $transactionMap = array();
-
     /**
      * @var AbstractConfiguration
      */
     protected $configuration;
-
-    /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
-     */
-    protected $dispatcher;
 
 
     public function __construct(AbstractConfiguration $configuration)
@@ -47,78 +22,14 @@ abstract class AbstractPos
     }
 
     /**
-     * @param \Paranoia\Configuration\AbstractConfiguration $configuration
-     */
-    public function setConfiguration($configuration)
-    {
-        $this->configuration = $configuration;
-    }
-
-    /**
-     * @return EventDispatcher
-     */
-    protected function getDispatcher()
-    {
-        if (!$this->dispatcher) {
-            $this->dispatcher = new EventDispatcher();
-        }
-        return $this->dispatcher;
-    }
-
-    /**
-     * build request data for preauthorization transaction.
-     *
-     * @param \Paranoia\Request $request
-     *
-     * @return mixed
-     */
-    abstract protected function buildPreAuthorizationRequest(Request $request);
-
-    /**
-     * build request data for postauthorization transaction.
-     *
-     * @param \Paranoia\Request $request
-     *
-     * @return mixed
-     */
-    abstract protected function buildPostAuthorizationRequest(Request $request);
-
-    /**
-     * build request data for sale transaction.
-     *
-     * @param \Paranoia\Request $request
-     *
-     * @return mixed
-     */
-    abstract protected function buildSaleRequest(Request $request);
-
-    /**
-     * build request data for refund transaction.
-     *
-     * @param \Paranoia\Request $request
-     *
-     * @return mixed
-     */
-    abstract protected function buildRefundRequest(Request $request);
-
-    /**
-     * build request data for cancel transaction.
-     *
-     * @param \Paranoia\Request $request
-     *
-     * @return mixed
-     */
-    abstract protected function buildCancelRequest(Request $request);
-
-    /**
      *  build complete raw data for the specified request.
      *
      * @param \Paranoia\Request $request
-     * @param string                    $requestBuilder
+     * @param string $transactionType
      *
      * @return mixed
      */
-    abstract protected function buildRequest(Request $request, $requestBuilder);
+    abstract protected function buildRequest(Request $request, $transactionType);
 
     /**
      * parses response from returned provider.
@@ -158,31 +69,15 @@ abstract class AbstractPos
     }
 
     /**
-     * returns transaction code by expected provider.
-     *
-     * @param string $transactionType
-     *
-     * @throws \Paranoia\Exception\InvalidArgumentException
-     * @return string
-     */
-    protected function getProviderTransactionType($transactionType)
-    {
-        if (!array_key_exists($transactionType, $this->transactionMap)) {
-            throw new InvalidArgumentException('Transaction type is unknown: ' . $transactionType);
-        }
-        return $this->transactionMap[$transactionType];
-    }
-
-    /**
      * @param \Paranoia\Request $request
      *
      * @return \Paranoia\Response\PaymentResponse
      */
     public function preAuthorization(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, 'buildPreauthorizationRequest');
+        $rawRequest  = $this->buildRequest($request, TransactionType::PRE_AUTHORIZATION);
         $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_PREAUTHORIZATION);
+        $response    = $this->parseResponse($rawResponse, TransactionType::PRE_AUTHORIZATION);
         return $response;
     }
 
@@ -193,9 +88,9 @@ abstract class AbstractPos
      */
     public function postAuthorization(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, 'buildPostAuthorizationRequest');
+        $rawRequest  = $this->buildRequest($request, TransactionType::POST_AUTHORIZATION);
         $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_POSTAUTHORIZATION);
+        $response    = $this->parseResponse($rawResponse, TransactionType::POST_AUTHORIZATION);
         return $response;
     }
 
@@ -206,9 +101,9 @@ abstract class AbstractPos
      */
     public function sale(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, 'buildSaleRequest');
+        $rawRequest  = $this->buildRequest($request, TransactionType::SALE);
         $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_SALE);
+        $response    = $this->parseResponse($rawResponse, TransactionType::SALE);
         return $response;
     }
 
@@ -219,9 +114,9 @@ abstract class AbstractPos
      */
     public function refund(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, 'buildRefundRequest');
+        $rawRequest  = $this->buildRequest($request, TransactionType::REFUND);
         $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_REFUND);
+        $response    = $this->parseResponse($rawResponse, TransactionType::REFUND);
         return $response;
     }
 
@@ -232,9 +127,9 @@ abstract class AbstractPos
      */
     public function cancel(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, 'buildCancelRequest');
+        $rawRequest  = $this->buildRequest($request, TransactionType::CANCEL);
         $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_CANCEL);
+        $response    = $this->parseResponse($rawResponse, TransactionType::CANCEL);
         return $response;
     }
 
@@ -245,9 +140,9 @@ abstract class AbstractPos
      */
     public function pointQuery(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, 'buildPointQueryRequest');
+        $rawRequest  = $this->buildRequest($request, TransactionType::POINT_INQUIRY);
         $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_POINT_QUERY);
+        $response    = $this->parseResponse($rawResponse, TransactionType::POINT_INQUIRY);
         return $response;
     }
 
@@ -258,21 +153,9 @@ abstract class AbstractPos
      */
     public function pointUsage(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, 'buildPointUsageRequest');
+        $rawRequest  = $this->buildRequest($request, TransactionType::POINT_USAGE);
         $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, self::TRANSACTION_TYPE_POINT_USAGE);
+        $response    = $this->parseResponse($rawResponse, TransactionType::POINT_USAGE);
         return $response;
-    }
-
-    /**
-     * mask some critical information in transaction request.
-     *
-     * @param string $rawRequest
-     *
-     * @return string
-     */
-    protected function maskRequest($rawRequest)
-    {
-        return $rawRequest;
     }
 }
