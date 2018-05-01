@@ -13,13 +13,12 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
      */
     private function prepareErrorDetails(\SimpleXMLElement $xml, PaymentResponse $response)
     {
-        $response->setResponseCode((string)$xml->respCode);
         $errorMessages = array();
         if (property_exists($xml, 'respCode')) {
-            $errorMessages[] = sprintf('Error: %s', (string)$xml->respCode);
+            $response->setResponseCode((string)$xml->respCode);
         }
         if (property_exists($xml, 'respText')) {
-            $errorMessages[] = sprintf('Error Message: %s ', (string)$xml->respText);
+            $errorMessages[] = sprintf('%s ', (string)$xml->respText);
         }
         $errorMessage = implode(' ', $errorMessages);
         $response->setResponseMessage($errorMessage);
@@ -36,7 +35,7 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
         }
         $response->setTransactionId((string)$xml->hostlogkey);
         if (property_exists($xml, 'authCode')) {
-            $response->setOrderId((string)$xml->authCode);
+            $response->setAuthCode((string)$xml->authCode);
         }
     }
 

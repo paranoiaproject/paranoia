@@ -7,6 +7,7 @@ use Paranoia\Configuration\AbstractConfiguration;
 use Paranoia\Exception\CommunicationError;
 use Paranoia\Request;
 use Paranoia\TransactionType;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractPos
 {
@@ -15,6 +16,8 @@ abstract class AbstractPos
      */
     protected $configuration;
 
+    /** @var EventDispatcherInterface  */
+    private $dispatcher;
 
     public function __construct(AbstractConfiguration $configuration)
     {
@@ -68,6 +71,14 @@ abstract class AbstractPos
         }
     }
 
+    private function performTransaction(Request $request, $transactionType)
+    {
+        $rawRequest  = $this->buildRequest($request, $transactionType);
+        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
+        $response    = $this->parseResponse($rawResponse, $transactionType);
+        return $response;
+    }
+
     /**
      * @param \Paranoia\Request $request
      *
@@ -75,10 +86,7 @@ abstract class AbstractPos
      */
     public function preAuthorization(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, TransactionType::PRE_AUTHORIZATION);
-        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, TransactionType::PRE_AUTHORIZATION);
-        return $response;
+        return $this->performTransaction($request, TransactionType::PRE_AUTHORIZATION);
     }
 
     /**
@@ -88,10 +96,7 @@ abstract class AbstractPos
      */
     public function postAuthorization(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, TransactionType::POST_AUTHORIZATION);
-        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, TransactionType::POST_AUTHORIZATION);
-        return $response;
+        return $this->performTransaction($request, TransactionType::POST_AUTHORIZATION);
     }
 
     /**
@@ -101,10 +106,7 @@ abstract class AbstractPos
      */
     public function sale(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, TransactionType::SALE);
-        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, TransactionType::SALE);
-        return $response;
+        return $this->performTransaction($request, TransactionType::SALE);
     }
 
     /**
@@ -114,10 +116,7 @@ abstract class AbstractPos
      */
     public function refund(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, TransactionType::REFUND);
-        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, TransactionType::REFUND);
-        return $response;
+        return $this->performTransaction($request, TransactionType::REFUND);
     }
 
     /**
@@ -127,10 +126,7 @@ abstract class AbstractPos
      */
     public function cancel(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, TransactionType::CANCEL);
-        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, TransactionType::CANCEL);
-        return $response;
+        return $this->performTransaction($request, TransactionType::CANCEL);
     }
 
     /**
@@ -140,10 +136,7 @@ abstract class AbstractPos
      */
     public function pointQuery(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, TransactionType::POINT_INQUIRY);
-        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, TransactionType::POINT_INQUIRY);
-        return $response;
+        return $this->performTransaction($request, TransactionType::POINT_INQUIRY);
     }
 
     /**
@@ -153,9 +146,6 @@ abstract class AbstractPos
      */
     public function pointUsage(Request $request)
     {
-        $rawRequest  = $this->buildRequest($request, TransactionType::POINT_USAGE);
-        $rawResponse = $this->sendRequest($this->configuration->getApiUrl(), $rawRequest);
-        $response    = $this->parseResponse($rawResponse, TransactionType::POINT_USAGE);
-        return $response;
+        return $this->performTransaction($request, TransactionType::POINT_USAGE);
     }
 }

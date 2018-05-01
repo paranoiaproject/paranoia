@@ -36,8 +36,19 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
      */
     private function prepareTransactionDetails(\SimpleXMLElement $xml, PaymentResponse $response)
     {
-        $response->setOrderId((string)$xml->Order->OrderID);
-        $response->setTransactionId((string)$xml->Transaction->RetrefNum);
+        if (property_exists($xml, 'Order') && property_exists($xml->Order, 'OrderID')) {
+            $response->setOrderId((string)$xml->Order->OrderID);
+        }
+
+        if (property_exists($xml, 'Transaction')) {
+            if (property_exists($xml->Transaction, 'RetrefNum')) {
+                $response->setTransactionId((string)$xml->Transaction->RetrefNum);
+            }
+
+            if (property_exists($xml->Transaction, 'AuthCode')) {
+                $response->setAuthCode((string)$xml->Transaction->AuthCode);
+            }
+        }
     }
 
     /**
@@ -57,7 +68,7 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
         }
         $this->validateResponse($xml);
         $response->setIsSuccess('00' == (string)$xml->Transaction->Response->Code);
-        $response->setResponseCode((string)$xml->Transaction->ReasonCode);
+        $response->setResponseCode((string)$xml->Transaction->Response->ReasonCode);
         if (!$response->isSuccess()) {
             $this->prepareErrorDetails($xml, $response);
         } else {
