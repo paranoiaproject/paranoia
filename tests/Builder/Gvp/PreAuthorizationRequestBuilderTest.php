@@ -8,7 +8,8 @@ use Paranoia\Formatter\Gvp\ExpireDateFormatter;
 use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Formatter\MoneyFormatter;
 use Paranoia\Formatter\SingleDigitInstallmentFormatter;
-use Paranoia\Request;
+use Paranoia\Request\Request;
+use Paranoia\Request\Resource\Card;
 use PHPUnit\Framework\TestCase;
 use Paranoia\Configuration\Gvp as GvpConfiguration;
 
@@ -47,11 +48,15 @@ class PreAuthorizationRequestBuilderTest extends TestCase
         $request = new Request();
         $request->setOrderId('123456')
             ->setAmount(25.4)
-            ->setCurrency(Currency::CODE_EUR)
-            ->setCardNumber('1501501501501500')
+            ->setCurrency(Currency::CODE_EUR);
+
+        $card = new Card();
+        $card->setNumber('1501501501501500')
             ->setSecurityCode('000')
             ->setExpireMonth(1)
             ->setExpireYear(2020);
+        $request->setResource($card);
+
         return $request;
     }
 

@@ -9,17 +9,19 @@ use Paranoia\Formatter\MultiDigitInstallmentFormatter;
 use Paranoia\Formatter\Posnet\CustomCurrencyCodeFormatter;
 use Paranoia\Formatter\Posnet\ExpireDateFormatter;
 use Paranoia\Formatter\Posnet\OrderIdFormatter;
-use Paranoia\Request;
+use Paranoia\Request\Request;
+use Paranoia\Request\Resource\Card;
+use Paranoia\Request\Resource\ResourceInterface;
 
 abstract class BaseRequestBuilder extends AbstractRequestBuilder
 {
-    /** @var DecimalFormatter */
+    /** @var MoneyFormatter */
     protected $amountFormatter;
 
-    /** @var  IsoNumericCurrencyCodeFormatter */
+    /** @var  CustomCurrencyCodeFormatter */
     protected $currencyCodeFormatter;
 
-    /** @var  SingleDigitInstallmentFormatter */
+    /** @var  MultiDigitInstallmentFormatter */
     protected $installmentFormatter;
 
     /** @var  ExpireDateFormatter */
@@ -56,15 +58,20 @@ abstract class BaseRequestBuilder extends AbstractRequestBuilder
         ];
     }
 
-    protected function buildCard(Request $request)
+    protected function buildCard(ResourceInterface $card)
     {
+        assert($card instanceof Card);
+
+        /** @var Card $_card */
+        $_card = $card;
+
         return [
-            'ccno' => $request->getCardNumber(),
-            'cvc' => $request->getSecurityCode(),
+            'ccno' => $_card->getNumber(),
+            'cvc' => $_card->getSecurityCode(),
             'expDate' => $this->expireDateFormatter->format(
                 [
-                    $request->getExpireMonth(),
-                    $request->getExpireYear()
+                    $_card->getExpireMonth(),
+                    $_card->getExpireYear()
                 ]
             )
         ];

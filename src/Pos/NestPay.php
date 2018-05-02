@@ -5,7 +5,7 @@ use Paranoia\Builder\AbstractBuilderFactory;
 use Paranoia\Builder\NestPayBuilderFactory;
 use Paranoia\Configuration\AbstractConfiguration;
 use Paranoia\Processor\NestPayProcessorFactory;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 
 class NestPay extends AbstractPos
 {

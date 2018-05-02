@@ -4,7 +4,7 @@ namespace Paranoia\Test\Processor\Posnet;
 use Paranoia\Configuration\AbstractConfiguration;
 use Paranoia\Exception\BadResponseException;
 use Paranoia\Processor\Posnet\PreAuthorizationResponseProcessor;
-use Paranoia\Response\PaymentResponse;
+use Paranoia\Response;
 use PHPUnit\Framework\TestCase;
 
 class PreAuthorizationResponseProcessorTest extends TestCase
@@ -19,7 +19,7 @@ class PreAuthorizationResponseProcessorTest extends TestCase
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
         $processor = new PreAuthorizationResponseProcessor($configuration);
         $response = $processor->process($rawResponse);
-        $this->assertInstanceOf(PaymentResponse::class, $response);
+        $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(true, $response->isSuccess());
         $this->assertEquals('0001000004P0503281', $response->getTransactionId());
         $this->assertEquals('007912', $response->getAuthCode());
@@ -36,7 +36,7 @@ class PreAuthorizationResponseProcessorTest extends TestCase
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
         $processor = new PreAuthorizationResponseProcessor($configuration);
         $response = $processor->process($rawResponse);
-        $this->assertInstanceOf(PaymentResponse::class, $response);
+        $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(false, $response->isSuccess());
         $this->assertEquals(null, $response->getTransactionId());
         $this->assertEquals(null, $response->getOrderId());

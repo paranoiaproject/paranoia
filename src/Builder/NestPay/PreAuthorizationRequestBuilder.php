@@ -2,7 +2,7 @@
 namespace Paranoia\Builder\NestPay;
 
 use Paranoia\Common\Serializer\Serializer;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 
 class PreAuthorizationRequestBuilder extends BaseRequestBuilder
 {
@@ -17,15 +17,8 @@ class PreAuthorizationRequestBuilder extends BaseRequestBuilder
                 'OrderId'  => $request->getOrderId(),
                 'Total'    => $this->amountFormatter->format($request->getAmount()),
                 'Currency' => $this->currencyCodeFormatter->format($request->getCurrency()),
-                'Number'   => $request->getCardNumber(),
-                'Cvv2Val'  => $request->getSecurityCode(),
-                'Expires'  => $this->expireDateFormatter->format(
-                    [
-                        $request->getExpireMonth(),
-                        $request->getExpireYear()
-                    ]
-                ),
-            ]
+            ],
+            $this->buildCard($request->getResource())
         );
 
         $serializer = new Serializer(Serializer::XML);

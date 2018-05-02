@@ -4,7 +4,7 @@ namespace Paranoia\Pos;
 use Paranoia\Builder\GvpBuilderFactory;
 use Paranoia\Configuration\AbstractConfiguration;
 use Paranoia\Processor\GvpProcessorFactory;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 
 class Gvp extends AbstractPos
 {

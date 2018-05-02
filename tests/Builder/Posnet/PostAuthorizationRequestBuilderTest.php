@@ -8,7 +8,7 @@ use Paranoia\Formatter\MultiDigitInstallmentFormatter;
 use Paranoia\Formatter\Posnet\CustomCurrencyCodeFormatter;
 use Paranoia\Formatter\Posnet\ExpireDateFormatter;
 use Paranoia\Formatter\Posnet\OrderIdFormatter;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 use PHPUnit\Framework\TestCase;
 use Paranoia\Configuration\Posnet as PosnetConfiguration;
 

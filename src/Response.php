@@ -1,47 +1,31 @@
 <?php
-namespace Paranoia\Response;
+namespace Paranoia;
 
-abstract class ResponseAbstract
+class Response
 {
-
-    /**
-     * @var boolean
-     */
+    /** @var boolean */
     protected $isSuccess;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $transactionType;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $orderId;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $transactionId;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $authCode;
 
-    /**
-     * @var integer
-     */
+    /** @var integer */
     protected $responseCode;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $responseMessage;
 
     /**
-     * {@inheritdoc}
-     * @see \Payment\Response\ResponseInterface::isSuccess()
+     * @return bool
      */
     public function isSuccess()
     {
@@ -49,8 +33,8 @@ abstract class ResponseAbstract
     }
 
     /**
-     * {@inheritdoc}
-     * @see \Payment\Response\ResponseInterface::setIsSuccess()
+     * @param bool $isSuccess
+     * @return Response
      */
     public function setIsSuccess($isSuccess)
     {
@@ -59,8 +43,7 @@ abstract class ResponseAbstract
     }
 
     /**
-     * {@inheritdoc}
-     * @see \Payment\Response\ResponseInterface::getTransactionType()
+     * @return string
      */
     public function getTransactionType()
     {
@@ -68,8 +51,8 @@ abstract class ResponseAbstract
     }
 
     /**
-     * {@inheritdoc}
-     * @see \Payment\Response\ResponseInterface::setTransactionType()
+     * @param string $transactionType
+     * @return Response
      */
     public function setTransactionType($transactionType)
     {
@@ -78,8 +61,7 @@ abstract class ResponseAbstract
     }
 
     /**
-     * {@inheritdoc}
-     * @see \Payment\Response\ResponseInterface::getOrderId()
+     * @return string
      */
     public function getOrderId()
     {
@@ -87,8 +69,8 @@ abstract class ResponseAbstract
     }
 
     /**
-     * {@inheritdoc}
-     * @see \Payment\Response\ResponseInterface::setOrderId()
+     * @param string $orderId
+     * @return Response
      */
     public function setOrderId($orderId)
     {
@@ -97,8 +79,7 @@ abstract class ResponseAbstract
     }
 
     /**
-     * {@inheritdoc}
-     * @see \Payment\Response\ResponseInterface::getTransactionId()
+     * @return string
      */
     public function getTransactionId()
     {
@@ -106,8 +87,8 @@ abstract class ResponseAbstract
     }
 
     /**
-     * {@inheritdoc}
-     * @see \Payment\Response\ResponseInterface::setTransactionId()
+     * @param string $transactionId
+     * @return Response
      */
     public function setTransactionId($transactionId)
     {
@@ -116,8 +97,6 @@ abstract class ResponseAbstract
     }
 
     /**
-     * returns auth code.
-     *
      * @return string
      */
     public function getAuthCode()
@@ -126,11 +105,8 @@ abstract class ResponseAbstract
     }
 
     /**
-     * sets auth code to request object.
-     *
      * @param string $authCode
-     *
-     * @return self
+     * @return Response
      */
     public function setAuthCode($authCode)
     {
@@ -139,7 +115,7 @@ abstract class ResponseAbstract
     }
 
     /**
-     * @see \Payment\Response\ResponseInterface::getResponseCode()
+     * @return int
      */
     public function getResponseCode()
     {
@@ -147,8 +123,8 @@ abstract class ResponseAbstract
     }
 
     /**
-     * {@inheritdoc}
-     * @see \Payment\Response\ResponseInterface::setResponseCode()
+     * @param int $responseCode
+     * @return Response
      */
     public function setResponseCode($responseCode)
     {
@@ -157,8 +133,7 @@ abstract class ResponseAbstract
     }
 
     /**
-     * {@inheritdoc}
-     * @see \Payment\Response\ResponseInterface::getResponseCode()
+     * @return string
      */
     public function getResponseMessage()
     {
@@ -166,8 +141,8 @@ abstract class ResponseAbstract
     }
 
     /**
-     * {@inheritdoc}
-     * @see \Payment\Response\ResponseInterface::setResponseMessage()
+     * @param string $responseMessage
+     * @return Response
      */
     public function setResponseMessage($responseMessage)
     {

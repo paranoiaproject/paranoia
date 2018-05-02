@@ -5,7 +5,7 @@ use Guzzle\Http\Client as HttpClient;
 use Guzzle\Http\Exception\RequestException;
 use Paranoia\Configuration\AbstractConfiguration;
 use Paranoia\Exception\CommunicationError;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 use Paranoia\TransactionType;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -40,7 +40,7 @@ abstract class AbstractPos
      * @param string $rawResponse
      * @param string $transactionType
      *
-     * @return \Paranoia\Response\PaymentResponse
+     * @return \Paranoia\Response\Response
      */
     abstract protected function parseResponse($rawResponse, $transactionType);
 
@@ -82,7 +82,7 @@ abstract class AbstractPos
     /**
      * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Response\PaymentResponse
+     * @return \Paranoia\Response\Response
      */
     public function preAuthorization(Request $request)
     {
@@ -92,7 +92,7 @@ abstract class AbstractPos
     /**
      * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Response\PaymentResponse
+     * @return \Paranoia\Response\Response
      */
     public function postAuthorization(Request $request)
     {
@@ -102,7 +102,7 @@ abstract class AbstractPos
     /**
      * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Response\PaymentResponse
+     * @return \Paranoia\Response\Response
      */
     public function sale(Request $request)
     {
@@ -112,7 +112,7 @@ abstract class AbstractPos
     /**
      * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Response\PaymentResponse
+     * @return \Paranoia\Response\Response
      */
     public function refund(Request $request)
     {
@@ -122,7 +122,7 @@ abstract class AbstractPos
     /**
      * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Response\PaymentResponse
+     * @return \Paranoia\Response\Response
      */
     public function cancel(Request $request)
     {
@@ -132,7 +132,7 @@ abstract class AbstractPos
     /**
      * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Response\PaymentResponse
+     * @return \Paranoia\Response\Response
      */
     public function pointQuery(Request $request)
     {
@@ -142,7 +142,7 @@ abstract class AbstractPos
     /**
      * @param \Paranoia\Request $request
      *
-     * @return \Paranoia\Response\PaymentResponse
+     * @return \Paranoia\Response\Response
      */
     public function pointUsage(Request $request)
     {

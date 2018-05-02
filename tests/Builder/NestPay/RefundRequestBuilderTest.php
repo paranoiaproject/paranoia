@@ -8,7 +8,7 @@ use Paranoia\Formatter\DecimalFormatter;
 use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Formatter\NestPay\ExpireDateFormatter;
 use Paranoia\Formatter\SingleDigitInstallmentFormatter;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 use PHPUnit\Framework\TestCase;
 #TODO: Ensure whether the provider allow full refund without amount and currency fields
 class RefundRequestBuilderTest extends TestCase

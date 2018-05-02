@@ -10,13 +10,15 @@ Satış isteği, **Paranoia\Request**  tipinde bir nesnenin sipariş ve ödeme a
 
 ```php
 $request = new \Paranoia\Request();
-$request->setCardNumber('5406******675403')
-        ->setSecurityCode('000')
-        ->setExpireMonth(12)
-        ->setExpireYear(2015)
-        ->setOrderId('ORDER000000' . time())
+$request->setOrderId('ORDER000000' . time())
         ->setAmount(100.35)
         ->setCurrency('TRY');
+$card = new \Paranoia\Resource\Card();
+$card->setNumber('5406******675403')
+     ->setSecurityCode('000')
+     ->setExpireMonth(12)
+     ->setExpireYear(2015);
+$request->setResource($card);
 ```
 
 ## 3.1.3. Satış İsteği Sırasında Beklenen Parametreler
@@ -36,13 +38,15 @@ $request->setCardNumber('5406******675403')
 * Satış işlemi için yeni bir sipariş isteği oluşturuyoruz.
 ```php
 $request = new \Paranoia\Request();
-$request->setCardNumber('5406******675403')
-        ->setSecurityCode('000')
-        ->setExpireMonth(12)
-        ->setExpireYear(2015)
-        ->setOrderId('ORDER000000' . time())
+$request->setOrderId('ORDER000000' . time())
         ->setAmount(100.35)
         ->setCurrency('TRY');
+$card = new \Paranoia\Resource\Card();
+$card->setNumber('5406******675403')
+     ->setSecurityCode('000')
+     ->setExpireMonth(12)
+     ->setExpireYear(2015);
+$request->setResource($card);        
 ```
 
 * Sağlayıcı API'sine bağlantı kurmak için gerekli konfigürasyon bilgilerini dolduruyoruz. Konfigürasyon parametreleri, ödeme sistemi sağlayıcısına göre değişkenlik göstermektedir. Ödeme sağlayıcılarına göre gerekli konfigürasyon tanımlamaları hakkında daha fazla bilgi edinmek için [bu bölümü]() inceleyiniz.

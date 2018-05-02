@@ -7,7 +7,7 @@ use Paranoia\Formatter\DecimalFormatter;
 use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Formatter\NestPay\ExpireDateFormatter;
 use Paranoia\Formatter\SingleDigitInstallmentFormatter;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 use PHPUnit\Framework\TestCase;
 
 class CancelRequestBuilderTest extends TestCase

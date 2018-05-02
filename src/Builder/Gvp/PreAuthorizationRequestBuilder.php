@@ -3,7 +3,7 @@ namespace Paranoia\Builder\Gvp;
 
 use Paranoia\Common\Serializer\Serializer;
 use Paranoia\Configuration\Gvp;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 
 class PreAuthorizationRequestBuilder extends BaseRequestBuilder
 {
@@ -14,7 +14,7 @@ class PreAuthorizationRequestBuilder extends BaseRequestBuilder
     {
         $data = array_merge(
             $this->buildBaseRequest($request),
-            ['Card' => $this->buildCard($request)]
+            ['Card' => $this->buildCard($request->getResource())]
         );
 
         $serializer = new Serializer(Serializer::XML);
@@ -53,7 +53,7 @@ class PreAuthorizationRequestBuilder extends BaseRequestBuilder
                     '%s%s%s%s%s',
                     $request->getOrderId(),
                     $configuration->getTerminalId(),
-                    $request->getCardNumber(),
+                    $request->getResource()->getNumber(),
                     $this->amountFormatter->format($request->getAmount()),
                     $this->generateSecurityHash($password)
                 )

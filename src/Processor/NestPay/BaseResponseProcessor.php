@@ -3,15 +3,15 @@ namespace Paranoia\Processor\NestPay;
 
 use Paranoia\Exception\BadResponseException;
 use Paranoia\Processor\AbstractResponseProcessor;
-use Paranoia\Response\PaymentResponse;
+use Paranoia\Response;
 
 abstract class BaseResponseProcessor extends AbstractResponseProcessor
 {
     /**
      * @param \SimpleXMLElement $xml
-     * @param PaymentResponse $response
+     * @param Response $response
      */
-    private function prepareErrorDetails(\SimpleXMLElement $xml, PaymentResponse $response)
+    private function prepareErrorDetails(\SimpleXMLElement $xml, Response $response)
     {
         $errorMessages = array();
         if (property_exists($xml, 'Error')) {
@@ -35,17 +35,18 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
 
     /**
      * @param \SimpleXMLElement $xml
-     * @param PaymentResponse $response
+     * @param Response $response
      */
-    private function prepareTransactionDetails(\SimpleXMLElement $xml, PaymentResponse $response)
+    private function prepareTransactionDetails(\SimpleXMLElement $xml, Response $response)
     {
         $response->setOrderId((string)$xml->OrderId);
         $response->setTransactionId((string)$xml->TransId);
+        $response->setAuthCode((string) $xml->AuthCode);
     }
 
     /**
      * @param $rawResponse
-     * @return PaymentResponse
+     * @return Response
      * @throws BadResponseException
      */
     protected function processCommonResponse($rawResponse)
@@ -58,7 +59,7 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
             throw $exception;
         }
         $this->validateResponse($xml);
-        $response = new PaymentResponse();
+        $response = new Response();
         $response->setIsSuccess((string)$xml->Response == 'Approved');
         $response->setResponseCode((string)$xml->ProcReturnCode);
         if (!$response->isSuccess()) {

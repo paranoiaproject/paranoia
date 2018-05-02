@@ -2,7 +2,7 @@
 namespace Paranoia\Builder;
 
 use Paranoia\Configuration\AbstractConfiguration;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 
 abstract class AbstractRequestBuilder
 {

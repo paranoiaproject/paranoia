@@ -3,15 +3,15 @@ namespace Paranoia\Processor\Posnet;
 
 use Paranoia\Exception\BadResponseException;
 use Paranoia\Processor\AbstractResponseProcessor;
-use Paranoia\Response\PaymentResponse;
+use Paranoia\Response;
 
 abstract class BaseResponseProcessor extends AbstractResponseProcessor
 {
     /**
      * @param \SimpleXMLElement $xml
-     * @param PaymentResponse $response
+     * @param Response $response
      */
-    private function prepareErrorDetails(\SimpleXMLElement $xml, PaymentResponse $response)
+    private function prepareErrorDetails(\SimpleXMLElement $xml, Response $response)
     {
         $errorMessages = array();
         if (property_exists($xml, 'respCode')) {
@@ -26,9 +26,9 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
 
     /**
      * @param \SimpleXMLElement $xml
-     * @param PaymentResponse $response
+     * @param Response $response
      */
-    private function prepareTransactionDetails(\SimpleXMLElement $xml, PaymentResponse $response)
+    private function prepareTransactionDetails(\SimpleXMLElement $xml, Response $response)
     {
         if (property_exists($xml, 'orderId')) {
             $response->setOrderId((string)$xml->orderId);
@@ -41,7 +41,7 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
 
     /**
      * @param $rawResponse
-     * @return PaymentResponse
+     * @return Response
      * @throws BadResponseException
      */
     protected function processCommonResponse($rawResponse)
@@ -54,7 +54,7 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
             throw $exception;
         }
         $this->validateResponse($xml);
-        $response = new PaymentResponse();
+        $response = new Response();
         $response->setIsSuccess((int)$xml->approved > 0);
         if (!$response->isSuccess()) {
             $this->prepareErrorDetails($xml, $response);

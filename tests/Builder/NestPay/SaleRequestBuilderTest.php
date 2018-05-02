@@ -8,7 +8,8 @@ use Paranoia\Formatter\DecimalFormatter;
 use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Formatter\NestPay\ExpireDateFormatter;
 use Paranoia\Formatter\SingleDigitInstallmentFormatter;
-use Paranoia\Request;
+use Paranoia\Request\Request;
+use Paranoia\Request\Resource\Card;
 use PHPUnit\Framework\TestCase;
 
 class SaleRequestBuilderTest extends TestCase
@@ -54,14 +55,18 @@ class SaleRequestBuilderTest extends TestCase
         $request = new Request();
         $request->setOrderId('123456')
             ->setAmount(25.4)
-            ->setCurrency(Currency::CODE_EUR)
-            ->setCardNumber('1501501501501500')
-            ->setSecurityCode('000')
-            ->setExpireMonth(1)
-            ->setExpireYear(2020);
+            ->setCurrency(Currency::CODE_EUR);
         if($setInstallment) {
             $request->setInstallment(3);
         }
+
+        $card = new Card();
+        $card->setNumber('1501501501501500')
+            ->setSecurityCode('000')
+            ->setExpireMonth(1)
+            ->setExpireYear(2020);
+        $request->setResource($card);
+
         return $request;
     }
 

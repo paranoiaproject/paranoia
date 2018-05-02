@@ -2,7 +2,7 @@
 namespace Paranoia\Builder\Posnet;
 
 use Paranoia\Common\Serializer\Serializer;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 
 class RefundRequestBuilder extends BaseRequestBuilder
 {

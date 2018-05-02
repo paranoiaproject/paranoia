@@ -4,7 +4,7 @@ namespace Paranoia\Pos;
 use Paranoia\Builder\PosnetBuilderFactory;
 use Paranoia\Configuration\AbstractConfiguration;
 use Paranoia\Processor\PosnetProcessorFactory;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 
 class Posnet extends AbstractPos
 {

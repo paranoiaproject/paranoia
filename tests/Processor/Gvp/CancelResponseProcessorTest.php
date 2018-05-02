@@ -4,7 +4,7 @@ namespace Paranoia\Test\Processor\Gvp;
 use Paranoia\Configuration\AbstractConfiguration;
 use Paranoia\Exception\BadResponseException;
 use Paranoia\Processor\Gvp\CancelResponseProcessor;
-use Paranoia\Response\PaymentResponse;
+use Paranoia\Response;
 use PHPUnit\Framework\TestCase;
 
 class CancelResponseProcessorTest extends TestCase
@@ -19,7 +19,7 @@ class CancelResponseProcessorTest extends TestCase
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
         $processor = new CancelResponseProcessor($configuration);
         $response = $processor->process($rawResponse);
-        $this->assertInstanceOf(PaymentResponse::class, $response);
+        $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(true, $response->isSuccess());
         $this->assertEquals('311616674771', $response->getTransactionId());
         $this->assertEquals('489787', $response->getAuthCode());
@@ -36,7 +36,7 @@ class CancelResponseProcessorTest extends TestCase
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
         $processor = new CancelResponseProcessor($configuration);
         $response = $processor->process($rawResponse);
-        $this->assertInstanceOf(PaymentResponse::class, $response);
+        $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(false, $response->isSuccess());
         $this->assertEquals(null, $response->getTransactionId());
         $this->assertEquals(null, $response->getOrderId());

@@ -8,7 +8,7 @@ use Paranoia\Formatter\Gvp\ExpireDateFormatter;
 use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Formatter\MoneyFormatter;
 use Paranoia\Formatter\SingleDigitInstallmentFormatter;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 use PHPUnit\Framework\TestCase;
 
 class RefundRequestBuilderTest extends TestCase

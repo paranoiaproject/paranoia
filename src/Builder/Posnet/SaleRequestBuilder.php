@@ -2,7 +2,7 @@
 namespace Paranoia\Builder\Posnet;
 
 use Paranoia\Common\Serializer\Serializer;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 
 class SaleRequestBuilder extends BaseRequestBuilder
 {
@@ -20,7 +20,7 @@ class SaleRequestBuilder extends BaseRequestBuilder
                         'currencyCode' => $this->currencyCodeFormatter->format($request->getCurrency()),
                         'orderID' => $this->orderIdFormatter->format($request->getOrderId())
                     ],
-                    $this->buildCard($request)
+                    $this->buildCard($request->getResource())
                 )
             ]
         );

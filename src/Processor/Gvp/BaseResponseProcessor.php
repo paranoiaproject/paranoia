@@ -3,15 +3,15 @@ namespace Paranoia\Processor\Gvp;
 
 use Paranoia\Exception\BadResponseException;
 use Paranoia\Processor\AbstractResponseProcessor;
-use Paranoia\Response\PaymentResponse;
+use Paranoia\Response;
 
 abstract class BaseResponseProcessor extends AbstractResponseProcessor
 {
     /**
      * @param \SimpleXMLElement $xml
-     * @param PaymentResponse $response
+     * @param Response $response
      */
-    private function prepareErrorDetails(\SimpleXMLElement $xml, PaymentResponse $response)
+    private function prepareErrorDetails(\SimpleXMLElement $xml, Response $response)
     {
         $errorMessages = array();
         if (property_exists($xml->Transaction->Response, 'ErrorMsg')) {
@@ -32,9 +32,9 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
 
     /**
      * @param \SimpleXMLElement $xml
-     * @param PaymentResponse $response
+     * @param Response $response
      */
-    private function prepareTransactionDetails(\SimpleXMLElement $xml, PaymentResponse $response)
+    private function prepareTransactionDetails(\SimpleXMLElement $xml, Response $response)
     {
         if (property_exists($xml, 'Order') && property_exists($xml->Order, 'OrderID')) {
             $response->setOrderId((string)$xml->Order->OrderID);
@@ -53,12 +53,12 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
 
     /**
      * @param $rawResponse
-     * @return PaymentResponse
+     * @return Response
      * @throws BadResponseException
      */
     protected function processCommonResponse($rawResponse)
     {
-        $response = new PaymentResponse();
+        $response = new Response();
         try {
             /** @var \SimpleXMLElement $xml */
             $xml = new \SimpleXmlElement($rawResponse);

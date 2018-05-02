@@ -3,7 +3,7 @@ namespace Paranoia\Builder\Gvp;
 
 use Paranoia\Common\Serializer\Serializer;
 use Paranoia\Configuration\Gvp;
-use Paranoia\Request;
+use Paranoia\Request\Request;
 
 class PostAuthorizationRequestBuilder extends BaseRequestBuilder
 {

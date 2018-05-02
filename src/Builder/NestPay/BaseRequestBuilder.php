@@ -7,6 +7,8 @@ use Paranoia\Formatter\DecimalFormatter;
 use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Formatter\NestPay\ExpireDateFormatter;
 use Paranoia\Formatter\SingleDigitInstallmentFormatter;
+use Paranoia\Request\Resource\Card;
+use Paranoia\Request\Resource\ResourceInterface;
 
 abstract class BaseRequestBuilder extends AbstractRequestBuilder
 {
@@ -47,5 +49,26 @@ abstract class BaseRequestBuilder extends AbstractRequestBuilder
             'Password' => $config->getPassword(),
             'Type'     =>  $type,
         ];
+    }
+
+    protected function buildCard(ResourceInterface $card)
+    {
+        assert($card instanceof Card);
+
+        /** @var Card $_card */
+        $_card = $card;
+
+        $expireDate = $this->expireDateFormatter->format(
+            [
+                $_card->getExpireMonth(),
+                $_card->getExpireYear()
+            ]
+        );
+
+        return array(
+            'Number'     => $_card->getNumber(),
+            'Cvv2Val'    => $_card->getSecurityCode(),
+            'Expires'    => $expireDate
+        );
     }
 }

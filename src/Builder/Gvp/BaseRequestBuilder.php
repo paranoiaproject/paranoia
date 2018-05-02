@@ -8,7 +8,9 @@ use Paranoia\Formatter\Gvp\ExpireDateFormatter;
 use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Formatter\MoneyFormatter;
 use Paranoia\Formatter\SingleDigitInstallmentFormatter;
-use Paranoia\Request;
+use Paranoia\Request\Request;
+use Paranoia\Request\Resource\Card;
+use Paranoia\Request\Resource\ResourceInterface;
 
 abstract class BaseRequestBuilder extends AbstractRequestBuilder
 {
@@ -96,19 +98,24 @@ abstract class BaseRequestBuilder extends AbstractRequestBuilder
         );
     }
 
-    protected function buildCard(Request $request)
+    protected function buildCard(ResourceInterface $card)
     {
+        assert($card instanceof Card);
+
+        /** @var Card $_card */
+        $_card = $card;
+
         $expireMonth = $this->expireDateFormatter->format(
             [
-                $request->getExpireMonth(),
-                $request->getExpireYear()
+                $_card->getExpireMonth(),
+                $_card->getExpireYear()
             ]
         );
 
         return array(
-            'Number'     => $request->getCardNumber(),
+            'Number'     => $_card->getNumber(),
             'ExpireDate' => $expireMonth,
-            'CVV2'       => $request->getSecurityCode()
+            'CVV2'       => $_card->getSecurityCode()
         );
     }
 
