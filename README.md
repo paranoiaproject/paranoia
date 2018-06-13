@@ -1,7 +1,5 @@
 
 [![Travis](https://img.shields.io/travis/paranoiaproject/paranoia.svg)](https://travis-ci.org/paranoiaproject/paranoia)
-
-
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/paranoiaproject/paranoia.svg)](https://scrutinizer-ci.com/g/paranoiaproject/paranoia/)
 
 
