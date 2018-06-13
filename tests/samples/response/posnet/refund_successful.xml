@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<posnetResponse>
+    <approved>1</approved>
+    <hostlogkey>0001000004P0503281</hostlogkey>
+    <authCode>007912</authCode>
+
+    <!--Date of the transaction (according to the posnet server's clock).
+    This date will be displayed on Posnet Admin Pages.
+    Returned as YYMMDDHHMMSS.
+    Date of the sample below: 31.05.2005 13:56:46-->
+    <tranDate>050531135646</tranDate>
+
+    <instInfo>
+        <!--How many installments were made:
+        (00: Shows that transaction is non-installment)-->
+        <inst1>03</inst1>
+
+        <!--Amount of each installment:
+        (Last 2 digits are always YKr)
+        (If transaction is non-installment, 0 is returned)-->
+        <amnt1>000000005000</amnt1>
+    </instInfo>
+
+    <pointInfo>
+        <!--Points won from the transaction:-->
+        <point>00000010</point>
+
+        <!--YTL equivalance of the Points won from the transaction:
+        (Last 2 digits are always YKr)-->
+        <pointAmount>000000000005</pointAmount>
+
+        <!--total worldpoint of the card:-->
+        <totalPoint>00011742</totalPoint>
+
+        <!--YTL equivalance of the total worldpoint of the card:
+        (Last 2 digits are always YKr)-->
+        <totalPointAmount>000000005871</totalPointAmount>
+    </pointInfo>
+</posnetResponse>
