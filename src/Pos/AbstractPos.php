@@ -61,6 +61,7 @@ abstract class AbstractPos
            'curl.options' => array(
                CURLOPT_SSL_VERIFYPEER => false,
                CURLOPT_SSL_VERIFYHOST => false,
+               CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2
            )
         ));
         $request = $client->post($url, null, $data);
