@@ -24,6 +24,7 @@ class Posnet extends AbstractPos
     /**
      * {@inheritdoc}
      * @see \Paranoia\Pos\AbstractPos::buildRequest()
+     * @throws \Paranoia\Exception\NotImplementedError
      */
     protected function buildRequest(Request $request, $transactionType)
     {
@@ -37,7 +38,6 @@ class Posnet extends AbstractPos
      */
     protected function parseResponse($rawResponse, $transactionType)
     {
-        $rawRequest = $this->builderFactory->createBuilder($transactionType)->build($request);
-        return array( 'DATA' => $rawRequest);
+        return $this->processorFactory->createProcessor($transactionType)->process($rawResponse);
     }
 }
