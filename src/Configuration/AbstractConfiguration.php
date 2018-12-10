@@ -10,6 +10,11 @@ class AbstractConfiguration
     private $apiUrl;
 
     /**
+     * @var array|null
+     */
+    private $guzzleConfig;
+
+    /**
      * @param string $apiUrl
      *
      * @return $this
@@ -27,4 +32,21 @@ class AbstractConfiguration
     {
         return $this->apiUrl;
     }
+
+    /**
+     * @return null|array
+     */
+    public function getGuzzleConfig()
+    {
+        return $this->guzzleConfig;
+    }
+
+    /**
+     * @param null|array $guzzleConfig
+     */
+    public function setGuzzleConfig($guzzleConfig)
+    {
+        $this->guzzleConfig = $guzzleConfig;
+    }
+
 }
