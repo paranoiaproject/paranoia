@@ -7,7 +7,6 @@ use Paranoia\Configuration\AbstractConfiguration;
 use Paranoia\Exception\CommunicationError;
 use Paranoia\Request\Request;
 use Paranoia\TransactionType;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractPos
 {
@@ -16,8 +15,6 @@ abstract class AbstractPos
      */
     protected $configuration;
 
-    /** @var EventDispatcherInterface  */
-    private $dispatcher;
 
     public function __construct(AbstractConfiguration $configuration)
     {
@@ -57,21 +54,16 @@ abstract class AbstractPos
     protected function sendRequest($url, $data, $options = null)
     {
         $client = new HttpClient();
-
-        $config =  array(
+        $client->setConfig(array(
             'curl.options' => array(
                 CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_SSL_VERIFYHOST => false
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2
             )
-        );
+        ));
 
-        //override default config
-        if(is_array($this->configuration->getGuzzleConfig())){
-            $config = array_replace_recursive($config, $this->configuration->getGuzzleConfig());
-        }
-
-        $client->setConfig($config);
         $request = $client->post($url, null, $data);
+
         try {
             return $request->send()->getBody();
         } catch (RequestException $e) {
