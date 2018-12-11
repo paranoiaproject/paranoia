@@ -6,14 +6,14 @@ Satış işlemi, müşterinin ödeme aracı bilgilerinin (Kredi kartı vb.) ilgi
 
 ## 3.1.2. Satış İsteği Oluşturma
 
-Satış isteği, **Paranoia\Request**  tipinde bir nesnenin sipariş ve ödeme aracı (kredi kartı vb.) bilgileri ile doldurulması suretiyle elde edilir.
+Satış isteği, **\Paranoia\Request\Request**  tipinde bir nesnenin sipariş ve ödeme aracı (kredi kartı vb.) bilgileri ile doldurulması suretiyle elde edilir.
 
 ```php
-$request = new \Paranoia\Request();
+$request = new \Paranoia\Request\Request();
 $request->setOrderId('ORDER000000' . time())
         ->setAmount(100.35)
-        ->setCurrency('TRY');
-$card = new \Paranoia\Resource\Card();
+        ->setCurrency(\Paranoia\Currency::CODE_TRY);
+$card = new \Paranoia\Request\Resource\Card();
 $card->setNumber('5406******675403')
      ->setSecurityCode('000')
      ->setExpireMonth(12)
@@ -37,11 +37,11 @@ $request->setResource($card);
 
 * Satış işlemi için yeni bir sipariş isteği oluşturuyoruz.
 ```php
-$request = new \Paranoia\Request();
+$request = new \Paranoia\Request\Request();
 $request->setOrderId('ORDER000000' . time())
         ->setAmount(100.35)
-        ->setCurrency('TRY');
-$card = new \Paranoia\Resource\Card();
+        ->setCurrency(\Paranoia\Currency::CODE_TRY);
+$card = new \Paranoia\Request\Resource\Card();
 $card->setNumber('5406******675403')
      ->setSecurityCode('000')
      ->setExpireMonth(12)
@@ -59,7 +59,7 @@ $configuration->setClientId('123456789')
 
 ```
 
-* Satış işlemini gerçekleştiriyoruz. Sağlayıcı uyarlamaları, Sağlayıcının [2. Desteklenen Ödeme Sistemleri](/docs/2-desteklenen-odeme-sistemleri.md) dökümanında belirtilen **ödeme sistemi** nin adı ile adlandırılmışlardır. Örnekte belirtilen NestPay uyarlaması için \Paranoia\Pos\**NestPay** sınıfını kullanabildiğiniz gibi Posnet uyarlaması için **\Paranoia\Pos\**Posnet** sınıfını kullanabilirsiniz.
+* Satış işlemini gerçekleştiriyoruz. Sağlayıcı uyarlamaları, Sağlayıcının [2. Desteklenen Ödeme Sistemleri](/docs/2-desteklenen-odeme-sistemleri.md) dökümanında belirtilen **ödeme sistemi** nin adı ile adlandırılmışlardır. Örnekte belirtilen NestPay uyarlaması için \Paranoia\Pos\\**NestPay** sınıfını kullanabildiğiniz gibi Posnet uyarlaması için \Paranoia\Pos\\**Posnet** sınıfını kullanabilirsiniz.
 ```php
 try {
         $adapter = new \Paranoia\Pos\NestPay($configuration);
@@ -67,10 +67,6 @@ try {
 } catch(\Paranoia\Exception\CommunicationError $e) {
          // Bağlantı hatası durumunda yapılacak işlemleri
          // bu bölümde greçekleştirebilirsiniz.
-} catch(\Paranoia\Exception\UnexpectedResponse $e) {
-        // Ödeme sistemi sağlayıcısından beklenmedik bir yanıt
-        // dönmesi (boş yanıt veya beklenmedik bir hata mesajı gibi)
-        // durumunda yapılacak işlemleri bu bölümde gerçekleştirebilirsiniz.
 } catch(\Exception $e) {
         // Uygulamada beklenmedik bir hata meydana gelmesi durumunda
         // yapılacak işlemleri bu bölümde gerçekleştirebilirsiniz.

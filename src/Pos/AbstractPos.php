@@ -7,7 +7,6 @@ use Paranoia\Configuration\AbstractConfiguration;
 use Paranoia\Exception\CommunicationError;
 use Paranoia\Request\Request;
 use Paranoia\TransactionType;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractPos
 {
@@ -16,8 +15,6 @@ abstract class AbstractPos
      */
     protected $configuration;
 
-    /** @var EventDispatcherInterface  */
-    private $dispatcher;
 
     public function __construct(AbstractConfiguration $configuration)
     {
@@ -27,7 +24,7 @@ abstract class AbstractPos
     /**
      *  build complete raw data for the specified request.
      *
-     * @param \Paranoia\Request $request
+     * @param \Paranoia\Request\Request $request
      * @param string $transactionType
      *
      * @return mixed
@@ -40,7 +37,7 @@ abstract class AbstractPos
      * @param string $rawResponse
      * @param string $transactionType
      *
-     * @return \Paranoia\Response\Response
+     * @return \Paranoia\Response
      */
     abstract protected function parseResponse($rawResponse, $transactionType);
 
@@ -51,20 +48,22 @@ abstract class AbstractPos
      * @param mixed  $data
      * @param array $options
      *
-     * @throws \ErrorException|\Exception
+     * @throws CommunicationError
      * @return mixed
      */
     protected function sendRequest($url, $data, $options = null)
     {
         $client = new HttpClient();
         $client->setConfig(array(
-           'curl.options' => array(
-               CURLOPT_SSL_VERIFYPEER => false,
-               CURLOPT_SSL_VERIFYHOST => false,
-               CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2
-           )
+            'curl.options' => array(
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1_2
+            )
         ));
+
         $request = $client->post($url, null, $data);
+
         try {
             return $request->send()->getBody();
         } catch (RequestException $e) {
@@ -72,6 +71,12 @@ abstract class AbstractPos
         }
     }
 
+    /**
+     * @param $request Request
+     * @param $transactionType
+     * @return \Paranoia\Response
+     * @throws CommunicationError
+    */
     private function performTransaction(Request $request, $transactionType)
     {
         $rawRequest  = $this->buildRequest($request, $transactionType);
@@ -81,9 +86,10 @@ abstract class AbstractPos
     }
 
     /**
-     * @param \Paranoia\Request $request
+     * @param \Paranoia\Request\Request $request
      *
-     * @return \Paranoia\Response\Response
+     * @return \Paranoia\Response
+     * @throws CommunicationError
      */
     public function preAuthorization(Request $request)
     {
@@ -91,9 +97,10 @@ abstract class AbstractPos
     }
 
     /**
-     * @param \Paranoia\Request $request
+     * @param \Paranoia\Request\Request $request
      *
-     * @return \Paranoia\Response\Response
+     * @return \Paranoia\Response
+     * @throws CommunicationError
      */
     public function postAuthorization(Request $request)
     {
@@ -101,9 +108,10 @@ abstract class AbstractPos
     }
 
     /**
-     * @param \Paranoia\Request $request
+     * @param \Paranoia\Request\Request $request
      *
-     * @return \Paranoia\Response\Response
+     * @return \Paranoia\Response
+     * @throws CommunicationError
      */
     public function sale(Request $request)
     {
@@ -111,9 +119,10 @@ abstract class AbstractPos
     }
 
     /**
-     * @param \Paranoia\Request $request
+     * @param \Paranoia\Request\Request $request
      *
-     * @return \Paranoia\Response\Response
+     * @return \Paranoia\Response
+     * @throws CommunicationError
      */
     public function refund(Request $request)
     {
@@ -121,9 +130,10 @@ abstract class AbstractPos
     }
 
     /**
-     * @param \Paranoia\Request $request
+     * @param \Paranoia\Request\Request $request
      *
-     * @return \Paranoia\Response\Response
+     * @return \Paranoia\Response
+     * @throws CommunicationError
      */
     public function cancel(Request $request)
     {
@@ -131,9 +141,10 @@ abstract class AbstractPos
     }
 
     /**
-     * @param \Paranoia\Request $request
+     * @param \Paranoia\Request\Request $request
      *
-     * @return \Paranoia\Response\Response
+     * @return \Paranoia\Response
+     * @throws CommunicationError
      */
     public function pointQuery(Request $request)
     {
@@ -141,9 +152,10 @@ abstract class AbstractPos
     }
 
     /**
-     * @param \Paranoia\Request $request
+     * @param \Paranoia\Request\Request $request
      *
-     * @return \Paranoia\Response\Response
+     * @return \Paranoia\Response
+     * @throws CommunicationError
      */
     public function pointUsage(Request $request)
     {

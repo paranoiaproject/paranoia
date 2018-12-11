@@ -9,14 +9,14 @@
 İptal isteği, **Paranoia\Request**  tipinde bir nesnenin transaction numarası ile doldurulması suretiyle elde edilir.
 
 ```php
-$request = new \Paranoia\Request();
+$request = new \Paranoia\Request\Request();
 $request->setTransactionId('1234567890');
 ```
 
 İptal işlemi sipariş numarası ile de gerçekleştirilebilmektedir.<br />
 **Not:** Bu kullanım şekli bazı bankalar tarafından tavsiye edilmemektedir.
 ```php
-$request = new \Paranoia\Request();
+$request = new \Paranoia\Request\Request();
 $request->setOrderId('987654321');
 ```
 
@@ -33,7 +33,7 @@ $request->setOrderId('987654321');
 
 * İptal işlemi için yeni bir iptal isteği oluşturuyoruz.
 ```php
-$request = new \Paranoia\Request();
+$request = new \Paranoia\Request\Request();
 $request->setTransactionId('1234567890');
 ```
 
@@ -55,10 +55,6 @@ try {
 } catch(\Paranoia\Exception\CommunicationError $e) {
          // Bağlantı hatası durumunda yapılacak işlemleri
          // bu bölümde greçekleştirebilirsiniz.
-} catch(\Paranoia\Exception\UnexpectedResponse $e) {
-        // Ödeme sistemi sağlayıcısından beklenmedik bir yanıt
-        // dönmesi (boş yanıt veya beklenmedik bir hata mesajı gibi)
-        // durumunda yapılacak işlemleri bu bölümde gerçekleştirebilirsiniz.
 } catch(\Exception $e) {
         // Uygulamada beklenmedik bir hata meydana gelmesi durumunda
         // yapılacak işlemleri bu bölümde gerçekleştirebilirsiniz.

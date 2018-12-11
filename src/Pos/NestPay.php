@@ -26,6 +26,7 @@ class NestPay extends AbstractPos
     /**
      * {@inheritdoc}
      * @see \Paranoia\Pos\AbstractPos::buildRequest()
+     * @throws \Paranoia\Exception\NotImplementedError
      */
     protected function buildRequest(Request $request, $transactionType)
     {
