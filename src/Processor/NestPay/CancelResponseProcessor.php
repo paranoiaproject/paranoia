@@ -1,7 +1,6 @@
 <?php
 namespace Paranoia\Processor\NestPay;
 
-
 class CancelResponseProcessor extends BaseResponseProcessor
 {
     /**
@@ -14,3 +13,4 @@ class CancelResponseProcessor extends BaseResponseProcessor
         return $this->processCommonResponse($rawResponse);
     }
 }
+
