@@ -13,4 +13,3 @@ class CancelResponseProcessor extends BaseResponseProcessor
         return $this->processCommonResponse($rawResponse);
     }
 }
-

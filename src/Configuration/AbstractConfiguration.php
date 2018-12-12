@@ -28,4 +28,3 @@ class AbstractConfiguration
         return $this->apiUrl;
     }
 }
-
