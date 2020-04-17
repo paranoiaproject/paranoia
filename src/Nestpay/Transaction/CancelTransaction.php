@@ -1,13 +1,16 @@
 <?php
 namespace Paranoia\Nestpay\Transaction;
 
+use GuzzleHttp\Client;
 use Paranoia\Configuration\NestpayConfiguration;
+use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Request\CancelRequest;
 use Paranoia\Core\Response\CancelResponse;
 use Paranoia\Nestpay\RequestBuilder\CancelRequestBuilder;
 use Paranoia\Nestpay\ResponseParser\CancelResponseParser;
 
-class CancelTransaction
+class CancelTransaction extends BaseTransaction
 {
     /** @var NestpayConfiguration */
     protected $configuration;
@@ -24,15 +27,23 @@ class CancelTransaction
      * @param CancelRequestBuilder $requestBuilder
      * @param CancelResponseParser $responseParser
      */
-    public function __construct(NestpayConfiguration $configuration, CancelRequestBuilder $requestBuilder, CancelResponseParser $responseParser)
+    public function __construct(NestpayConfiguration $configuration, Client $client, CancelRequestBuilder $requestBuilder, CancelResponseParser $responseParser)
     {
-        $this->configuration = $configuration;
+        parent::__construct($configuration, $client);
         $this->requestBuilder = $requestBuilder;
         $this->responseParser = $responseParser;
     }
 
+    /**
+     * @param CancelRequest $request
+     * @return CancelResponse
+     * @throws BadResponseException
+     * @throws UnapprovedTransactionException
+     */
     public function perform(CancelRequest $request): CancelResponse
     {
-
+        $providerRequest = $this->requestBuilder->build($request);
+        $providerResponse = $this->sendRequest($providerRequest);
+        return  $this->responseParser->parse($providerResponse);
     }
 }

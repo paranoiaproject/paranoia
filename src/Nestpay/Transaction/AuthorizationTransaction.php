@@ -1,8 +1,10 @@
 <?php
 namespace Paranoia\Nestpay\Transaction;
 
-use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Client;
 use Paranoia\Configuration\NestpayConfiguration;
+use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Request\AuthorizationRequest;
 use Paranoia\Core\Response\AuthorizationResponse;
 use Paranoia\Nestpay\RequestBuilder\AuthorizationRequestBuilder;
@@ -16,15 +18,30 @@ class AuthorizationTransaction extends BaseTransaction
     /** @var AuthorizationResponseParser */
     private $responseParser;
 
-    public function __construct(NestpayConfiguration $configuration, ClientInterface $client, AuthorizationRequestBuilder $requestBuilder, AuthorizationResponseParser $responseParser)
+    /**
+     * AuthorizationTransaction constructor.
+     * @param NestpayConfiguration $configuration
+     * @param Client $client
+     * @param AuthorizationRequestBuilder $requestBuilder
+     * @param AuthorizationResponseParser $responseParser
+     */
+    public function __construct(NestpayConfiguration $configuration, Client $client, AuthorizationRequestBuilder $requestBuilder, AuthorizationResponseParser $responseParser)
     {
         parent::__construct($configuration, $client);
         $this->requestBuilder = $requestBuilder;
         $this->responseParser = $responseParser;
     }
 
+    /**
+     * @param AuthorizationRequest $request
+     * @return AuthorizationResponse
+     * @throws BadResponseException
+     * @throws UnapprovedTransactionException
+     */
     public function perform(AuthorizationRequest $request): AuthorizationResponse
     {
-
+        $providerRequest = $this->requestBuilder->build($request);
+        $providerResponse = $this->sendRequest($providerRequest);
+        return  $this->responseParser->parse($providerResponse);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Test\Unit\Nestpay\ResponseParser;
 
-use Paranoia\Core\Exception\InvalidResponseException;
+use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Transformer\XmlTransformer;
 use Paranoia\Nestpay\ResponseParser\RefundResponseParser;
@@ -39,7 +39,7 @@ class RefundResponseParserTest extends TestCase
         $parser = new RefundResponseParser($transformerMock);
         try {
             $parser->parse($responseMock);
-        } catch (InvalidResponseException $e) {
+        } catch (BadResponseException $e) {
 
         } catch (UnapprovedTransactionException $e) {
             $this->assertEquals('ISO8583-05', $e->getErrorCode());
@@ -50,7 +50,7 @@ class RefundResponseParserTest extends TestCase
 
     public function test_parse_with_unexpected_response()
     {
-        $this->expectException(InvalidResponseException::class);
+        $this->expectException(BadResponseException::class);
 
         /** @var ResponseInterface $responseMock */
         $content = '/* unexpected-server-response */';
@@ -86,7 +86,7 @@ class RefundResponseParserTest extends TestCase
             ->method('transform')->with($content);
 
         if ($throwError) {
-            $method->willThrowException(new InvalidResponseException('Unexpected response'));
+            $method->willThrowException(new BadResponseException('Unexpected response'));
         } else {
             $method->willReturn(new \SimpleXMLElement($content));
         }

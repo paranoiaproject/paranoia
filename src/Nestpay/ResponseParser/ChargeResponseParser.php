@@ -2,7 +2,7 @@
 namespace Paranoia\Nestpay\ResponseParser;
 
 use Paranoia\Core\Exception\InvalidArgumentException;
-use Paranoia\Core\Exception\InvalidResponseException;
+use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Response\ChargeResponse;
 use Paranoia\Core\Transformer\XmlTransformer;
@@ -25,7 +25,7 @@ class ChargeResponseParser
     /**
      * @param ResponseInterface $response
      * @return ChargeResponse
-     * @throws InvalidResponseException
+     * @throws BadResponseException
      * @throws UnapprovedTransactionException
      */
     public function parse(ResponseInterface $response): ChargeResponse
@@ -41,7 +41,7 @@ class ChargeResponseParser
             }
             return new ChargeResponse((string) $xml->TransId, (string) $xml->AuthCode);
         } catch (InvalidArgumentException $exception) {
-            throw new InvalidResponseException('Invalid provider response', 0, $exception);
+            throw new BadResponseException('Invalid provider response', 0, $exception);
         }
     }
 }

@@ -2,7 +2,7 @@
 namespace Paranoia\Test\Processor\Gvp;
 
 use Paranoia\Configuration\AbstractConfiguration;
-use Paranoia\Core\Exception\InvalidResponseException;
+use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Processor\Gvp\PostAuthorizationResponseProcessor;
 use Paranoia\Response;
 use PHPUnit\Framework\TestCase;
@@ -54,7 +54,7 @@ class PostAuthorizationResponseProcessorTest extends TestCase
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
         $processor = new PostAuthorizationResponseProcessor($configuration);
 
-        $this->expectException(InvalidResponseException::class);
+        $this->expectException(BadResponseException::class);
         $processor->process($rawResponse);
     }
 
