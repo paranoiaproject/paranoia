@@ -3,7 +3,7 @@ namespace Paranoia\Test\Formatter;
 
 use Paranoia\Formatter\DecimalFormatter;
 use PHPUnit\Framework\TestCase;
-use Paranoia\Exception\InvalidArgumentException;
+use Paranoia\Core\Exception\InvalidArgumentException;
 
 class DecimalFormatterTest extends TestCase
 {

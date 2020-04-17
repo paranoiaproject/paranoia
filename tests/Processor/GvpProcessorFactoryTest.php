@@ -2,7 +2,7 @@
 namespace Paranoia\Test\Processor;
 
 use Paranoia\Configuration\Gvp;
-use Paranoia\Exception\InvalidArgumentException;
+use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Processor\Gvp\CancelResponseProcessor;
 use Paranoia\Processor\Gvp\PostAuthorizationResponseProcessor;
 use Paranoia\Processor\Gvp\PreAuthorizationResponseProcessor;

@@ -24,7 +24,7 @@ class Gvp extends AbstractPos
     /**
      * {@inheritdoc}
      * @see \Paranoia\Pos\AbstractPos::buildRequest()
-     * @throws \Paranoia\Exception\NotImplementedError
+     * @throws \Paranoia\Core\Exception\NotImplementedError
      */
     protected function buildRequest(Request $request, $transactionType)
     {

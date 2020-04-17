@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Builder\NestPay;
 
-use Paranoia\Common\Serializer\Serializer;
+use Paranoia\Core\Serializer\Serializer;
 use Paranoia\Request\Request;
 
 class RefundRequestBuilder extends BaseRequestBuilder

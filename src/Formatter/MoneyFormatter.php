@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Formatter;
 
-use Paranoia\Exception\InvalidArgumentException;
+use Paranoia\Core\Exception\InvalidArgumentException;
 
 class MoneyFormatter implements FormatterInterface
 {

@@ -3,18 +3,6 @@
     "type": "library",
     "description": "Universal Payment Library",
     "keywords": ["payment", "e-commerce"],
-    "require": {
-        "php": ">= 5.6.0",
-        "guzzle/guzzle": "3.9.2",
-        "symfony/event-dispatcher": "^2.7|^3.0",
-        "ext-SimpleXML": "*",
-        "ext-curl" :"*"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "5.7.*",
-        "phpmd/phpmd": "^2.6",
-        "squizlabs/php_codesniffer": "^3.2"
-    },
     "license": "MIT",
     "authors": [
         {
@@ -28,5 +16,17 @@
             "Paranoia\\": "src/",
             "Paranoia\\Test\\": "tests/"
         }
+    },
+    "require": {
+        "php": ">=7.1",
+        "ext-SimpleXML": "*",
+        "ext-curl" :"*",
+        "guzzlehttp/guzzle": "^6.5",
+        "psr/http-message": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.1",
+        "phpmd/phpmd": "^2.8",
+        "squizlabs/php_codesniffer": "^3.5"
     }
 }

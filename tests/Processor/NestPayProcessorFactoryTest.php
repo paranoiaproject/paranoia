@@ -1,8 +1,8 @@
 <?php
 namespace Paranoia\Test\Processor;
 
-use Paranoia\Configuration\NestPay;
-use Paranoia\Exception\InvalidArgumentException;
+use Paranoia\Configuration\NestpayConfiguration;
+use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Processor\NestPay\CancelResponseProcessor;
 use Paranoia\Processor\NestPay\PostAuthorizationResponseProcessor;
 use Paranoia\Processor\NestPay\PreAuthorizationResponseProcessor;
@@ -16,8 +16,8 @@ class NestPayProcessorFactoryTest extends TestCase
 {
     public function test_valid_transaction_type()
     {
-        /** @var NestPay $configuration */
-        $configuration = $this->getMockBuilder(NestPay::class)->getMock();
+        /** @var NestpayConfiguration $configuration */
+        $configuration = $this->getMockBuilder(NestpayConfiguration::class)->getMock();
         $factory = new NestPayProcessorFactory($configuration);
         $this->assertInstanceOf(SaleResponseProcessor::class, $factory->createProcessor(TransactionType::SALE));
         $this->assertInstanceOf(RefundResponseProcessor::class, $factory->createProcessor(TransactionType::REFUND));
@@ -30,8 +30,8 @@ class NestPayProcessorFactoryTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        /** @var NestPay $configuration */
-        $configuration = $this->getMockBuilder(NestPay::class)->getMock();
+        /** @var NestpayConfiguration $configuration */
+        $configuration = $this->getMockBuilder(NestpayConfiguration::class)->getMock();
 
         $factory = new NestPayProcessorFactory($configuration);
         $factory->createProcessor('dummy');

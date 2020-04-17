@@ -40,7 +40,7 @@ abstract class BaseRequestBuilder extends AbstractRequestBuilder
 
     protected function buildBaseRequest($type)
     {
-        /** @var \Paranoia\Configuration\NestPay $config */
+        /** @var \Paranoia\Configuration\NestpayConfiguration $config */
         $config = $this->configuration;
         return [
             'Mode'     => $config->getMode(),

@@ -8,7 +8,7 @@ use Paranoia\Builder\Posnet\RefundRequestBuilder;
 use Paranoia\Builder\Posnet\SaleRequestBuilder;
 use Paranoia\Builder\PosnetBuilderFactory;
 use Paranoia\Configuration\Posnet as PosnetConfiguration;
-use Paranoia\Exception\NotImplementedError;
+use Paranoia\Core\Exception\NotImplementedError;
 use Paranoia\TransactionType;
 use PHPUnit\Framework\TestCase;
 

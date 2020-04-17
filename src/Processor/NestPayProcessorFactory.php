@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Processor;
 
-use Paranoia\Exception\InvalidArgumentException;
+use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Processor\NestPay\CancelResponseProcessor;
 use Paranoia\Processor\NestPay\PostAuthorizationResponseProcessor;
 use Paranoia\Processor\NestPay\PreAuthorizationResponseProcessor;

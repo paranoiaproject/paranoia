@@ -2,7 +2,7 @@
 namespace Paranoia\Test\Builder\NestPay;
 
 use Paranoia\Builder\NestPay\PostAuthorizationRequestBuilder;
-use Paranoia\Configuration\NestPay as NestPayConfiguration;
+use Paranoia\Configuration\NestpayConfiguration as NestPayConfiguration;
 use Paranoia\Formatter\DecimalFormatter;
 use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Formatter\NestPay\ExpireDateFormatter;

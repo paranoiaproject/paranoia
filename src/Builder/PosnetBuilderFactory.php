@@ -6,7 +6,7 @@ use Paranoia\Builder\Posnet\PostAuthorizationRequestBuilder;
 use Paranoia\Builder\Posnet\PreAuthorizationRequestBuilder;
 use Paranoia\Builder\Posnet\RefundRequestBuilder;
 use Paranoia\Builder\Posnet\SaleRequestBuilder;
-use Paranoia\Exception\NotImplementedError;
+use Paranoia\Core\Exception\NotImplementedError;
 use Paranoia\Formatter\MoneyFormatter;
 use Paranoia\Formatter\MultiDigitInstallmentFormatter;
 use Paranoia\Formatter\Posnet\CustomCurrencyCodeFormatter;

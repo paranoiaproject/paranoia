@@ -2,7 +2,7 @@
 namespace Paranoia\Test\Formatter;
 
 use Paranoia\Currency;
-use Paranoia\Exception\InvalidArgumentException;
+use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;
 use PHPUnit\Framework\TestCase;
 

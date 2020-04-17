@@ -2,7 +2,7 @@
 namespace Paranoia\Formatter\Posnet;
 
 use Paranoia\Currency;
-use Paranoia\Exception\InvalidArgumentException;
+use Paranoia\Core\Exception\InvalidArgumentException;
 
 class CustomCurrencyCodeFormatter
 {

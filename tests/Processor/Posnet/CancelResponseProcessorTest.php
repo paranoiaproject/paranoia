@@ -2,7 +2,7 @@
 namespace Paranoia\Test\Processor\Posnet;
 
 use Paranoia\Configuration\AbstractConfiguration;
-use Paranoia\Exception\BadResponseException;
+use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Processor\Posnet\CancelResponseProcessor;
 use Paranoia\Response;
 use PHPUnit\Framework\TestCase;

@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Builder\Gvp;
 
-use Paranoia\Common\Serializer\Serializer;
+use Paranoia\Core\Serializer\Serializer;
 use Paranoia\Configuration\Gvp;
 use Paranoia\Request\Request;
 

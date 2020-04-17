@@ -4,7 +4,7 @@ namespace Paranoia\Pos;
 use Guzzle\Http\Client as HttpClient;
 use Guzzle\Http\Exception\RequestException;
 use Paranoia\Configuration\AbstractConfiguration;
-use Paranoia\Exception\CommunicationError;
+use Paranoia\Core\Exception\CommunicationError;
 use Paranoia\Request\Request;
 use Paranoia\TransactionType;
 

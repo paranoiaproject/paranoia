@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Builder\Posnet;
 
-use Paranoia\Common\Serializer\Serializer;
+use Paranoia\Core\Serializer\Serializer;
 use Paranoia\Request\Request;
 
 class SaleRequestBuilder extends BaseRequestBuilder

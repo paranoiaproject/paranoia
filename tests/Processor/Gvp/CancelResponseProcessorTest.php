@@ -2,7 +2,7 @@
 namespace Paranoia\Test\Processor\Gvp;
 
 use Paranoia\Configuration\AbstractConfiguration;
-use Paranoia\Exception\BadResponseException;
+use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Processor\Gvp\CancelResponseProcessor;
 use Paranoia\Response;
 use PHPUnit\Framework\TestCase;

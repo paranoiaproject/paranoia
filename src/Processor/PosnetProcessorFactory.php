@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Processor;
 
-use Paranoia\Exception\InvalidArgumentException;
+use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Processor\Posnet\CancelResponseProcessor;
 use Paranoia\Processor\Posnet\PostAuthorizationResponseProcessor;
 use Paranoia\Processor\Posnet\PreAuthorizationResponseProcessor;

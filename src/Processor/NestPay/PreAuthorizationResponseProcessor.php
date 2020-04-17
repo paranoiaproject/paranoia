@@ -5,7 +5,7 @@ class PreAuthorizationResponseProcessor extends BaseResponseProcessor
 {
     /**
      * @param $rawResponse
-     * @throws \Paranoia\Exception\BadResponseException
+     * @throws \Paranoia\Core\Exception\BadResponseException
      * @return \Paranoia\Response
      */
     public function process($rawResponse)

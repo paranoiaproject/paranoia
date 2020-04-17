@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Formatter\Posnet;
 
-use Paranoia\Exception\InvalidArgumentException;
+use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Formatter\FormatterInterface;
 
 class OrderIdFormatter implements FormatterInterface

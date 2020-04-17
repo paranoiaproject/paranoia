@@ -6,7 +6,7 @@ use Paranoia\Builder\Gvp\PostAuthorizationRequestBuilder;
 use Paranoia\Builder\Gvp\PreAuthorizationRequestBuilder;
 use Paranoia\Builder\Gvp\RefundRequestBuilder;
 use Paranoia\Builder\Gvp\SaleRequestBuilder;
-use Paranoia\Exception\NotImplementedError;
+use Paranoia\Core\Exception\NotImplementedError;
 use Paranoia\Formatter\Gvp\ExpireDateFormatter;
 use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Formatter\MoneyFormatter;

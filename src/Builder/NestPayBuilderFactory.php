@@ -6,7 +6,7 @@ use Paranoia\Builder\NestPay\PostAuthorizationRequestBuilder;
 use Paranoia\Builder\NestPay\PreAuthorizationRequestBuilder;
 use Paranoia\Builder\NestPay\RefundRequestBuilder;
 use Paranoia\Builder\NestPay\SaleRequestBuilder;
-use Paranoia\Exception\NotImplementedError;
+use Paranoia\Core\Exception\NotImplementedError;
 use Paranoia\Formatter\DecimalFormatter;
 use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Formatter\NestPay\ExpireDateFormatter;

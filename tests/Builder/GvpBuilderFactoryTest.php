@@ -8,7 +8,7 @@ use Paranoia\Builder\Gvp\RefundRequestBuilder;
 use Paranoia\Builder\Gvp\SaleRequestBuilder;
 use Paranoia\Builder\GvpBuilderFactory;
 use Paranoia\Configuration\Gvp as GvpConfiguration;
-use Paranoia\Exception\NotImplementedError;
+use Paranoia\Core\Exception\NotImplementedError;
 use Paranoia\TransactionType;
 use PHPUnit\Framework\TestCase;
 

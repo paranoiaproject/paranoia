@@ -2,7 +2,7 @@
 namespace Paranoia\Test\Processor\NestPay;
 
 use Paranoia\Configuration\AbstractConfiguration;
-use Paranoia\Exception\BadResponseException;
+use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Processor\NestPay\CancelResponseProcessor;
 use Paranoia\Response;
 use PHPUnit\Framework\TestCase;

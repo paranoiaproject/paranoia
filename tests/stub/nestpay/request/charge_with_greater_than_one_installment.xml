@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<CC5Request>
+    <Name>NESTPAYUSER</Name>
+    <ClientId>000001</ClientId>
+    <Type>Auth</Type>
+    <OrderId>0000000001</OrderId>
+    <Total>100.50</Total>
+    <Currency>949</Currency>
+    <Number>5105105105105100</Number>
+    <Expires>05/2025</Expires>
+    <Cvv2Val>000</Cvv2Val>
+    <Taksit>8</Taksit>
+</CC5Request>

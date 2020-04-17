@@ -2,7 +2,7 @@
 namespace Paranoia\Test\Builder\NestPay;
 
 use Paranoia\Builder\NestPay\SaleRequestBuilder;
-use Paranoia\Configuration\NestPay as NestPayConfiguration;
+use Paranoia\Configuration\NestpayConfiguration as NestPayConfiguration;
 use Paranoia\Currency;
 use Paranoia\Formatter\DecimalFormatter;
 use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;

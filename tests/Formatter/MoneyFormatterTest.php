@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Test\Formatter;
 
-use Paranoia\Exception\InvalidArgumentException;
+use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Formatter\MoneyFormatter;
 use PHPUnit\Framework\TestCase;
 

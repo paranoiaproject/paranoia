@@ -7,8 +7,8 @@ use Paranoia\Builder\NestPay\PreAuthorizationRequestBuilder;
 use Paranoia\Builder\NestPay\RefundRequestBuilder;
 use Paranoia\Builder\NestPay\SaleRequestBuilder;
 use Paranoia\Builder\NestPayBuilderFactory;
-use Paranoia\Configuration\NestPay as NestPayConfiguration;
-use Paranoia\Exception\NotImplementedError;
+use Paranoia\Configuration\NestpayConfiguration as NestPayConfiguration;
+use Paranoia\Core\Exception\NotImplementedError;
 use Paranoia\TransactionType;
 use PHPUnit\Framework\TestCase;
 

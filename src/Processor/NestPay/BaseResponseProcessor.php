@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Processor\NestPay;
 
-use Paranoia\Exception\BadResponseException;
+use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Processor\AbstractResponseProcessor;
 use Paranoia\Response;
 

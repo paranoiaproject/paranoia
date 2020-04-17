@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CC5Request>
+  <Name>NESTPAYUSER</Name>
+  <ClientId>000001</ClientId>
+  <Type>PostAuth</Type>
+  <OrderId>0000000001</OrderId>
+</CC5Request>
