@@ -17,7 +17,7 @@ class XmlTransformerTest extends TestCase
         ];
     }
 
-    public function test_transform_with_valid_input()
+    public function test_transform_with_valid_input(): void
     {
         $transformer = new XmlTransformer();
         $content = file_get_contents(__DIR__ . '/../../../stub/core/transformer/valid_data.xml');
@@ -30,7 +30,7 @@ class XmlTransformerTest extends TestCase
      * @dataProvider invalidInputProvider
      * @param string|null $content
      */
-    public function test_transform_with_invalid_input(?string $content)
+    public function test_transform_with_invalid_input(?string $content): void
     {
         $this->expectException(InvalidArgumentException::class);
         $transformer = new XmlTransformer();

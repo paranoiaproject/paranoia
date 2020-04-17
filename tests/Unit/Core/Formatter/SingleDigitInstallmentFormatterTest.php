@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class SingleDigitInstallmentFormatterTest extends TestCase
 {
-    public function expectedValues()
+    public function expectedValues(): array
     {
         return [
             [null, null],
@@ -22,7 +22,7 @@ class SingleDigitInstallmentFormatterTest extends TestCase
      * @param $expected
      * @param $input
      */
-    public function test($expected, $input)
+    public function test(?string $expected, ?int $input): void
     {
         $formatter = new SingleDigitInstallmentFormatter();
         $this->assertEquals($expected, $formatter->format($input));

@@ -8,14 +8,14 @@ use PHPUnit\Framework\TestCase;
 
 class IsoNumericCurrencyCodeFormatterTest extends TestCase
 {
-    public function test_invalid_input()
+    public function test_invalid_input(): void
     {
         $formatter = new IsoNumericCurrencyCodeFormatter();
         $this->expectException(InvalidArgumentException::class);
         $formatter->format('BAD_CODE');
     }
 
-    public function getCurrencyCodes()
+    public function currencyCodeProvider(): array
     {
         #TODO: Move this constants to another constant class.
         return [
@@ -28,9 +28,9 @@ class IsoNumericCurrencyCodeFormatterTest extends TestCase
     /**
      * @param $currencyCode
      * @param $expected
-     * @dataProvider getCurrencyCodes
+     * @dataProvider currencyCodeProvider
      */
-    public function test_valid_input($currencyCode, $expected)
+    public function test_valid_input(string $currencyCode, int $expected): void
     {
         $formatter = new IsoNumericCurrencyCodeFormatter();
         $this->assertEquals($expected, $formatter->format($currencyCode));

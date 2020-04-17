@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 
 class MultiDigitInstallmentFormatterTest extends TestCase
 {
-    public function expectedValues()
+    public function expectedValues(): array
     {
         return [
             ['00', null],
@@ -22,7 +22,7 @@ class MultiDigitInstallmentFormatterTest extends TestCase
      * @param $expected
      * @param $input
      */
-    public function test_valid_input($expected, $input)
+    public function test_valid_input(string $expected, ?int $input): void
     {
         $formatter = new MultiDigitInstallmentFormatter();
         $this->assertEquals($expected, $formatter->format($input));
