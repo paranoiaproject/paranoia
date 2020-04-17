@@ -6,7 +6,7 @@ use SimpleXMLElement;
 
 class XmlTransformer
 {
-    public function transform(string $xml): SimpleXMLElement
+    public function transform(?string $xml): SimpleXMLElement
     {
         try {
             return new SimpleXMLElement($xml);
