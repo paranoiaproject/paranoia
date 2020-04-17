@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Processor\Gvp;
 
-use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Exception\InvalidResponseException;
 use Paranoia\Processor\AbstractResponseProcessor;
 use Paranoia\Response;
 
@@ -54,7 +54,7 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
     /**
      * @param $rawResponse
      * @return Response
-     * @throws BadResponseException
+     * @throws InvalidResponseException
      */
     protected function processCommonResponse($rawResponse)
     {
@@ -63,7 +63,7 @@ abstract class BaseResponseProcessor extends AbstractResponseProcessor
             /** @var \SimpleXMLElement $xml */
             $xml = new \SimpleXmlElement($rawResponse);
         } catch (\Exception $e) {
-            $exception = new BadResponseException('Provider returned unexpected response: ' . $rawResponse);
+            $exception = new InvalidResponseException('Provider returned unexpected response: ' . $rawResponse);
             throw $exception;
         }
         $this->validateResponse($xml);

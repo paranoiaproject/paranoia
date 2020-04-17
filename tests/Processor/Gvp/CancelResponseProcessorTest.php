@@ -2,7 +2,7 @@
 namespace Paranoia\Test\Processor\Gvp;
 
 use Paranoia\Configuration\AbstractConfiguration;
-use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Exception\InvalidResponseException;
 use Paranoia\Processor\Gvp\CancelResponseProcessor;
 use Paranoia\Response;
 use PHPUnit\Framework\TestCase;
@@ -54,7 +54,7 @@ class CancelResponseProcessorTest extends TestCase
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
         $processor = new CancelResponseProcessor($configuration);
 
-        $this->expectException(BadResponseException::class);
+        $this->expectException(InvalidResponseException::class);
         $processor->process($rawResponse);
     }
 

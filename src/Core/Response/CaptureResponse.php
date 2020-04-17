@@ -4,51 +4,35 @@ namespace Paranoia\Core\Response;
 class CaptureResponse
 {
     /** @var string */
-    private $hostReference;
+    private $transactionId;
 
     /** @var string */
     private $authCode;
 
     /**
-     * AuthorizationResponse constructor.
-     * @param string $hostReference
+     * CaptureResponse constructor.
+     * @param string $transactionId
      * @param string $authCode
      */
-    public function __construct(string $hostReference, string $authCode)
+    public function __construct(?string $transactionId, ?string $authCode)
     {
-        $this->hostReference = $hostReference;
+        $this->transactionId = $transactionId;
         $this->authCode = $authCode;
     }
 
     /**
      * @return string
      */
-    public function getHostReference(): string
+    public function getTransactionId(): ?string
     {
-        return $this->hostReference;
-    }
-
-    /**
-     * @param string $hostReference
-     */
-    public function setHostReference(string $hostReference): void
-    {
-        $this->hostReference = $hostReference;
+        return $this->transactionId;
     }
 
     /**
      * @return string
      */
-    public function getAuthCode(): string
+    public function getAuthCode(): ?string
     {
         return $this->authCode;
-    }
-
-    /**
-     * @param string $authCode
-     */
-    public function setAuthCode(string $authCode): void
-    {
-        $this->authCode = $authCode;
     }
 }
