@@ -1,9 +1,9 @@
 <?php
-namespace Paranoia\Test\Formatter;
+namespace Paranoia\Test\Unit\Core\Formatter;
 
-use Paranoia\Currency;
+use Paranoia\Core\Currency;
 use Paranoia\Core\Exception\InvalidArgumentException;
-use Paranoia\Formatter\IsoNumericCurrencyCodeFormatter;
+use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use PHPUnit\Framework\TestCase;
 
 class IsoNumericCurrencyCodeFormatterTest extends TestCase

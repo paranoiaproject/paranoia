@@ -1,5 +1,5 @@
 <?php
-namespace Paranoia\Test\Formatter;
+namespace Paranoia\Test\Unit\Core\Formatter;
 
 use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Formatter\MoneyFormatter;

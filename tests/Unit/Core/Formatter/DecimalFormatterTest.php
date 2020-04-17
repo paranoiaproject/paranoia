@@ -1,7 +1,7 @@
 <?php
-namespace Paranoia\Test\Formatter;
+namespace Paranoia\Test\Unit\Core\Formatter;
 
-use Paranoia\Formatter\DecimalFormatter;
+use Paranoia\Core\Formatter\DecimalFormatter;
 use PHPUnit\Framework\TestCase;
 use Paranoia\Core\Exception\InvalidArgumentException;
 

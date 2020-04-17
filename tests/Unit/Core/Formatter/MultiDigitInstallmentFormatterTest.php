@@ -1,7 +1,7 @@
 <?php
-namespace Paranoia\Test\Formatter;
+namespace Paranoia\Test\Unit\Core\Formatter;
 
-use Paranoia\Formatter\MultiDigitInstallmentFormatter;
+use Paranoia\Core\Formatter\MultiDigitInstallmentFormatter;
 use PHPUnit\Framework\TestCase;
 
 class MultiDigitInstallmentFormatterTest extends TestCase
