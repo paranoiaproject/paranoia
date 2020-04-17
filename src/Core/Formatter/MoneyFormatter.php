@@ -1,5 +1,5 @@
 <?php
-namespace Paranoia\Formatter;
+namespace Paranoia\Core\Formatter;
 
 use Paranoia\Core\Exception\InvalidArgumentException;
 

@@ -9,7 +9,6 @@ class SingleDigitInstallmentFormatterTest extends TestCase
     public function expectedValues()
     {
         return [
-            [null, 'bad input'],
             [null, null],
             [null, 0],
             [null, -1],

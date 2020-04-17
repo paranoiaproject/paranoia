@@ -14,13 +14,6 @@ class DecimalFormatterTest extends TestCase
         $formatter->format(null);
     }
 
-    public function test_invalid_input_alphanumeric()
-    {
-        $formatter = new DecimalFormatter();
-        $this->expectException(InvalidArgumentException::class);
-        $formatter->format('bad value');
-    }
-
     public function test_valid_input()
     {
         $formatter = new DecimalFormatter();

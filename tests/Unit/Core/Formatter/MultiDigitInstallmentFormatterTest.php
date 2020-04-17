@@ -9,7 +9,6 @@ class MultiDigitInstallmentFormatterTest extends TestCase
     public function expectedValues()
     {
         return [
-            ['00', 'bad input'],
             ['00', null],
             ['00', 0],
             ['00', -1],
