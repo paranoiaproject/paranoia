@@ -9,9 +9,9 @@ use Paranoia\Builder\Posnet\SaleRequestBuilder;
 use Paranoia\Core\Exception\NotImplementedError;
 use Paranoia\Formatter\MoneyFormatter;
 use Paranoia\Formatter\MultiDigitInstallmentFormatter;
-use Paranoia\Formatter\Posnet\CustomCurrencyCodeFormatter;
-use Paranoia\Formatter\Posnet\ExpireDateFormatter;
-use Paranoia\Formatter\Posnet\OrderIdFormatter;
+use Paranoia\Posnet\Formatter\CustomCurrencyCodeFormatter;
+use Paranoia\Posnet\Formatter\ExpireDateFormatter;
+use Paranoia\Posnet\Formatter\OrderIdFormatter;
 use Paranoia\TransactionType;
 
 class PosnetBuilderFactory extends AbstractBuilderFactory

@@ -1,14 +1,13 @@
 <?php
-namespace Paranoia\Formatter\Posnet;
+namespace Paranoia\Posnet\Formatter;
 
 use Paranoia\Core\Exception\InvalidArgumentException;
-use Paranoia\Formatter\FormatterInterface;
 
-class OrderIdFormatter implements FormatterInterface
+class OrderIdFormatter
 {
     const MAX_INPUT_LENGTH = 24;
 
-    public function format($input)
+    public function format(string $input): string
     {
         if (strlen($input) > self::MAX_INPUT_LENGTH) {
             throw new InvalidArgumentException('Order ID can not contain more than 24 characters.');

@@ -1,21 +1,21 @@
 <?php
-namespace Paranoia\Test\Formatter;
+namespace Paranoia\Test\Unit\PosnetFormatter;
 
-use Paranoia\Currency;
+use Paranoia\Core\Currency;
 use Paranoia\Core\Exception\InvalidArgumentException;
-use Paranoia\Formatter\Posnet\CustomCurrencyCodeFormatter;
+use Paranoia\Posnet\Formatter\CustomCurrencyCodeFormatter;
 use PHPUnit\Framework\TestCase;
 
 class CustomCurrencyCodeFormatterTest extends TestCase
 {
-    public function test_invalid_input()
+    public function test_invalid_input(): void
     {
         $formatter = new CustomCurrencyCodeFormatter();
         $this->expectException(InvalidArgumentException::class);
         $formatter->format('BAD_CODE');
     }
 
-    public function getCurrencyCodes()
+    public function currencyProvider(): array
     {
         #TODO: Move this constants to another constant class.
         return [
@@ -28,9 +28,9 @@ class CustomCurrencyCodeFormatterTest extends TestCase
     /**
      * @param $currencyCode
      * @param $expected
-     * @dataProvider getCurrencyCodes
+     * @dataProvider currencyProvider
      */
-    public function test_valid_input($currencyCode, $expected)
+    public function test_valid_input($currencyCode, $expected): void
     {
         $formatter = new CustomCurrencyCodeFormatter();
         $this->assertEquals($expected, $formatter->format($currencyCode));

@@ -3,12 +3,12 @@ namespace Paranoia\Builder\Posnet;
 
 use Paranoia\Builder\AbstractRequestBuilder;
 use Paranoia\Configuration\AbstractConfiguration;
-use Paranoia\Configuration\Posnet;
+use Paranoia\Configuration\PosnetConfiguration;
 use Paranoia\Formatter\MoneyFormatter;
 use Paranoia\Formatter\MultiDigitInstallmentFormatter;
-use Paranoia\Formatter\Posnet\CustomCurrencyCodeFormatter;
-use Paranoia\Formatter\Posnet\ExpireDateFormatter;
-use Paranoia\Formatter\Posnet\OrderIdFormatter;
+use Paranoia\Posnet\Formatter\CustomCurrencyCodeFormatter;
+use Paranoia\Posnet\Formatter\ExpireDateFormatter;
+use Paranoia\Posnet\Formatter\OrderIdFormatter;
 use Paranoia\Request\Request;
 use Paranoia\Request\Resource\Card;
 use Paranoia\Request\Resource\ResourceInterface;
@@ -48,7 +48,7 @@ abstract class BaseRequestBuilder extends AbstractRequestBuilder
 
     protected function buildBaseRequest(Request $request)
     {
-        /** @var Posnet $configuration */
+        /** @var PosnetConfiguration $configuration */
         $configuration = $this->configuration;
         return [
             'mid' => $configuration->getMerchantId(),

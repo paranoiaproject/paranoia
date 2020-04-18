@@ -5,13 +5,13 @@ use Paranoia\Builder\Posnet\SaleRequestBuilder;
 use Paranoia\Currency;
 use Paranoia\Formatter\MoneyFormatter;
 use Paranoia\Formatter\MultiDigitInstallmentFormatter;
-use Paranoia\Formatter\Posnet\CustomCurrencyCodeFormatter;
-use Paranoia\Formatter\Posnet\ExpireDateFormatter;
-use Paranoia\Formatter\Posnet\OrderIdFormatter;
+use Paranoia\Posnet\Formatter\CustomCurrencyCodeFormatter;
+use Paranoia\Posnet\Formatter\ExpireDateFormatter;
+use Paranoia\Posnet\Formatter\OrderIdFormatter;
 use Paranoia\Request\Request;
 use Paranoia\Request\Resource\Card;
 use PHPUnit\Framework\TestCase;
-use Paranoia\Configuration\Posnet as PosnetConfiguration;
+use Paranoia\Configuration\PosnetConfiguration as PosnetConfiguration;
 
 class SaleRequestBuilderTest extends TestCase
 {

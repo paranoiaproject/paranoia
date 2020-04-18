@@ -1,7 +1,7 @@
 <?php
-namespace Paranoia\Formatter\Posnet;
+namespace Paranoia\Posnet\Formatter;
 
-use Paranoia\Currency;
+use Paranoia\Core\Currency;
 use Paranoia\Core\Exception\InvalidArgumentException;
 
 class CustomCurrencyCodeFormatter
@@ -10,7 +10,7 @@ class CustomCurrencyCodeFormatter
     const CODE_USD = 'US';
     const CODE_EUR = 'EU';
 
-    public function format($input)
+    public function format(string $input): string
     {
         switch ($input) {
             case Currency::CODE_EUR:

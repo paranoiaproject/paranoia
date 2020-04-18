@@ -4,12 +4,12 @@ namespace Paranoia\Test\Builder\Posnet;
 use Paranoia\Builder\Posnet\CancelRequestBuilder;
 use Paranoia\Formatter\MoneyFormatter;
 use Paranoia\Formatter\MultiDigitInstallmentFormatter;
-use Paranoia\Formatter\Posnet\CustomCurrencyCodeFormatter;
-use Paranoia\Formatter\Posnet\ExpireDateFormatter;
-use Paranoia\Formatter\Posnet\OrderIdFormatter;
+use Paranoia\Posnet\Formatter\CustomCurrencyCodeFormatter;
+use Paranoia\Posnet\Formatter\ExpireDateFormatter;
+use Paranoia\Posnet\Formatter\OrderIdFormatter;
 use Paranoia\Request\Request;
 use PHPUnit\Framework\TestCase;
-use Paranoia\Configuration\Posnet as PosnetConfiguration;
+use Paranoia\Configuration\PosnetConfiguration as PosnetConfiguration;
 
 class CancelRequestBuilderTest extends TestCase
 {

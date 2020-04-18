@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Test\Processor;
 
-use Paranoia\Configuration\Posnet;
+use Paranoia\Configuration\PosnetConfiguration;
 use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Processor\Posnet\CancelResponseProcessor;
 use Paranoia\Processor\Posnet\PostAuthorizationResponseProcessor;
@@ -16,8 +16,8 @@ class PosnetProcessorFactoryTest extends TestCase
 {
     public function test_valid_transaction_type()
     {
-        /** @var Posnet $configuration */
-        $configuration = $this->getMockBuilder(Posnet::class)->getMock();
+        /** @var PosnetConfiguration $configuration */
+        $configuration = $this->getMockBuilder(PosnetConfiguration::class)->getMock();
         $factory = new PosnetProcessorFactory($configuration);
         $this->assertInstanceOf(SaleResponseProcessor::class, $factory->createProcessor(TransactionType::SALE));
         $this->assertInstanceOf(RefundResponseProcessor::class, $factory->createProcessor(TransactionType::REFUND));
@@ -30,8 +30,8 @@ class PosnetProcessorFactoryTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        /** @var Posnet $configuration */
-        $configuration = $this->getMockBuilder(Posnet::class)->getMock();
+        /** @var PosnetConfiguration $configuration */
+        $configuration = $this->getMockBuilder(PosnetConfiguration::class)->getMock();
 
         $factory = new PosnetProcessorFactory($configuration);
         $factory->createProcessor('dummy');
