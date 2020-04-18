@@ -4,6 +4,7 @@ namespace Paranoia\Nestpay\Transaction;
 use GuzzleHttp\Client;
 use Paranoia\Configuration\NestpayConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Exception\CommunicationError;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Request\AuthorizationRequest;
 use Paranoia\Core\Response\AuthorizationResponse;
@@ -37,6 +38,7 @@ class AuthorizationTransaction extends BaseTransaction
      * @return AuthorizationResponse
      * @throws BadResponseException
      * @throws UnapprovedTransactionException
+     * @throws CommunicationError
      */
     public function perform(AuthorizationRequest $request): AuthorizationResponse
     {

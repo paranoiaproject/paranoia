@@ -4,6 +4,7 @@ namespace Paranoia\Nestpay\Transaction;
 use GuzzleHttp\Client;
 use Paranoia\Configuration\NestpayConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Exception\CommunicationError;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Request\CancelRequest;
 use Paranoia\Core\Response\CancelResponse;
@@ -39,6 +40,7 @@ class CancelTransaction extends BaseTransaction
      * @return CancelResponse
      * @throws BadResponseException
      * @throws UnapprovedTransactionException
+     * @throws CommunicationError
      */
     public function perform(CancelRequest $request): CancelResponse
     {

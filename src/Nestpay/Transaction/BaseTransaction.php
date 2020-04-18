@@ -2,10 +2,10 @@
 namespace Paranoia\Nestpay\Transaction;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Paranoia\Configuration\NestpayConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Exception\CommunicationError;
 use Psr\Http\Message\ResponseInterface;
 
 abstract class BaseTransaction
@@ -30,7 +30,7 @@ abstract class BaseTransaction
     /**
      * @param array $data
      * @return ResponseInterface
-     * @throws BadResponseException
+     * @throws CommunicationError
      */
     protected function sendRequest(array $data): ResponseInterface
     {
@@ -44,7 +44,8 @@ abstract class BaseTransaction
                 'form_params' => $data,
             ]);
         } catch (GuzzleException $exception) {
-            throw new BadResponseException($exception->getMessage(), $exception->getCode(), $exception);
+            // TODO: Handle client and connection errors separately
+            throw new CommunicationError($exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 }

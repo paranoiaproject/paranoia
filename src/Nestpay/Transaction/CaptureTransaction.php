@@ -37,6 +37,7 @@ class CaptureTransaction extends BaseTransaction
      * @return CaptureResponse
      * @throws BadResponseException
      * @throws UnapprovedTransactionException
+     * @throws \Paranoia\Core\Exception\CommunicationError
      */
     public function perform(CaptureRequest $request): CaptureResponse
     {

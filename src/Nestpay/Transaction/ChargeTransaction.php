@@ -4,6 +4,7 @@ namespace Paranoia\Nestpay\Transaction;
 use GuzzleHttp\Client;
 use Paranoia\Configuration\NestpayConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Exception\CommunicationError;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Request\ChargeRequest;
 use Paranoia\Core\Response\ChargeResponse;
@@ -40,6 +41,7 @@ class ChargeTransaction extends BaseTransaction
      * @return ChargeResponse
      * @throws BadResponseException
      * @throws UnapprovedTransactionException
+     * @throws CommunicationError
      */
     public function perform(ChargeRequest $request): ChargeResponse
     {
