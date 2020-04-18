@@ -210,7 +210,7 @@ class TransactionTest extends TestCase
         string $requestBuilderType,
         string $responseParserType,
         string $transactionType
-    ) {
+    ): void {
         $configuration = $this->getConfiguration();
 
         $requestStub = $this->createStub($requestType);
@@ -258,7 +258,7 @@ class TransactionTest extends TestCase
         string $responseParserType,
         string $parserErrorType,
         string $transactionType
-    ) {
+    ): void {
         $this->expectException($parserErrorType);
 
         $configuration = $this->getConfiguration();
@@ -306,7 +306,7 @@ class TransactionTest extends TestCase
         string $responseParserType,
         string $httpClientErrorType,
         string $transactionType
-    ) {
+    ): void {
         $this->expectException($httpClientErrorType);
 
         $configuration = $this->getConfiguration();
