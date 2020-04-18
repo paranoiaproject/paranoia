@@ -1,8 +1,8 @@
 <?php
 namespace Paranoia\Nestpay\ResponseParser;
 
-use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Response\AuthorizationResponse;
 use Paranoia\Core\ResponseParser\AuthorizationResponseParser as CoreAuthorizationResponseParserAlias;

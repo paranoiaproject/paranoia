@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<CC5Request>
-    <Mode>TEST</Mode>
-    <ClientId>123456</ClientId>
-    <Name>TEST</Name>
-    <Password>TEST</Password>
-    <Type>Credit</Type>
-    <OrderId>123456</OrderId>
-</CC5Request>

@@ -22,7 +22,7 @@ class ChargeRequestBuilderTest extends TestCase
         return [
             [null, __DIR__ . '/../../../stub/nestpay/request/charge_without_installment.xml'],
             [1, __DIR__ . '/../../../stub/nestpay/request/charge_without_installment.xml'],
-            [8, __DIR__ . '/../../../stub/nestpay/request/charge_with_greater_than_one_installment.xml'],
+            [8, __DIR__ . '/../../../stub/nestpay/request/charge_with_installment.xml'],
         ];
     }
 

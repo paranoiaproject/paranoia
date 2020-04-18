@@ -14,9 +14,6 @@ use Paranoia\Nestpay\ResponseParser\ChargeResponseParser;
 
 class ChargeTransaction extends BaseTransaction implements CoreChargeTransactionAlias
 {
-    /** @var NestpayConfiguration */
-    protected $configuration;
-
     /** @var ChargeRequestBuilder */
     private $requestBuilder;
 

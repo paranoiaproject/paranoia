@@ -14,9 +14,6 @@ use Paranoia\Nestpay\ResponseParser\CancelResponseParser;
 
 class CancelTransaction extends BaseTransaction implements CoreCancelTransactionAlias
 {
-    /** @var NestpayConfiguration */
-    protected $configuration;
-
     /** @var CancelRequestBuilder */
     private $requestBuilder;
 

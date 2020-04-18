@@ -14,10 +14,8 @@ class CaptureRequestBuilderTest extends TestCase
     public function dataProvider(): array
     {
         return [
-            [null, null, __DIR__ . '/../../../stub/nestpay/request/capture_without_amount.xml'],
+            // TODO: I've ignored partial capture for know since Garanti does not support. I'm not sure. Will check it
             [100.5, Currency::CODE_TRY, __DIR__ . '/../../../stub/nestpay/request/capture_with_amount.xml'],
-            [null, Currency::CODE_TRY, __DIR__ . '/../../../stub/nestpay/request/capture_without_amount.xml'],
-            [100.5, null, __DIR__ . '/../../../stub/nestpay/request/capture_without_amount.xml'],
         ];
     }
 

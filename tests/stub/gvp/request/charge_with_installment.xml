@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GVPSRequest>
+  <Version>v0.01</Version>
+  <Mode>TEST</Mode>
+  <Terminal>
+    <ProvUserID>PROVAUT</ProvUserID>
+    <HashData>24341ADD9E209B00F00BB2A7126B5DB9311B94A0</HashData>
+    <UserID>PROVAUT</UserID>
+    <ID>654321</ID>
+    <MerchantID>123456</MerchantID>
+  </Terminal>
+  <Order>
+    <OrderID>0000000001</OrderID>
+    <GroupID></GroupID>
+    <Description></Description>
+  </Order>
+  <Customer>
+    <IPAddress>127.0.0.1</IPAddress>
+    <EmailAddress>dummy@dummy.net</EmailAddress>
+  </Customer>
+  <Transaction>
+    <Type>sales</Type>
+    <Amount>10050</Amount>
+    <CurrencyCode>949</CurrencyCode>
+    <CardholderPresentCode>0</CardholderPresentCode>
+    <MotoInd>N</MotoInd>
+    <OriginalRetrefNum></OriginalRetrefNum>
+    <InstallmentCnt>8</InstallmentCnt>
+  </Transaction>
+  <Card>
+    <Number>5105105105105100</Number>
+    <ExpireDate>0525</ExpireDate>
+    <CVV2>000</CVV2>
+  </Card>
+</GVPSRequest>

@@ -45,17 +45,9 @@ class CaptureRequestBuilder implements CoreCaptureRequestBuilderAlias
             'ClientId' => $this->configuration->getClientId(),
             'Type' => self::TRANSACTION_TYPE,
             'OrderId' => $request->getOrderId(),
+            'Total' => $this->amountFormatter->format($request->getAmount()),
+            'Currency' => $this->currencyFormatter->format($request->getCurrency()),
         ];
-
-        if ($request->getAmount() && $request->getCurrency()) {
-            $formattedAmount = $this->amountFormatter->format($request->getAmount());
-            $formattedCurrency = $this->currencyFormatter->format($request->getCurrency());
-
-            $data = array_merge($data, [
-                'Total' => $formattedAmount,
-                'Currency' => $formattedCurrency,
-            ]);
-        }
 
         $serializer = new Serializer(Serializer::XML);
         $xml =  $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);

@@ -10,6 +10,10 @@ class IsoNumericCurrencyCodeFormatter
     const CODE_USD = 840;
     const CODE_EUR = 978;
 
+    /**
+     * @param string $input
+     * @return string
+     */
     public function format(string $input): string
     {
         switch ($input) {

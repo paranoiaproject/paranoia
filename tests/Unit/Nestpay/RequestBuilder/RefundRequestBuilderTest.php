@@ -15,10 +15,13 @@ class RefundRequestBuilderTest extends TestCase
     public function dataProvider(): array
     {
         return [
-            [null, null, __DIR__ . '/../../../stub/nestpay/request/refund_without_amount.xml'],
+            // TODO: I've been disabled full refund (without amount)
+            // since I'm not sure if other providers work without amount
+
+//            [null, null, __DIR__ . '/../../../stub/nestpay/request/refund_without_amount.xml'],
             [100.5, Currency::CODE_TRY, __DIR__ . '/../../../stub/nestpay/request/refund_with_amount.xml'],
-            [null, Currency::CODE_TRY, __DIR__ . '/../../../stub/nestpay/request/refund_without_amount.xml'],
-            [100.5, null, __DIR__ . '/../../../stub/nestpay/request/refund_without_amount.xml'],
+//            [null, Currency::CODE_TRY, __DIR__ . '/../../../stub/nestpay/request/refund_without_amount.xml'],
+//            [100.5, null, __DIR__ . '/../../../stub/nestpay/request/refund_without_amount.xml'],
         ];
     }
 

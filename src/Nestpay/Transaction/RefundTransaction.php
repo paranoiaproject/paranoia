@@ -14,9 +14,6 @@ use Paranoia\Nestpay\ResponseParser\RefundResponseParser;
 
 class RefundTransaction extends BaseTransaction implements CoreRefundTransactionAlias
 {
-    /** @var NestpayConfiguration */
-    protected $configuration;
-
     /** @var RefundRequestBuilder */
     private $requestBuilder;
 

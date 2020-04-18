@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GVPSRequest>
+  <Version>v0.01</Version>
+  <Mode>TEST</Mode>
+  <Terminal>
+    <ProvUserID>PROVRFN</ProvUserID>
+    <HashData>257B1BFFD88FAF40DC95D976B0CF09A5200E81EC</HashData>
+    <UserID>PROVRFN</UserID>
+    <ID>654321</ID>
+    <MerchantID>123456</MerchantID>
+  </Terminal>
+  <Order>
+    <OrderID>0000000001</OrderID>
+    <GroupID></GroupID>
+    <Description></Description>
+  </Order>
+  <Customer>
+    <IPAddress>127.0.0.1</IPAddress>
+    <EmailAddress>dummy@dummy.net</EmailAddress>
+  </Customer>
+  <Transaction>
+    <Type>void</Type>
+    <Amount>0</Amount>
+    <CurrencyCode></CurrencyCode>
+    <CardholderPresentCode>0</CardholderPresentCode>
+    <MotoInd>N</MotoInd>
+    <OriginalRetrefNum>0000000002</OriginalRetrefNum>
+  </Transaction>
+</GVPSRequest>

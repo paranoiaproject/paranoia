@@ -1,11 +1,10 @@
 <?php
 namespace Paranoia\Nestpay\ResponseParser;
 
-use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Response\CancelResponse;
-use Paranoia\Core\Response\ChargeResponse;
 use Paranoia\Core\ResponseParser\CancelResponseParser as CoreCancelResponseParserAlias;
 use Paranoia\Core\Transformer\XmlTransformer;
 use Psr\Http\Message\ResponseInterface;

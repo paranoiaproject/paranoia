@@ -2,11 +2,11 @@
 namespace Paranoia\Unit\Nestpay\RequestBuilder;
 
 use Paranoia\Configuration\NestpayConfiguration;
+use Paranoia\Core\Currency;
 use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
 use Paranoia\Core\Request\AuthorizationRequest;
-use Paranoia\Core\Currency;
 use Paranoia\Nestpay\Formatter\ExpireDateFormatter;
 use Paranoia\Nestpay\RequestBuilder\AuthorizationRequestBuilder;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +21,7 @@ class AuthorizationRequestBuilderTest extends TestCase
         return [
             [null, __DIR__ . '/../../../stub/nestpay/request/authorization_without_installment.xml'],
             [1, __DIR__ . '/../../../stub/nestpay/request/authorization_without_installment.xml'],
-            [8, __DIR__ . '/../../../stub/nestpay/request/authorization_with_greater_than_one_installment.xml'],
+            [8, __DIR__ . '/../../../stub/nestpay/request/authorization_with_installment.xml'],
         ];
     }
 
