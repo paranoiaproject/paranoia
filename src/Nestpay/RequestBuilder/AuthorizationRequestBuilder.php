@@ -6,10 +6,11 @@ use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
 use Paranoia\Core\Request\AuthorizationRequest;
+use Paranoia\Core\RequestBuilder\AuthorizationRequestBuilder as CoreAuthorizationRequestBuilderAlias;
 use Paranoia\Core\Serializer\Serializer;
 use Paranoia\Nestpay\Formatter\ExpireDateFormatter;
 
-class AuthorizationRequestBuilder
+class AuthorizationRequestBuilder implements CoreAuthorizationRequestBuilderAlias
 {
     const TRANSACTION_TYPE = 'PreAuth';
     const ENVELOPE_NAME = 'CC5Request';

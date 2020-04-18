@@ -6,10 +6,11 @@ use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
 use Paranoia\Core\Request\ChargeRequest;
+use Paranoia\Core\RequestBuilder\ChargeRequestBuilder as CoreChargeRequestBuilderAlias;
 use Paranoia\Core\Serializer\Serializer;
 use Paranoia\Nestpay\Formatter\ExpireDateFormatter;
 
-class ChargeRequestBuilder
+class ChargeRequestBuilder implements CoreChargeRequestBuilderAlias
 {
     const TRANSACTION_TYPE = 'Auth';
     const ENVELOPE_NAME = 'CC5Request';

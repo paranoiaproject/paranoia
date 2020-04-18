@@ -8,10 +8,11 @@ use Paranoia\Core\Exception\CommunicationError;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Request\RefundRequest;
 use Paranoia\Core\Response\RefundResponse;
+use Paranoia\Core\Transaction\RefundTransaction as CoreRefundTransactionAlias;
 use Paranoia\Nestpay\RequestBuilder\RefundRequestBuilder;
 use Paranoia\Nestpay\ResponseParser\RefundResponseParser;
 
-class RefundTransaction extends BaseTransaction
+class RefundTransaction extends BaseTransaction implements CoreRefundTransactionAlias
 {
     /** @var NestpayConfiguration */
     protected $configuration;
@@ -29,8 +30,12 @@ class RefundTransaction extends BaseTransaction
      * @param RefundRequestBuilder $requestBuilder
      * @param RefundResponseParser $responseParser
      */
-    public function __construct(NestpayConfiguration $configuration, Client $client, RefundRequestBuilder $requestBuilder, RefundResponseParser $responseParser)
-    {
+    public function __construct(
+        NestpayConfiguration $configuration,
+        Client $client,
+        RefundRequestBuilder $requestBuilder,
+        RefundResponseParser $responseParser
+    ) {
         parent::__construct($configuration, $client);
         $this->requestBuilder = $requestBuilder;
         $this->responseParser = $responseParser;

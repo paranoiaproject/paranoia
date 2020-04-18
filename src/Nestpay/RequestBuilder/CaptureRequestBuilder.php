@@ -5,9 +5,10 @@ use Paranoia\Configuration\NestpayConfiguration;
 use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Request\CaptureRequest;
+use Paranoia\Core\RequestBuilder\CaptureRequestBuilder as CoreCaptureRequestBuilderAlias;
 use Paranoia\Core\Serializer\Serializer;
 
-class CaptureRequestBuilder
+class CaptureRequestBuilder implements CoreCaptureRequestBuilderAlias
 {
     const TRANSACTION_TYPE = 'PostAuth';
     const ENVELOPE_NAME = 'CC5Request';

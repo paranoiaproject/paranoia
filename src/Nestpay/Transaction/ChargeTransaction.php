@@ -8,10 +8,11 @@ use Paranoia\Core\Exception\CommunicationError;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Request\ChargeRequest;
 use Paranoia\Core\Response\ChargeResponse;
+use Paranoia\Core\Transaction\ChargeTransaction as CoreChargeTransactionAlias;
 use Paranoia\Nestpay\RequestBuilder\ChargeRequestBuilder;
 use Paranoia\Nestpay\ResponseParser\ChargeResponseParser;
 
-class ChargeTransaction extends BaseTransaction
+class ChargeTransaction extends BaseTransaction implements CoreChargeTransactionAlias
 {
     /** @var NestpayConfiguration */
     protected $configuration;
@@ -29,8 +30,12 @@ class ChargeTransaction extends BaseTransaction
      * @param ChargeRequestBuilder $requestBuilder
      * @param ChargeResponseParser $responseParser
      */
-    public function __construct(NestpayConfiguration $configuration, Client $client, ChargeRequestBuilder $requestBuilder, ChargeResponseParser $responseParser)
-    {
+    public function __construct(
+        NestpayConfiguration $configuration,
+        Client $client,
+        ChargeRequestBuilder $requestBuilder,
+        ChargeResponseParser $responseParser
+    ) {
         parent::__construct($configuration, $client);
         $this->requestBuilder = $requestBuilder;
         $this->responseParser = $responseParser;

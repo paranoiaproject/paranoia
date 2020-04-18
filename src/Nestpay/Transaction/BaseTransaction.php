@@ -4,7 +4,6 @@ namespace Paranoia\Nestpay\Transaction;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Paranoia\Configuration\NestpayConfiguration;
-use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Exception\CommunicationError;
 use Psr\Http\Message\ResponseInterface;
 

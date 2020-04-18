@@ -8,10 +8,11 @@ use Paranoia\Core\Exception\CommunicationError;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Request\CancelRequest;
 use Paranoia\Core\Response\CancelResponse;
+use Paranoia\Core\Transaction\CancelTransaction as CoreCancelTransactionAlias;
 use Paranoia\Nestpay\RequestBuilder\CancelRequestBuilder;
 use Paranoia\Nestpay\ResponseParser\CancelResponseParser;
 
-class CancelTransaction extends BaseTransaction
+class CancelTransaction extends BaseTransaction implements CoreCancelTransactionAlias
 {
     /** @var NestpayConfiguration */
     protected $configuration;
@@ -25,11 +26,16 @@ class CancelTransaction extends BaseTransaction
     /**
      * CancelTransaction constructor.
      * @param NestpayConfiguration $configuration
+     * @param Client $client
      * @param CancelRequestBuilder $requestBuilder
      * @param CancelResponseParser $responseParser
      */
-    public function __construct(NestpayConfiguration $configuration, Client $client, CancelRequestBuilder $requestBuilder, CancelResponseParser $responseParser)
-    {
+    public function __construct(
+        NestpayConfiguration $configuration,
+        Client $client,
+        CancelRequestBuilder $requestBuilder,
+        CancelResponseParser $responseParser
+    ) {
         parent::__construct($configuration, $client);
         $this->requestBuilder = $requestBuilder;
         $this->responseParser = $responseParser;

@@ -5,10 +5,11 @@ use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Response\RefundResponse;
+use Paranoia\Core\ResponseParser\RefundResponseParser as CoreRefundResponseParserAlias;
 use Paranoia\Core\Transformer\XmlTransformer;
 use Psr\Http\Message\ResponseInterface;
 
-class RefundResponseParser
+class RefundResponseParser implements CoreRefundResponseParserAlias
 {
     /** @var XmlTransformer */
     private $transformer;
@@ -22,6 +23,12 @@ class RefundResponseParser
         $this->transformer = $transformer;
     }
 
+    /**
+     * @param ResponseInterface $response
+     * @return RefundResponse
+     * @throws BadResponseException
+     * @throws UnapprovedTransactionException
+     */
     public function parse(ResponseInterface $response): RefundResponse
     {
         try {

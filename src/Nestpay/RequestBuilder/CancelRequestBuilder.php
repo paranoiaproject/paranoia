@@ -3,9 +3,10 @@ namespace Paranoia\Nestpay\RequestBuilder;
 
 use Paranoia\Configuration\NestpayConfiguration;
 use Paranoia\Core\Request\CancelRequest;
+use Paranoia\Core\RequestBuilder\CancelRequestBuilder as CoreCancelRequestBuilderAlias;
 use Paranoia\Core\Serializer\Serializer;
 
-class CancelRequestBuilder
+class CancelRequestBuilder implements CoreCancelRequestBuilderAlias
 {
     const TRANSACTION_TYPE = 'Void';
     const ENVELOPE_NAME = 'CC5Request';

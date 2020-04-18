@@ -7,10 +7,11 @@ use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Request\CaptureRequest;
 use Paranoia\Core\Response\CaptureResponse;
+use Paranoia\Core\Transaction\CaptureTransaction as CoreCaptureTransactionAlias;
 use Paranoia\Nestpay\RequestBuilder\CaptureRequestBuilder;
 use Paranoia\Nestpay\ResponseParser\CaptureResponseParser;
 
-class CaptureTransaction extends BaseTransaction
+class CaptureTransaction extends BaseTransaction implements CoreCaptureTransactionAlias
 {
     /** @var CaptureRequestBuilder */
     private $requestBuilder;
@@ -25,8 +26,12 @@ class CaptureTransaction extends BaseTransaction
      * @param CaptureRequestBuilder $requestBuilder
      * @param CaptureResponseParser $responseParser
      */
-    public function __construct(NestpayConfiguration $configuration, Client $client, CaptureRequestBuilder $requestBuilder, CaptureResponseParser $responseParser)
-    {
+    public function __construct(
+        NestpayConfiguration $configuration,
+        Client $client,
+        CaptureRequestBuilder $requestBuilder,
+        CaptureResponseParser $responseParser
+    ) {
         parent::__construct($configuration, $client);
         $this->requestBuilder = $requestBuilder;
         $this->responseParser = $responseParser;

@@ -5,10 +5,11 @@ use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Exception\UnapprovedTransactionException;
 use Paranoia\Core\Response\CaptureResponse;
+use Paranoia\Core\ResponseParser\CaptureResponseParser as CoreCaptureResponseParserAlias;
 use Paranoia\Core\Transformer\XmlTransformer;
 use Psr\Http\Message\ResponseInterface;
 
-class CaptureResponseParser
+class CaptureResponseParser implements CoreCaptureResponseParserAlias
 {
     /** @var XmlTransformer */
     private $transformer;

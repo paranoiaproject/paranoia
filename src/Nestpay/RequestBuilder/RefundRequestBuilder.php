@@ -5,9 +5,10 @@ use Paranoia\Configuration\NestpayConfiguration;
 use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Request\RefundRequest;
+use Paranoia\Core\RequestBuilder\RefundRequestBuilder as CoreRefundRequestBuilderAlias;
 use Paranoia\Core\Serializer\Serializer;
 
-class RefundRequestBuilder
+class RefundRequestBuilder implements CoreRefundRequestBuilderAlias
 {
     const TRANSACTION_TYPE = 'Credit';
     const ENVELOPE_NAME = 'CC5Request';
