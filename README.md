@@ -7,6 +7,8 @@
 
 Paranoia is a universal payment client library that helps you to perform card payment operations in an easy way with one single interface. 
 
+
+
 ## How To Use
 
 Prepare the provider specific configuration (In example we choosed **Nestpay** but you can pay with **Garanti** and **Posnet** APIs as well)
@@ -50,4 +52,4 @@ try {
 }
 ```
 
-You can checkout the full documentation for the other supported transactions and supported providers.
+You can checkout the full [documentation](/) for the other supported transactions and supported providers.
