@@ -14,6 +14,7 @@ class ChargeRequestBuilder implements CoreChargeRequestBuilderAlias
 {
     const TRANSACTION_TYPE = 'Auth';
     const ENVELOPE_NAME = 'CC5Request';
+    const FORM_FIELD = 'DATA';
 
     /** @var NestpayConfiguration */
     protected $configuration;
@@ -72,6 +73,6 @@ class ChargeRequestBuilder implements CoreChargeRequestBuilderAlias
 
         $serializer = new Serializer(Serializer::XML);
         $xml =  $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);
-        return ['DATA' => $xml];
+        return [self::FORM_FIELD => $xml];
     }
 }

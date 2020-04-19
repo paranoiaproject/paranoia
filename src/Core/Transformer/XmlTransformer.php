@@ -6,6 +6,11 @@ use SimpleXMLElement;
 
 class XmlTransformer
 {
+    /**
+     * @param string|null $xml
+     * @return SimpleXMLElement
+     * @throws InvalidArgumentException
+     */
     public function transform(?string $xml): SimpleXMLElement
     {
         try {

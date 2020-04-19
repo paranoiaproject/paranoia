@@ -11,6 +11,7 @@ class CancelRequestBuilder extends BaseRequestBuilder implements CoreCancelReque
     const ENVELOPE_NAME = 'GVPSRequest';
     const API_VERSION = 'v0.01';
     const CARD_HOLDER_PRESENT_CODE_NON_3D = 0;
+    const FORM_FIELD = 'data';
 
     /**
      * @param CancelRequest $request
@@ -38,7 +39,7 @@ class CancelRequestBuilder extends BaseRequestBuilder implements CoreCancelReque
 
         $serializer = new Serializer(Serializer::XML);
         $xml =  $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);
-        return ['data' => $xml];
+        return [self::FORM_FIELD => $xml];
     }
 
     /**

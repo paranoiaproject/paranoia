@@ -11,7 +11,7 @@ class UnapprovedTransactionException extends Exception
     /** @var string */
     private $errorCode;
 
-    public function __construct(string $message, string $errorCode, string $details)
+    public function __construct(string $message, string $errorCode, ?string $details=null)
     {
         parent::__construct($message);
         $this->details = $details;
@@ -29,7 +29,7 @@ class UnapprovedTransactionException extends Exception
     /**
      * @return string
      */
-    public function getDetails(): string
+    public function getDetails(): ?string
     {
         return $this->details;
     }

@@ -82,7 +82,7 @@ class RefundRequestBuilderTest extends TestCase
     public function getRequest(?float $amount, ?string $currency): RefundRequest
     {
         $request = new RefundRequest();
-        $request->setOrderId('0000000001');
+        $request->setTransactionRef('0000000001');
         $request->setAmount($amount);
         $request->setCurrency($currency);
         return $request;

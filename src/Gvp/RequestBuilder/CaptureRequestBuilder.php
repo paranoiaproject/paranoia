@@ -14,6 +14,7 @@ class CaptureRequestBuilder extends BaseRequestBuilder implements CoreCaptureReq
     const ENVELOPE_NAME = 'GVPSRequest';
     const API_VERSION = 'v0.01';
     const CARD_HOLDER_PRESENT_CODE_NON_3D = 0;
+    const FORM_FIELD = 'data';
 
     /** @var MoneyFormatter */
     protected $amountFormatter;
@@ -45,7 +46,7 @@ class CaptureRequestBuilder extends BaseRequestBuilder implements CoreCaptureReq
     {
         $hash = $this->buildHash(
             [
-                $request->getOrderId(),
+                $request->getTransactionRef(),
                 $this->configuration->getTerminalId(),
                 $this->amountFormatter->format($request->getAmount()),
             ],
@@ -56,7 +57,7 @@ class CaptureRequestBuilder extends BaseRequestBuilder implements CoreCaptureReq
             'Version' => self::API_VERSION,
             'Mode' => $this->configuration->getMode(),
             'Terminal' => $this->buildTerminal($this->configuration->getAuthorizationUsername(), $hash),
-            'Order' => $this->buildOrder($request->getOrderId()),
+            'Order' => $this->buildOrder($request->getTransactionRef()),
             'Customer' => $this->buildCustomer(),
             'Transaction' => $this->buildTransaction(
                 $request->getAmount(),
@@ -66,7 +67,7 @@ class CaptureRequestBuilder extends BaseRequestBuilder implements CoreCaptureReq
 
         $serializer = new Serializer(Serializer::XML);
         $xml =  $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);
-        return ['data' => $xml];
+        return [self::FORM_FIELD => $xml];
     }
 
     /**

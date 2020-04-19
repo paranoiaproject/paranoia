@@ -12,6 +12,7 @@ class RefundRequestBuilder implements CoreRefundRequestBuilderAlias
 {
     const TRANSACTION_TYPE = 'Credit';
     const ENVELOPE_NAME = 'CC5Request';
+    const FORM_FIELD = 'DATA';
 
     /** @var NestpayConfiguration */
     protected $configuration;
@@ -44,7 +45,7 @@ class RefundRequestBuilder implements CoreRefundRequestBuilderAlias
             'Name' => $this->configuration->getUsername(),
             'ClientId' => $this->configuration->getClientId(),
             'Type' => self::TRANSACTION_TYPE,
-            'OrderId' => $request->getOrderId(),
+            'OrderId' => $request->getTransactionRef(),
         ];
 
         if ($request->getAmount() && $request->getCurrency()) {
@@ -59,6 +60,6 @@ class RefundRequestBuilder implements CoreRefundRequestBuilderAlias
 
         $serializer = new Serializer(Serializer::XML);
         $xml =  $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);
-        return ['DATA' => $xml];
+        return [self::FORM_FIELD => $xml];
     }
 }

@@ -7,6 +7,7 @@ use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
 use Paranoia\Core\ProviderContext;
+use Paranoia\Core\ProviderContextFactory;
 use Paranoia\Core\Transformer\XmlTransformer;
 use Paranoia\Nestpay\Formatter\ExpireDateFormatter;
 use Paranoia\Nestpay\RequestBuilder\AuthorizationRequestBuilder;
@@ -25,7 +26,7 @@ use Paranoia\Nestpay\Transaction\CaptureTransaction;
 use Paranoia\Nestpay\Transaction\ChargeTransaction;
 use Paranoia\Nestpay\Transaction\RefundTransaction;
 
-class NestpayContextFactory
+class NestpayContextFactory implements ProviderContextFactory
 {
     /** @var NestpayConfiguration */
     private $configuration;
@@ -40,7 +41,7 @@ class NestpayContextFactory
     }
 
     /**
-     * @return ProviderContext
+     * @inheritDoc
      */
     public function createContext(): ProviderContext
     {

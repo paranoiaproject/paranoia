@@ -80,7 +80,7 @@ class CaptureRequestBuilderTest extends TestCase
     public function getRequest(?float $amount, ?string $currency): CaptureRequest
     {
         $request = new CaptureRequest();
-        $request->setOrderId('0000000001');
+        $request->setTransactionRef('0000000001');
         $request->setAmount($amount);
         $request->setCurrency($currency);
         return $request;

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<posnetRequest>
+  <mid>3000040005</mid>
+  <tid>1000000002</tid>
+  <username>POSNETUSER</username>
+  <password>POSNETPASS</password>
+  <capt>
+    <amount>10050</amount>
+    <currencyCode>YT</currencyCode>
+    <hostLogKey>0000000001</hostLogKey>
+  </capt>
+</posnetRequest>

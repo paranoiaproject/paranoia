@@ -1,41 +1,42 @@
 <?php
-namespace Paranoia\Gvp;
+namespace Paranoia\Posnet;
 
 use GuzzleHttp\Client;
-use Paranoia\Configuration\GvpConfiguration;
-use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
+use Paranoia\Configuration\PosnetConfiguration;
 use Paranoia\Core\Formatter\MoneyFormatter;
-use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
+use Paranoia\Core\Formatter\MultiDigitInstallmentFormatter;
 use Paranoia\Core\ProviderContext;
 use Paranoia\Core\ProviderContextFactory;
 use Paranoia\Core\Transformer\XmlTransformer;
-use Paranoia\Gvp\Formatter\ExpireDateFormatter;
-use Paranoia\Gvp\RequestBuilder\AuthorizationRequestBuilder;
-use Paranoia\Gvp\RequestBuilder\CancelRequestBuilder;
-use Paranoia\Gvp\RequestBuilder\CaptureRequestBuilder;
-use Paranoia\Gvp\RequestBuilder\ChargeRequestBuilder;
-use Paranoia\Gvp\RequestBuilder\RefundRequestBuilder;
-use Paranoia\Gvp\ResponseParser\AuthorizationResponseParser;
-use Paranoia\Gvp\ResponseParser\CancelResponseParser;
-use Paranoia\Gvp\ResponseParser\CaptureResponseParser;
-use Paranoia\Gvp\ResponseParser\ChargeResponseParser;
-use Paranoia\Gvp\ResponseParser\RefundResponseParser;
-use Paranoia\Gvp\Transaction\AuthorizationTransaction;
-use Paranoia\Gvp\Transaction\CancelTransaction;
-use Paranoia\Gvp\Transaction\CaptureTransaction;
-use Paranoia\Gvp\Transaction\ChargeTransaction;
-use Paranoia\Gvp\Transaction\RefundTransaction;
+use Paranoia\Posnet\Formatter\CustomCurrencyCodeFormatter;
+use Paranoia\Posnet\Formatter\ExpireDateFormatter;
+use Paranoia\Posnet\Formatter\OrderIdFormatter;
+use Paranoia\Posnet\RequestBuilder\AuthorizationRequestBuilder;
+use Paranoia\Posnet\RequestBuilder\CancelRequestBuilder;
+use Paranoia\Posnet\RequestBuilder\CaptureRequestBuilder;
+use Paranoia\Posnet\RequestBuilder\ChargeRequestBuilder;
+use Paranoia\Posnet\RequestBuilder\RefundRequestBuilder;
+use Paranoia\Posnet\ResponseParser\AuthorizationResponseParser;
+use Paranoia\Posnet\ResponseParser\CancelResponseParser;
+use Paranoia\Posnet\ResponseParser\CaptureResponseParser;
+use Paranoia\Posnet\ResponseParser\ChargeResponseParser;
+use Paranoia\Posnet\ResponseParser\RefundResponseParser;
+use Paranoia\Posnet\Transaction\AuthorizationTransaction;
+use Paranoia\Posnet\Transaction\CancelTransaction;
+use Paranoia\Posnet\Transaction\CaptureTransaction;
+use Paranoia\Posnet\Transaction\ChargeTransaction;
+use Paranoia\Posnet\Transaction\RefundTransaction;
 
-class GvpContextFactory implements ProviderContextFactory
+class PosnetContextFactory implements ProviderContextFactory
 {
-    /** @var GvpConfiguration */
+    /** @var PosnetConfiguration */
     private $configuration;
 
     /**
-     * GvpContextFactory constructor.
-     * @param GvpConfiguration $configuration
+     * PosnetContextFactory constructor.
+     * @param PosnetConfiguration $configuration
      */
-    public function __construct(GvpConfiguration $configuration)
+    public function __construct(PosnetConfiguration $configuration)
     {
         $this->configuration = $configuration;
     }
@@ -67,9 +68,10 @@ class GvpContextFactory implements ProviderContextFactory
         $requestBuilder = new AuthorizationRequestBuilder(
             $this->configuration,
             new MoneyFormatter(),
-            new IsoNumericCurrencyCodeFormatter(),
+            new CustomCurrencyCodeFormatter(),
             new ExpireDateFormatter(),
-            new SingleDigitInstallmentFormatter()
+            new MultiDigitInstallmentFormatter(),
+            new OrderIdFormatter()
         );
 
         $responseParser = new AuthorizationResponseParser($transformer);
@@ -87,7 +89,7 @@ class GvpContextFactory implements ProviderContextFactory
         $requestBuilder = new CaptureRequestBuilder(
             $this->configuration,
             new MoneyFormatter(),
-            new IsoNumericCurrencyCodeFormatter()
+            new CustomCurrencyCodeFormatter()
         );
 
         $responseParser = new CaptureResponseParser($transformer);
@@ -105,9 +107,10 @@ class GvpContextFactory implements ProviderContextFactory
         $requestBuilder = new ChargeRequestBuilder(
             $this->configuration,
             new MoneyFormatter(),
-            new IsoNumericCurrencyCodeFormatter(),
+            new CustomCurrencyCodeFormatter(),
             new ExpireDateFormatter(),
-            new SingleDigitInstallmentFormatter()
+            new MultiDigitInstallmentFormatter(),
+            new OrderIdFormatter()
         );
 
         $responseParser = new ChargeResponseParser($transformer);
@@ -137,7 +140,7 @@ class GvpContextFactory implements ProviderContextFactory
         $requestBuilder = new RefundRequestBuilder(
             $this->configuration,
             new MoneyFormatter(),
-            new IsoNumericCurrencyCodeFormatter()
+            new CustomCurrencyCodeFormatter()
         );
 
         $responseParser = new RefundResponseParser($transformer);

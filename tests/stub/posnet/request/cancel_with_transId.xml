@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<posnetRequest>
+  <mid>3000040005</mid>
+  <tid>1000000002</tid>
+  <username>POSNETUSER</username>
+  <password>POSNETPASS</password>
+  <reverse>
+    <transaction>sale</transaction>
+    <hostLogKey>0000000002</hostLogKey>
+    <authCode>000000</authCode>
+  </reverse>
+</posnetRequest>

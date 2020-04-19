@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<posnetRequest>
+  <mid>3000040005</mid>
+  <tid>1000000002</tid>
+  <username>POSNETUSER</username>
+  <password>POSNETPASS</password>
+  <auth>
+    <amount>10050</amount>
+    <currencyCode>YT</currencyCode>
+    <orderID>000000000000000000000001</orderID>
+    <ccno>5105105105105100</ccno>
+    <cvc>000</cvc>
+    <expDate>2505</expDate>
+  </auth>
+</posnetRequest>

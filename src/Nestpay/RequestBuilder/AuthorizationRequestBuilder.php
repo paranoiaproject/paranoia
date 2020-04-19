@@ -14,6 +14,7 @@ class AuthorizationRequestBuilder implements CoreAuthorizationRequestBuilderAlia
 {
     const TRANSACTION_TYPE = 'PreAuth';
     const ENVELOPE_NAME = 'CC5Request';
+    const FORM_FIELD = 'DATA';
 
     /** @var NestpayConfiguration */
     protected $configuration;
@@ -73,6 +74,6 @@ class AuthorizationRequestBuilder implements CoreAuthorizationRequestBuilderAlia
 
         $serializer = new Serializer(Serializer::XML);
         $xml =  $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);
-        return ['DATA' => $xml];
+        return [self::FORM_FIELD => $xml];
     }
 }

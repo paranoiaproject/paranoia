@@ -16,6 +16,7 @@ class AuthorizationRequestBuilder extends BaseRequestBuilder implements CoreAuth
     const ENVELOPE_NAME = 'GVPSRequest';
     const API_VERSION = 'v0.01';
     const CARD_HOLDER_PRESENT_CODE_NON_3D = 0;
+    const FORM_FIELD = 'data';
 
     /** @var MoneyFormatter */
     protected $amountFormatter;
@@ -88,7 +89,7 @@ class AuthorizationRequestBuilder extends BaseRequestBuilder implements CoreAuth
 
         $serializer = new Serializer(Serializer::XML);
         $xml =  $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);
-        return ['data' => $xml];
+        return [self::FORM_FIELD => $xml];
     }
 
     /**

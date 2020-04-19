@@ -12,6 +12,7 @@ class CaptureRequestBuilder implements CoreCaptureRequestBuilderAlias
 {
     const TRANSACTION_TYPE = 'PostAuth';
     const ENVELOPE_NAME = 'CC5Request';
+    const FORM_FIELD = 'DATA';
 
     /** @var NestpayConfiguration */
     protected $configuration;
@@ -44,13 +45,13 @@ class CaptureRequestBuilder implements CoreCaptureRequestBuilderAlias
             'Name' => $this->configuration->getUsername(),
             'ClientId' => $this->configuration->getClientId(),
             'Type' => self::TRANSACTION_TYPE,
-            'OrderId' => $request->getOrderId(),
+            'OrderId' => $request->getTransactionRef(),
             'Total' => $this->amountFormatter->format($request->getAmount()),
             'Currency' => $this->currencyFormatter->format($request->getCurrency()),
         ];
 
         $serializer = new Serializer(Serializer::XML);
         $xml =  $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);
-        return ['DATA' => $xml];
+        return [self::FORM_FIELD => $xml];
     }
 }

@@ -4,7 +4,7 @@ namespace Paranoia\Core\Request;
 class CaptureRequest
 {
     /** @var string */
-    private $orderId;
+    private $transactionRef;
 
     /** @var float */
     private $amount;
@@ -15,17 +15,17 @@ class CaptureRequest
     /**
      * @return string
      */
-    public function getOrderId(): string
+    public function getTransactionRef(): string
     {
-        return $this->orderId;
+        return $this->transactionRef;
     }
 
     /**
-     * @param string $orderId
+     * @param string $transactionRef
      */
-    public function setOrderId(string $orderId): void
+    public function setTransactionRef(string $transactionRef): void
     {
-        $this->orderId = $orderId;
+        $this->transactionRef = $transactionRef;
     }
 
     /**
