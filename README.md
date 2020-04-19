@@ -9,7 +9,7 @@ Paranoia is a universal payment client library that helps you to perform card pa
 
 ## How To Use
 
-Prepare the provider specific configuration (In example we choosed **Nestpay**)
+Prepare the provider specific configuration (In example we choosed **Nestpay** but you can pay with **Garanti** and **Posnet** APIs as well)
 
 ```php
 $configuration = new \Paranoia\Configuration\NestpayConfiguration();
