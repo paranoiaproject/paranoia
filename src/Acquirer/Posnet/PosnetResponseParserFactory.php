@@ -5,8 +5,8 @@ use Paranoia\Acquirer\AbstractResponseParser;
 use Paranoia\Acquirer\AbstractResponseParserFactory;
 use Paranoia\Acquirer\Posnet\ResponseParser\CancelResponseParser;
 use Paranoia\Acquirer\Posnet\ResponseParser\ChargeResponseParser;
-use Paranoia\Acquirer\Posnet\ResponseParser\PostAuthorizationResponseParser;
-use Paranoia\Acquirer\Posnet\ResponseParser\PreAuthorizationResponseParser;
+use Paranoia\Acquirer\Posnet\ResponseParser\CaptureResponseParser;
+use Paranoia\Acquirer\Posnet\ResponseParser\AuthorizationResponseParser;
 use Paranoia\Acquirer\Posnet\ResponseParser\RefundResponseParser;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\InvalidArgumentException;
@@ -27,9 +27,9 @@ class PosnetResponseParserFactory extends AbstractResponseParserFactory
             case TransactionType::CANCEL:
                 return new CancelResponseParser($this->configuration);
             case TransactionType::PRE_AUTHORIZATION:
-                return new PreAuthorizationResponseParser($this->configuration);
+                return new AuthorizationResponseParser($this->configuration);
             case TransactionType::POST_AUTHORIZATION:
-                return new PostAuthorizationResponseParser($this->configuration);
+                return new CaptureResponseParser($this->configuration);
             default:
                 throw new InvalidArgumentException('Bad transaction type: ' . $transactionType);
         }

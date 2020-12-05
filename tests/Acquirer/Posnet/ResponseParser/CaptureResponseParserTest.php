@@ -1,47 +1,47 @@
 <?php
-namespace Paranoia\Test\Acquirer\NestPay\ResponseParser;
+namespace Paranoia\Test\Acquirer\Posnet\ResponseParser;
 
-use Paranoia\Acquirer\NestPay\ResponseParser\PostAuthorizationResponseParser;
+use Paranoia\Acquirer\Posnet\ResponseParser\CaptureResponseParser;
 use Paranoia\Core\AbstractConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Model\Response;
 use PHPUnit\Framework\TestCase;
 
-class PostAuthorizationResponseProcessorTest extends TestCase
+class CaptureResponseParserTest extends TestCase
 {
     public function test_success_response()
     {
         $rawResponse = file_get_contents(
-            __DIR__ . '/../../../samples/response/nestpay/post_authorization_successful.xml'
+            __DIR__ . '/../../../samples/response/posnet/post_authorization_successful.xml'
         );
 
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new PostAuthorizationResponseParser($configuration);
+        $processor = new CaptureResponseParser($configuration);
         $response = $processor->process($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(true, $response->isSuccess());
-        $this->assertEquals('15335I94G07024820', $response->getTransactionId());
-        $this->assertEquals('PB6356', $response->getAuthCode());
-        $this->assertEquals('133577162970961', $response->getOrderId());
+        $this->assertEquals('0001000004P0503281', $response->getTransactionId());
+        $this->assertEquals('007912', $response->getAuthCode());
+        $this->assertEquals(null, $response->getOrderId()); // Posnet does not provide orderId
     }
 
     public function test_failed_response()
     {
         $rawResponse = file_get_contents(
-            __DIR__ . '/../../../samples/response/nestpay/post_authorization_failed.xml'
+            __DIR__ . '/../../../samples/response/posnet/post_authorization_failed.xml'
         );
 
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new PostAuthorizationResponseParser($configuration);
+        $processor = new CaptureResponseParser($configuration);
         $response = $processor->process($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(false, $response->isSuccess());
         $this->assertEquals(null, $response->getTransactionId());
         $this->assertEquals(null, $response->getOrderId());
-        $this->assertEquals('05', $response->getResponseCode());
-        $this->assertEquals('Error Message: Genel red  Host Message: [RC 05] Red Onaylanmadı - Do Not Honour', $response->getResponseMessage());
+        $this->assertEquals('0225', $response->getResponseCode());
+        $this->assertEquals('ONAYLANMADI:0225 ISL. YAPILAMIY 0225 ', $response->getResponseMessage());
     }
 
     /**
@@ -52,7 +52,7 @@ class PostAuthorizationResponseProcessorTest extends TestCase
     {
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new PostAuthorizationResponseParser($configuration);
+        $processor = new CaptureResponseParser($configuration);
 
         $this->expectException(BadResponseException::class);
         $processor->process($rawResponse);

@@ -3,14 +3,14 @@ namespace Paranoia\Test\Acquirer\NestPay\RequestBuilder;
 
 use Paranoia\Acquirer\NestPay\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\NestPay\NestPayConfiguration as NestPayConfiguration;
-use Paranoia\Acquirer\NestPay\RequestBuilder\PostAuthorizationRequestBuilder;
+use Paranoia\Acquirer\NestPay\RequestBuilder\CaptureRequestBuilder;
 use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
 use Paranoia\Core\Model\Request;
 use PHPUnit\Framework\TestCase;
 
-class PostAuthorizationRequestBuilderTest extends TestCase
+class CaptureRequestBuilderTest extends TestCase
 {
     public function test()
     {
@@ -49,7 +49,7 @@ class PostAuthorizationRequestBuilderTest extends TestCase
 
     protected function setupBuilder()
     {
-        return new PostAuthorizationRequestBuilder(
+        return new CaptureRequestBuilder(
             $this->setupConfiguration(),
             new IsoNumericCurrencyCodeFormatter(),
             new DecimalFormatter(),

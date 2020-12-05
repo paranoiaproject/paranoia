@@ -3,7 +3,7 @@ namespace Paranoia\Test\Acquirer\Gvp\RequestBuilder;
 
 use Paranoia\Acquirer\Gvp\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\Gvp\GvpConfiguration as GvpConfiguration;
-use Paranoia\Acquirer\Gvp\RequestBuilder\PostAuthorizationRequestBuilder;
+use Paranoia\Acquirer\Gvp\RequestBuilder\CaptureRequestBuilder;
 use Paranoia\Core\Constant\Currency;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\MoneyFormatter;
@@ -11,7 +11,7 @@ use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
 use Paranoia\Core\Model\Request;
 use PHPUnit\Framework\TestCase;
 
-class PostAuthorizationRequestBuilderTest extends TestCase
+class CaptureRequestBuilderTest extends TestCase
 {
     public function test()
     {
@@ -52,7 +52,7 @@ class PostAuthorizationRequestBuilderTest extends TestCase
 
     protected function setupBuilder()
     {
-        return new PostAuthorizationRequestBuilder(
+        return new CaptureRequestBuilder(
             $this->setupConfiguration(),
             new IsoNumericCurrencyCodeFormatter(),
             new MoneyFormatter(),

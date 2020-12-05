@@ -1,47 +1,47 @@
 <?php
-namespace Paranoia\Test\Acquirer\Gvp\ResponseParser;
+namespace Paranoia\Test\Acquirer\NestPay\ResponseParser;
 
-use Paranoia\Acquirer\Gvp\ResponseParser\PreAuthorizationResponseParser;
+use Paranoia\Acquirer\NestPay\ResponseParser\AuthorizationResponseParser;
 use Paranoia\Core\AbstractConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Model\Response;
 use PHPUnit\Framework\TestCase;
 
-class PreAuthorizationResponseProcessorTest extends TestCase
+class AuthorizationResponseParserTest extends TestCase
 {
     public function test_success_response()
     {
         $rawResponse = file_get_contents(
-            __DIR__ . '/../../../samples/response/gvp/pre_authorization_successful.xml'
+            __DIR__ . '/../../../samples/response/nestpay/pre_authorization_successful.xml'
         );
 
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new PreAuthorizationResponseParser($configuration);
+        $processor = new AuthorizationResponseParser($configuration);
         $response = $processor->process($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(true, $response->isSuccess());
-        $this->assertEquals('311710676052', $response->getTransactionId());
-        $this->assertEquals('412290', $response->getAuthCode());
-        $this->assertEquals('SISTFA03907C0DB14A38B3BA380722891160', $response->getOrderId());
+        $this->assertEquals('15335I94G07024820', $response->getTransactionId());
+        $this->assertEquals('PB6356', $response->getAuthCode());
+        $this->assertEquals('133577162970961', $response->getOrderId());
     }
 
     public function test_failed_response()
     {
         $rawResponse = file_get_contents(
-            __DIR__ . '/../../../samples/response/gvp/pre_authorization_failed.xml'
+            __DIR__ . '/../../../samples/response/nestpay/pre_authorization_failed.xml'
         );
 
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new PreAuthorizationResponseParser($configuration);
+        $processor = new AuthorizationResponseParser($configuration);
         $response = $processor->process($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(false, $response->isSuccess());
         $this->assertEquals(null, $response->getTransactionId());
         $this->assertEquals(null, $response->getOrderId());
-        $this->assertEquals('54', $response->getResponseCode());
-        $this->assertEquals('Error Message: ›˛leminizi gerÁekle˛tiremiyoruz.Tekrar deneyiniz System Error Message: SON KULLANMA TARIHI HATALI', $response->getResponseMessage());
+        $this->assertEquals('05', $response->getResponseCode());
+        $this->assertEquals('Error Message: Genel red  Host Message: [RC 05] Red Onaylanmadı - Do Not Honour', $response->getResponseMessage());
     }
 
     /**
@@ -52,7 +52,7 @@ class PreAuthorizationResponseProcessorTest extends TestCase
     {
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new PreAuthorizationResponseParser($configuration);
+        $processor = new AuthorizationResponseParser($configuration);
 
         $this->expectException(BadResponseException::class);
         $processor->process($rawResponse);

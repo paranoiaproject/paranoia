@@ -5,8 +5,8 @@ use Paranoia\Acquirer\NestPay\NestPayConfiguration;
 use Paranoia\Acquirer\NestPay\NestPayResponseParserFactory;
 use Paranoia\Acquirer\NestPay\ResponseParser\CancelResponseParser;
 use Paranoia\Acquirer\NestPay\ResponseParser\ChargeResponseParser;
-use Paranoia\Acquirer\NestPay\ResponseParser\PostAuthorizationResponseParser;
-use Paranoia\Acquirer\NestPay\ResponseParser\PreAuthorizationResponseParser;
+use Paranoia\Acquirer\NestPay\ResponseParser\CaptureResponseParser;
+use Paranoia\Acquirer\NestPay\ResponseParser\AuthorizationResponseParser;
 use Paranoia\Acquirer\NestPay\ResponseParser\RefundResponseParser;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\InvalidArgumentException;
@@ -22,8 +22,8 @@ class NestPayProcessorFactoryTest extends TestCase
         $this->assertInstanceOf(ChargeResponseParser::class, $factory->createProcessor(TransactionType::SALE));
         $this->assertInstanceOf(RefundResponseParser::class, $factory->createProcessor(TransactionType::REFUND));
         $this->assertInstanceOf(CancelResponseParser::class, $factory->createProcessor(TransactionType::CANCEL));
-        $this->assertInstanceOf(PreAuthorizationResponseParser::class, $factory->createProcessor(TransactionType::PRE_AUTHORIZATION));
-        $this->assertInstanceOf(PostAuthorizationResponseParser::class, $factory->createProcessor(TransactionType::POST_AUTHORIZATION));
+        $this->assertInstanceOf(AuthorizationResponseParser::class, $factory->createProcessor(TransactionType::PRE_AUTHORIZATION));
+        $this->assertInstanceOf(CaptureResponseParser::class, $factory->createProcessor(TransactionType::POST_AUTHORIZATION));
     }
 
     public function test_invalid_transaction_type()

@@ -1,18 +1,18 @@
 <?php
-namespace Paranoia\Test\Acquirer\Gvp\RequestBuilder;
+namespace Paranoia\Test\Acquirer\NestPay\RequestBuilder;
 
-use Paranoia\Acquirer\Gvp\Formatter\ExpireDateFormatter;
-use Paranoia\Acquirer\Gvp\GvpConfiguration as GvpConfiguration;
-use Paranoia\Acquirer\Gvp\RequestBuilder\PreAuthorizationRequestBuilder;
+use Paranoia\Acquirer\NestPay\Formatter\ExpireDateFormatter;
+use Paranoia\Acquirer\NestPay\NestPayConfiguration as NestPayConfiguration;
+use Paranoia\Acquirer\NestPay\RequestBuilder\AuthorizationRequestBuilder;
 use Paranoia\Core\Constant\Currency;
+use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
-use Paranoia\Core\Formatter\MoneyFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
 use Paranoia\Core\Model\Request;
 use Paranoia\Core\Model\Request\Resource\Card;
 use PHPUnit\Framework\TestCase;
 
-class PreAuthorizationRequestBuilderTest extends TestCase
+class AuthorizationRequestBuilderTest extends TestCase
 {
     public function test_pre_auth()
     {
@@ -21,25 +21,23 @@ class PreAuthorizationRequestBuilderTest extends TestCase
         $request = $this->setupRequest();
         $rawRequest = $builder->build($request);
         $this->assertXmlStringEqualsXmlFile(
-            __DIR__ . '/../../../samples/request/gvp/preauthorization_request.xml',
+            __DIR__ . '/../../../samples/request/nestpay/preauthorization_request.xml',
             $rawRequest
         );
     }
 
     protected function setupConfiguration()
     {
-        $configuration = new GvpConfiguration();
-        $configuration->setTerminalId('123456')
+        $configuration = new NestPayConfiguration();
+        $configuration->setClientId('123456')
             ->setMode('TEST')
-            ->setAuthorizationUsername('PROVAUT')
-            ->setAuthorizationPassword('PROVAUT')
-            ->setRefundUsername('PROVRFN')
-            ->setRefundPassword('PROVRFN');
-
+            ->setUsername('TEST')
+            ->setPassword('TEST');
         return $configuration;
     }
 
     /**
+     * @param bool $setInstallment
      * @return Request
      */
     protected function setupRequest()
@@ -61,10 +59,10 @@ class PreAuthorizationRequestBuilderTest extends TestCase
 
     protected function setupBuilder()
     {
-        return new PreAuthorizationRequestBuilder(
+        return new AuthorizationRequestBuilder(
             $this->setupConfiguration(),
             new IsoNumericCurrencyCodeFormatter(),
-            new MoneyFormatter(),
+            new DecimalFormatter(),
             new SingleDigitInstallmentFormatter(),
             new ExpireDateFormatter()
         );

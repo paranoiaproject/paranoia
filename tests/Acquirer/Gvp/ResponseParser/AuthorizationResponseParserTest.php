@@ -1,40 +1,40 @@
 <?php
 namespace Paranoia\Test\Acquirer\Gvp\ResponseParser;
 
-use Paranoia\Acquirer\Gvp\ResponseParser\ChargeResponseParser;
+use Paranoia\Acquirer\Gvp\ResponseParser\AuthorizationResponseParser;
 use Paranoia\Core\AbstractConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Model\Response;
 use PHPUnit\Framework\TestCase;
 
-class SaleResponseProcessorTest extends TestCase
+class AuthorizationResponseParserTest extends TestCase
 {
     public function test_success_response()
     {
         $rawResponse = file_get_contents(
-            __DIR__ . '/../../../samples/response/gvp/sale_successful.xml'
+            __DIR__ . '/../../../samples/response/gvp/pre_authorization_successful.xml'
         );
 
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new ChargeResponseParser($configuration);
+        $processor = new AuthorizationResponseParser($configuration);
         $response = $processor->process($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(true, $response->isSuccess());
-        $this->assertEquals('311710676028', $response->getTransactionId());
-        $this->assertEquals('245093', $response->getAuthCode());
-        $this->assertEquals('SISTC157B93B81C74BB88C6CA1C15D0CA338', $response->getOrderId());
+        $this->assertEquals('311710676052', $response->getTransactionId());
+        $this->assertEquals('412290', $response->getAuthCode());
+        $this->assertEquals('SISTFA03907C0DB14A38B3BA380722891160', $response->getOrderId());
     }
 
     public function test_failed_response()
     {
         $rawResponse = file_get_contents(
-            __DIR__ . '/../../../samples/response/gvp/sale_failed.xml'
+            __DIR__ . '/../../../samples/response/gvp/pre_authorization_failed.xml'
         );
 
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new ChargeResponseParser($configuration);
+        $processor = new AuthorizationResponseParser($configuration);
         $response = $processor->process($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(false, $response->isSuccess());
@@ -52,7 +52,7 @@ class SaleResponseProcessorTest extends TestCase
     {
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new ChargeResponseParser($configuration);
+        $processor = new AuthorizationResponseParser($configuration);
 
         $this->expectException(BadResponseException::class);
         $processor->process($rawResponse);

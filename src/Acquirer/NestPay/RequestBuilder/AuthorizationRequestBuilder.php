@@ -4,7 +4,7 @@ namespace Paranoia\Acquirer\NestPay\RequestBuilder;
 use Paranoia\Core\Model\Request;
 use Paranoia\Lib\Serializer\Serializer;
 
-class PreAuthorizationRequestBuilder extends BaseRequestBuilder
+class AuthorizationRequestBuilder extends BaseRequestBuilder
 {
     const TRANSACTION_TYPE = 'PreAuth';
     const ENVELOPE_NAME    = 'CC5Request';

@@ -6,8 +6,8 @@ use Paranoia\Acquirer\AbstractRequestBuilderFactory;
 use Paranoia\Acquirer\Gvp\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\Gvp\RequestBuilder\CancelRequestBuilder;
 use Paranoia\Acquirer\Gvp\RequestBuilder\ChargeRequestBuilder;
-use Paranoia\Acquirer\Gvp\RequestBuilder\PostAuthorizationRequestBuilder;
-use Paranoia\Acquirer\Gvp\RequestBuilder\PreAuthorizationRequestBuilder;
+use Paranoia\Acquirer\Gvp\RequestBuilder\CaptureRequestBuilder;
+use Paranoia\Acquirer\Gvp\RequestBuilder\AuthorizationRequestBuilder;
 use Paranoia\Acquirer\Gvp\RequestBuilder\RefundRequestBuilder;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\NotImplementedError;
@@ -50,7 +50,7 @@ class GvpRequestBuilderFactory extends AbstractRequestBuilderFactory
                     new ExpireDateFormatter()
                 );
             case TransactionType::PRE_AUTHORIZATION:
-                return new PreAuthorizationRequestBuilder(
+                return new AuthorizationRequestBuilder(
                     $this->configuration,
                     new IsoNumericCurrencyCodeFormatter(),
                     new MoneyFormatter(),
@@ -58,7 +58,7 @@ class GvpRequestBuilderFactory extends AbstractRequestBuilderFactory
                     new ExpireDateFormatter()
                 );
             case TransactionType::POST_AUTHORIZATION:
-                return new PostAuthorizationRequestBuilder(
+                return new CaptureRequestBuilder(
                     $this->configuration,
                     new IsoNumericCurrencyCodeFormatter(),
                     new MoneyFormatter(),

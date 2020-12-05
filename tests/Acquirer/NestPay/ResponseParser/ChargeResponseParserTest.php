@@ -1,23 +1,23 @@
 <?php
 namespace Paranoia\Test\Acquirer\NestPay\ResponseParser;
 
-use Paranoia\Acquirer\NestPay\ResponseParser\PreAuthorizationResponseParser;
+use Paranoia\Acquirer\NestPay\ResponseParser\ChargeResponseParser;
 use Paranoia\Core\AbstractConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Model\Response;
 use PHPUnit\Framework\TestCase;
 
-class PreAuthorizationResponseProcessorTest extends TestCase
+class ChargeResponseParserTest extends TestCase
 {
     public function test_success_response()
     {
         $rawResponse = file_get_contents(
-            __DIR__ . '/../../../samples/response/nestpay/pre_authorization_successful.xml'
+            __DIR__ . '/../../../samples/response/nestpay/sale_successful.xml'
         );
 
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new PreAuthorizationResponseParser($configuration);
+        $processor = new ChargeResponseParser($configuration);
         $response = $processor->process($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(true, $response->isSuccess());
@@ -29,12 +29,12 @@ class PreAuthorizationResponseProcessorTest extends TestCase
     public function test_failed_response()
     {
         $rawResponse = file_get_contents(
-            __DIR__ . '/../../../samples/response/nestpay/pre_authorization_failed.xml'
+            __DIR__ . '/../../../samples/response/nestpay/sale_failed.xml'
         );
 
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new PreAuthorizationResponseParser($configuration);
+        $processor = new ChargeResponseParser($configuration);
         $response = $processor->process($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(false, $response->isSuccess());
@@ -52,7 +52,7 @@ class PreAuthorizationResponseProcessorTest extends TestCase
     {
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new PreAuthorizationResponseParser($configuration);
+        $processor = new ChargeResponseParser($configuration);
 
         $this->expectException(BadResponseException::class);
         $processor->process($rawResponse);

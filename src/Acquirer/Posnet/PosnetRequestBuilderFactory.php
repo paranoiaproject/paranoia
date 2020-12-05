@@ -8,8 +8,8 @@ use Paranoia\Acquirer\Posnet\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\Posnet\Formatter\OrderIdFormatter;
 use Paranoia\Acquirer\Posnet\RequestBuilder\CancelRequestBuilder;
 use Paranoia\Acquirer\Posnet\RequestBuilder\ChargeRequestBuilder;
-use Paranoia\Acquirer\Posnet\RequestBuilder\PostAuthorizationRequestBuilder;
-use Paranoia\Acquirer\Posnet\RequestBuilder\PreAuthorizationRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\CaptureRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\AuthorizationRequestBuilder;
 use Paranoia\Acquirer\Posnet\RequestBuilder\RefundRequestBuilder;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\NotImplementedError;
@@ -54,7 +54,7 @@ class PosnetRequestBuilderFactory extends AbstractRequestBuilderFactory
                     new OrderIdFormatter()
                 );
             case TransactionType::PRE_AUTHORIZATION:
-                return new PreAuthorizationRequestBuilder(
+                return new AuthorizationRequestBuilder(
                     $this->configuration,
                     new CustomCurrencyCodeFormatter(),
                     new MoneyFormatter(),
@@ -63,7 +63,7 @@ class PosnetRequestBuilderFactory extends AbstractRequestBuilderFactory
                     new OrderIdFormatter()
                 );
             case TransactionType::POST_AUTHORIZATION:
-                return new PostAuthorizationRequestBuilder(
+                return new CaptureRequestBuilder(
                     $this->configuration,
                     new CustomCurrencyCodeFormatter(),
                     new MoneyFormatter(),

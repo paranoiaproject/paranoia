@@ -6,8 +6,8 @@ use Paranoia\Acquirer\AbstractRequestBuilderFactory;
 use Paranoia\Acquirer\NestPay\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\NestPay\RequestBuilder\CancelRequestBuilder;
 use Paranoia\Acquirer\NestPay\RequestBuilder\ChargeRequestBuilder;
-use Paranoia\Acquirer\NestPay\RequestBuilder\PostAuthorizationRequestBuilder;
-use Paranoia\Acquirer\NestPay\RequestBuilder\PreAuthorizationRequestBuilder;
+use Paranoia\Acquirer\NestPay\RequestBuilder\CaptureRequestBuilder;
+use Paranoia\Acquirer\NestPay\RequestBuilder\AuthorizationRequestBuilder;
 use Paranoia\Acquirer\NestPay\RequestBuilder\RefundRequestBuilder;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\NotImplementedError;
@@ -50,7 +50,7 @@ class NestPayRequestBuilderFactory extends AbstractRequestBuilderFactory
                     new ExpireDateFormatter()
                 );
             case TransactionType::PRE_AUTHORIZATION:
-                return new PreAuthorizationRequestBuilder(
+                return new AuthorizationRequestBuilder(
                     $this->configuration,
                     new IsoNumericCurrencyCodeFormatter(),
                     new DecimalFormatter(),
@@ -58,7 +58,7 @@ class NestPayRequestBuilderFactory extends AbstractRequestBuilderFactory
                     new ExpireDateFormatter()
                 );
             case TransactionType::POST_AUTHORIZATION:
-                return new PostAuthorizationRequestBuilder(
+                return new CaptureRequestBuilder(
                     $this->configuration,
                     new IsoNumericCurrencyCodeFormatter(),
                     new DecimalFormatter(),

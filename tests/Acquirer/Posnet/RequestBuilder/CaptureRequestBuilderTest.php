@@ -5,15 +5,14 @@ use Paranoia\Acquirer\Posnet\Formatter\CustomCurrencyCodeFormatter;
 use Paranoia\Acquirer\Posnet\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\Posnet\Formatter\OrderIdFormatter;
 use Paranoia\Acquirer\Posnet\PosnetConfiguration as PosnetConfiguration;
-use Paranoia\Acquirer\Posnet\RequestBuilder\PreAuthorizationRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\CaptureRequestBuilder;
 use Paranoia\Core\Constant\Currency;
 use Paranoia\Core\Formatter\MoneyFormatter;
 use Paranoia\Core\Formatter\MultiDigitInstallmentFormatter;
 use Paranoia\Core\Model\Request;
-use Paranoia\Core\Model\Request\Resource\Card;
 use PHPUnit\Framework\TestCase;
 
-class PreAuthorizationRequestBuilderTest extends TestCase
+class CaptureRequestBuilderTest extends TestCase
 {
     public function test_sales_with_single_installment()
     {
@@ -21,7 +20,7 @@ class PreAuthorizationRequestBuilderTest extends TestCase
         $request = $this->setupRequest();
         $rawRequest = $builder->build($request);
         $this->assertXmlStringEqualsXmlFile(
-            __DIR__ . '/../../../samples/request/posnet/pre_authorization_request_eur.xml',
+            __DIR__ . '/../../../samples/request/posnet/post_authorization_request_eur.xml',
             $rawRequest
         );
     }
@@ -32,7 +31,7 @@ class PreAuthorizationRequestBuilderTest extends TestCase
         $request = $this->setupRequest(true);
         $rawRequest = $builder->build($request);
         $this->assertXmlStringEqualsXmlFile(
-            __DIR__ . '/../../../samples/request/posnet/pre_authorization_request_eur_with_installment.xml',
+            __DIR__ . '/../../../samples/request/posnet/post_authorization_request_eur_with_installment.xml',
             $rawRequest
         );
     }
@@ -54,27 +53,18 @@ class PreAuthorizationRequestBuilderTest extends TestCase
     protected function setupRequest($setInstallment=false)
     {
         $request = new Request();
-        $request->setOrderId('123456')
+        $request->setTransactionId('12345678901')
             ->setAmount(25.4)
             ->setCurrency(Currency::CODE_EUR);
-
         if($setInstallment) {
             $request->setInstallment(3);
         }
-
-        $card = new Card();
-        $card->setNumber('1501501501501500')
-            ->setSecurityCode('000')
-            ->setExpireMonth(1)
-            ->setExpireYear(2020);
-        $request->setResource($card);
-
         return $request;
     }
 
     protected function setupBuilder()
     {
-        return new PreAuthorizationRequestBuilder(
+        return new CaptureRequestBuilder(
             $this->setupConfiguration(),
             new CustomCurrencyCodeFormatter(),
             new MoneyFormatter(),

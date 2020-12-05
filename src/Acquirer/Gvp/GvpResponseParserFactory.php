@@ -5,8 +5,8 @@ use Paranoia\Acquirer\AbstractResponseParser;
 use Paranoia\Acquirer\AbstractResponseParserFactory;
 use Paranoia\Acquirer\Gvp\ResponseParser\CancelResponseParser;
 use Paranoia\Acquirer\Gvp\ResponseParser\ChargeResponseParser;
-use Paranoia\Acquirer\Gvp\ResponseParser\PostAuthorizationResponseParser;
-use Paranoia\Acquirer\Gvp\ResponseParser\PreAuthorizationResponseParser;
+use Paranoia\Acquirer\Gvp\ResponseParser\CaptureResponseParser;
+use Paranoia\Acquirer\Gvp\ResponseParser\AuthorizationResponseParser;
 use Paranoia\Acquirer\Gvp\ResponseParser\RefundResponseParser;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\InvalidArgumentException;
@@ -27,9 +27,9 @@ class GvpResponseParserFactory extends AbstractResponseParserFactory
             case TransactionType::CANCEL:
                 return new CancelResponseParser($this->configuration);
             case TransactionType::PRE_AUTHORIZATION:
-                return new PreAuthorizationResponseParser($this->configuration);
+                return new AuthorizationResponseParser($this->configuration);
             case TransactionType::POST_AUTHORIZATION:
-                return new PostAuthorizationResponseParser($this->configuration);
+                return new CaptureResponseParser($this->configuration);
             default:
                 throw new InvalidArgumentException('Bad transaction type: ' . $transactionType);
         }

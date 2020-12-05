@@ -1,18 +1,18 @@
 <?php
-namespace Paranoia\Test\Acquirer\Posnet\ResponseParser;
+namespace Paranoia\Test\Acquirer\Gvp\ResponseParser;
 
-use Paranoia\Acquirer\Posnet\ResponseParser\ChargeResponseParser;
+use Paranoia\Acquirer\Gvp\ResponseParser\ChargeResponseParser;
 use Paranoia\Core\AbstractConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Model\Response;
 use PHPUnit\Framework\TestCase;
 
-class SaleResponseProcessorTest extends TestCase
+class ChargeResponseParserTest extends TestCase
 {
     public function test_success_response()
     {
         $rawResponse = file_get_contents(
-            __DIR__ . '/../../../samples/response/posnet/sale_successful.xml'
+            __DIR__ . '/../../../samples/response/gvp/sale_successful.xml'
         );
 
         /** @var AbstractConfiguration $configuration */
@@ -21,15 +21,15 @@ class SaleResponseProcessorTest extends TestCase
         $response = $processor->process($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(true, $response->isSuccess());
-        $this->assertEquals('0001000004P0503281', $response->getTransactionId());
-        $this->assertEquals('007912', $response->getAuthCode());
-        $this->assertEquals(null, $response->getOrderId()); // Posnet does not provide orderId
+        $this->assertEquals('311710676028', $response->getTransactionId());
+        $this->assertEquals('245093', $response->getAuthCode());
+        $this->assertEquals('SISTC157B93B81C74BB88C6CA1C15D0CA338', $response->getOrderId());
     }
 
     public function test_failed_response()
     {
         $rawResponse = file_get_contents(
-            __DIR__ . '/../../../samples/response/posnet/sale_failed.xml'
+            __DIR__ . '/../../../samples/response/gvp/sale_failed.xml'
         );
 
         /** @var AbstractConfiguration $configuration */
@@ -40,8 +40,8 @@ class SaleResponseProcessorTest extends TestCase
         $this->assertEquals(false, $response->isSuccess());
         $this->assertEquals(null, $response->getTransactionId());
         $this->assertEquals(null, $response->getOrderId());
-        $this->assertEquals('0225', $response->getResponseCode());
-        $this->assertEquals('ONAYLANMADI:0225 ISL. YAPILAMIY 0225 ', $response->getResponseMessage());
+        $this->assertEquals('54', $response->getResponseCode());
+        $this->assertEquals('Error Message: ›˛leminizi gerÁekle˛tiremiyoruz.Tekrar deneyiniz System Error Message: SON KULLANMA TARIHI HATALI', $response->getResponseMessage());
     }
 
     /**

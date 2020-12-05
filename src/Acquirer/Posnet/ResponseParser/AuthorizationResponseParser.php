@@ -1,7 +1,7 @@
 <?php
-namespace Paranoia\Acquirer\Gvp\ResponseParser;
+namespace Paranoia\Acquirer\Posnet\ResponseParser;
 
-class PreAuthorizationResponseParser extends BaseResponseParser
+class AuthorizationResponseParser extends BaseResponseParser
 {
     /**
      * @param $rawResponse

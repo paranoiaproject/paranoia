@@ -5,8 +5,8 @@ use Paranoia\Acquirer\Gvp\GvpConfiguration;
 use Paranoia\Acquirer\Gvp\GvpResponseParserFactory;
 use Paranoia\Acquirer\Gvp\ResponseParser\CancelResponseParser;
 use Paranoia\Acquirer\Gvp\ResponseParser\ChargeResponseParser;
-use Paranoia\Acquirer\Gvp\ResponseParser\PostAuthorizationResponseParser;
-use Paranoia\Acquirer\Gvp\ResponseParser\PreAuthorizationResponseParser;
+use Paranoia\Acquirer\Gvp\ResponseParser\CaptureResponseParser;
+use Paranoia\Acquirer\Gvp\ResponseParser\AuthorizationResponseParser;
 use Paranoia\Acquirer\Gvp\ResponseParser\RefundResponseParser;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\InvalidArgumentException;
@@ -22,8 +22,8 @@ class GvpProcessorFactoryTest extends TestCase
         $this->assertInstanceOf(ChargeResponseParser::class, $factory->createProcessor(TransactionType::SALE));
         $this->assertInstanceOf(RefundResponseParser::class, $factory->createProcessor(TransactionType::REFUND));
         $this->assertInstanceOf(CancelResponseParser::class, $factory->createProcessor(TransactionType::CANCEL));
-        $this->assertInstanceOf(PreAuthorizationResponseParser::class, $factory->createProcessor(TransactionType::PRE_AUTHORIZATION));
-        $this->assertInstanceOf(PostAuthorizationResponseParser::class, $factory->createProcessor(TransactionType::POST_AUTHORIZATION));
+        $this->assertInstanceOf(AuthorizationResponseParser::class, $factory->createProcessor(TransactionType::PRE_AUTHORIZATION));
+        $this->assertInstanceOf(CaptureResponseParser::class, $factory->createProcessor(TransactionType::POST_AUTHORIZATION));
     }
 
     public function test_invalid_transaction_type()

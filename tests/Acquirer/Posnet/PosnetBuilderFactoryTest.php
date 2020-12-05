@@ -5,8 +5,8 @@ use Paranoia\Acquirer\Posnet\PosnetConfiguration as PosnetConfiguration;
 use Paranoia\Acquirer\Posnet\PosnetRequestBuilderFactory;
 use Paranoia\Acquirer\Posnet\RequestBuilder\CancelRequestBuilder;
 use Paranoia\Acquirer\Posnet\RequestBuilder\ChargeRequestBuilder;
-use Paranoia\Acquirer\Posnet\RequestBuilder\PostAuthorizationRequestBuilder;
-use Paranoia\Acquirer\Posnet\RequestBuilder\PreAuthorizationRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\CaptureRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\AuthorizationRequestBuilder;
 use Paranoia\Acquirer\Posnet\RequestBuilder\RefundRequestBuilder;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\NotImplementedError;
@@ -23,8 +23,8 @@ class PosnetBuilderFactoryTest extends TestCase
         $this->assertInstanceOf(ChargeRequestBuilder::class, $factory->createBuilder(TransactionType::SALE));
         $this->assertInstanceOf(RefundRequestBuilder::class, $factory->createBuilder(TransactionType::REFUND));
         $this->assertInstanceOf(CancelRequestBuilder::class, $factory->createBuilder(TransactionType::CANCEL));
-        $this->assertInstanceOf(PreAuthorizationRequestBuilder::class, $factory->createBuilder(TransactionType::PRE_AUTHORIZATION));
-        $this->assertInstanceOf(PostAuthorizationRequestBuilder::class, $factory->createBuilder(TransactionType::POST_AUTHORIZATION));
+        $this->assertInstanceOf(AuthorizationRequestBuilder::class, $factory->createBuilder(TransactionType::PRE_AUTHORIZATION));
+        $this->assertInstanceOf(CaptureRequestBuilder::class, $factory->createBuilder(TransactionType::POST_AUTHORIZATION));
     }
 
     public function test_invalid_transaction_type()

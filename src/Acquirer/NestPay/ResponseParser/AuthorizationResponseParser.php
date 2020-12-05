@@ -1,7 +1,7 @@
 <?php
-namespace Paranoia\Acquirer\Posnet\ResponseParser;
+namespace Paranoia\Acquirer\NestPay\ResponseParser;
 
-class PreAuthorizationResponseParser extends BaseResponseParser
+class AuthorizationResponseParser extends BaseResponseParser
 {
     /**
      * @param $rawResponse

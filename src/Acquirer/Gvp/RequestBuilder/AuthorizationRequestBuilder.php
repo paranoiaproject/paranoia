@@ -5,14 +5,17 @@ use Paranoia\Acquirer\Gvp\GvpConfiguration;
 use Paranoia\Core\Model\Request;
 use Paranoia\Lib\Serializer\Serializer;
 
-class PostAuthorizationRequestBuilder extends BaseRequestBuilder
+class AuthorizationRequestBuilder extends BaseRequestBuilder
 {
-    const TRANSACTION_TYPE = 'postauth';
+    const TRANSACTION_TYPE = 'preauth';
     const ENVELOPE_NAME    = 'GVPSRequest';
 
     public function build(Request $request)
     {
-        $data = $this->buildBaseRequest($request);
+        $data = array_merge(
+            $this->buildBaseRequest($request),
+            ['Card' => $this->buildCard($request->getResource())]
+        );
 
         $serializer = new Serializer(Serializer::XML);
         return $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);
@@ -29,7 +32,7 @@ class PostAuthorizationRequestBuilder extends BaseRequestBuilder
             'CardholderPresentCode' => self::CARD_HOLDER_PRESENT_CODE_NON_3D,
 
             'MotoInd'               => 'N',
-            'OriginalRetrefNum'     => $request->getTransactionId(),
+            'OriginalRetrefNum'     => null,
         ];
     }
 
@@ -47,9 +50,10 @@ class PostAuthorizationRequestBuilder extends BaseRequestBuilder
         return strtoupper(
             sha1(
                 sprintf(
-                    '%s%s%s%s',
+                    '%s%s%s%s%s',
                     $request->getOrderId(),
                     $configuration->getTerminalId(),
+                    $request->getResource()->getNumber(),
                     $this->amountFormatter->format($request->getAmount()),
                     $this->generateSecurityHash($password)
                 )
