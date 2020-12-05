@@ -1,15 +1,42 @@
 <?php
 namespace Paranoia\Acquirer\NestPay\ResponseParser;
 
-class CancelResponseParser extends BaseResponseParser
+use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Model\Response\CancelResponse;
+
+/**
+ * Class CancelResponseParser
+ * @package Paranoia\Acquirer\NestPay\ResponseParser
+ */
+class CancelResponseParser
 {
+    /** @var  ResponseParserCommon */
+    private $responseParserCommon;
+
     /**
-     * @param $rawResponse
-     * @throws \Paranoia\Core\Exception\BadResponseException
-     * @return \Paranoia\Core\Model\Response
+     * CancelResponseParser constructor.
+     * @param ResponseParserCommon $responseParserCommon
      */
-    public function process($rawResponse)
+    public function __construct(ResponseParserCommon $responseParserCommon)
     {
-        return $this->processCommonResponse($rawResponse);
+        $this->responseParserCommon = $responseParserCommon;
+    }
+
+    /**
+     * @param string $rawResponse
+     * @return CancelResponse
+     * @throws BadResponseException
+     */
+    public function parse(string $rawResponse): CancelResponse
+    {
+        $xml = $this->responseParserCommon->parseResponse($rawResponse);
+        $response = new CancelResponse();
+        $this->responseParserCommon->decorateWithStatus($xml, $response);
+
+        if (!$response->isApproved()) {
+            $this->responseParserCommon->decorateWithErrorDetails($xml, $response);
+        }
+
+        return $response;
     }
 }

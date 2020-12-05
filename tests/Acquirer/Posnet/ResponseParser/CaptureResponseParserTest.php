@@ -18,7 +18,7 @@ class CaptureResponseParserTest extends TestCase
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
         $processor = new CaptureResponseParser($configuration);
-        $response = $processor->process($rawResponse);
+        $response = $processor->parse($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(true, $response->isSuccess());
         $this->assertEquals('0001000004P0503281', $response->getTransactionId());
@@ -35,7 +35,7 @@ class CaptureResponseParserTest extends TestCase
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
         $processor = new CaptureResponseParser($configuration);
-        $response = $processor->process($rawResponse);
+        $response = $processor->parse($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(false, $response->isSuccess());
         $this->assertEquals(null, $response->getTransactionId());
@@ -55,7 +55,7 @@ class CaptureResponseParserTest extends TestCase
         $processor = new CaptureResponseParser($configuration);
 
         $this->expectException(BadResponseException::class);
-        $processor->process($rawResponse);
+        $processor->parse($rawResponse);
     }
 
     public function badResponses()

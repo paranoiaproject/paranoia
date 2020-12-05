@@ -18,7 +18,7 @@ class RefundResponseProcessorTest extends TestCase
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
         $processor = new RefundResponseParser($configuration);
-        $response = $processor->process($rawResponse);
+        $response = $processor->parse($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(true, $response->isSuccess());
         $this->assertEquals('15335I94G07024820', $response->getTransactionId());
@@ -35,7 +35,7 @@ class RefundResponseProcessorTest extends TestCase
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
         $processor = new RefundResponseParser($configuration);
-        $response = $processor->process($rawResponse);
+        $response = $processor->parse($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(false, $response->isSuccess());
         $this->assertEquals(null, $response->getTransactionId());
@@ -55,7 +55,7 @@ class RefundResponseProcessorTest extends TestCase
         $processor = new RefundResponseParser($configuration);
 
         $this->expectException(BadResponseException::class);
-        $processor->process($rawResponse);
+        $processor->parse($rawResponse);
     }
 
     public function badResponses()

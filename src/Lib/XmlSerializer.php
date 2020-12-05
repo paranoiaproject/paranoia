@@ -31,23 +31,18 @@
  *       $xml = Array2XML::createXML('root_node_name', $php_array);
  *       echo $xml->saveXML();
  */
-namespace Paranoia\Lib\Serializer\Adapter;
+namespace Paranoia\Lib;
 
 use DomDocument;
 use Exception;
 use Paranoia\Core\Exception\InvalidArgumentException;
 
-class Xml implements SerializerInterface
+class XmlSerializer
 {
-
-    /**
-     * @var DomDocument
-     */
+    /** @var DomDocument */
     private $xml = null;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $encoding = 'UTF-8';
 
     public function serialize($data, $options = array())

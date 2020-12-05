@@ -1,15 +1,42 @@
 <?php
 namespace Paranoia\Acquirer\NestPay\ResponseParser;
 
-class RefundResponseParser extends BaseResponseParser
+use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Model\Response\RefundResponse;
+
+/**
+ * Class RefundResponseParser
+ * @package Paranoia\Acquirer\NestPay\ResponseParser
+ */
+class RefundResponseParser
 {
+    /** @var  ResponseParserCommon */
+    private $responseParserCommon;
+
     /**
-     * @param $rawResponse
-     * @throws \Paranoia\Core\Exception\BadResponseException
-     * @return \Paranoia\Core\Model\Response
+     * RefundResponseParser constructor.
+     * @param ResponseParserCommon $responseParserCommon
      */
-    public function process($rawResponse)
+    public function __construct(ResponseParserCommon $responseParserCommon)
     {
-        return $this->processCommonResponse($rawResponse);
+        $this->responseParserCommon = $responseParserCommon;
+    }
+
+    /**
+     * @param string $rawResponse
+     * @return RefundResponse
+     * @throws BadResponseException
+     */
+    public function parse(string $rawResponse): RefundResponse
+    {
+        $xml = $this->responseParserCommon->parseResponse($rawResponse);
+        $response = new RefundResponse();
+        $this->responseParserCommon->decorateWithStatus($xml, $response);
+
+        if (!$response->isApproved()) {
+            $this->responseParserCommon->decorateWithErrorDetails($xml, $response);
+        }
+
+        return $response;
     }
 }

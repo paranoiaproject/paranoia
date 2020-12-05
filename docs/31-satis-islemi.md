@@ -18,7 +18,7 @@ $card->setNumber('5406******675403')
      ->setSecurityCode('000')
      ->setExpireMonth(12)
      ->setExpireYear(2015);
-$request->setResource($card);
+$request->setCard($card);
 ```
 
 ## 3.1.3. Satış İsteği Sırasında Beklenen Parametreler
@@ -46,7 +46,7 @@ $card->setNumber('5406******675403')
      ->setSecurityCode('000')
      ->setExpireMonth(12)
      ->setExpireYear(2015);
-$request->setResource($card);        
+$request->setCard($card);        
 ```
 
 * Sağlayıcı API'sine bağlantı kurmak için gerekli konfigürasyon bilgilerini dolduruyoruz. Konfigürasyon parametreleri, ödeme sistemi sağlayıcısına göre değişkenlik göstermektedir. Ödeme sağlayıcılarına göre gerekli konfigürasyon tanımlamaları hakkında daha fazla bilgi edinmek için [bu bölümü]() inceleyiniz.

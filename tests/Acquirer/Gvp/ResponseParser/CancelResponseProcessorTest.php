@@ -18,7 +18,7 @@ class CancelResponseProcessorTest extends TestCase
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
         $processor = new CancelResponseParser($configuration);
-        $response = $processor->process($rawResponse);
+        $response = $processor->parse($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(true, $response->isSuccess());
         $this->assertEquals('311616674771', $response->getTransactionId());
@@ -35,7 +35,7 @@ class CancelResponseProcessorTest extends TestCase
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
         $processor = new CancelResponseParser($configuration);
-        $response = $processor->process($rawResponse);
+        $response = $processor->parse($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(false, $response->isSuccess());
         $this->assertEquals(null, $response->getTransactionId());
@@ -55,7 +55,7 @@ class CancelResponseProcessorTest extends TestCase
         $processor = new CancelResponseParser($configuration);
 
         $this->expectException(BadResponseException::class);
-        $processor->process($rawResponse);
+        $processor->parse($rawResponse);
     }
 
     public function badResponses()

@@ -1,17 +1,47 @@
 <?php
 namespace Paranoia\Acquirer\NestPay\RequestBuilder;
 
-use Paranoia\Core\Model\Request;
-use Paranoia\Lib\Serializer\Serializer;
+use Paranoia\Acquirer\NestPay\NestPayConfiguration;
+use Paranoia\Core\Model\Request\CancelRequest;
+use Paranoia\Core\Model\Request\HttpRequest;
+use Paranoia\Lib\XmlSerializer;
 
-class CancelRequestBuilder extends BaseRequestBuilder
+/**
+ * Class CancelRequestBuilder
+ * @package Paranoia\Acquirer\NestPay\RequestBuilder
+ */
+class CancelRequestBuilder
 {
-    const TRANSACTION_TYPE = 'Void';
-    const ENVELOPE_NAME    = 'CC5Request';
+    private const TRANSACTION_TYPE = 'Void';
 
-    public function build(Request $request)
+    /** @var NestPayConfiguration */
+    private $configuration;
+
+    /** @var RequestBuilderCommon */
+    private $requestBuilderCommon;
+
+    /** @var XmlSerializer */
+    protected $serializer;
+
+    /**
+     * CancelRequestBuilder constructor.
+     * @param NestPayConfiguration $configuration
+     * @param RequestBuilderCommon $requestBuilderCommon
+     * @param XmlSerializer $serializer
+     */
+    public function __construct(
+        NestPayConfiguration $configuration,
+        RequestBuilderCommon $requestBuilderCommon,
+        XmlSerializer $serializer
+    ) {
+        $this->configuration = $configuration;
+        $this->requestBuilderCommon = $requestBuilderCommon;
+        $this->serializer = $serializer;
+    }
+
+    private function buildBody(CancelRequest $request)
     {
-        $data = $this->buildBaseRequest(self::TRANSACTION_TYPE);
+        $data = $this->requestBuilderCommon->buildBaseRequest(self::TRANSACTION_TYPE);
 
         if ($request->getOrderId() && !$request->getTransactionId()) {
             $data = array_merge($data, [
@@ -25,7 +55,15 @@ class CancelRequestBuilder extends BaseRequestBuilder
             ]);
         }
 
-        $serializer = new Serializer(Serializer::XML);
-        return $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);
+        $xmlData = $this->serializer->serialize($data, ['root_name' => RequestBuilderCommon::ENVELOPE_NAME]);
+        return http_build_query([RequestBuilderCommon::FORM_FIELD => $xmlData]);
+    }
+
+    public function build(CancelRequest $request): HttpRequest
+    {
+        $headers = $this->requestBuilderCommon->buildHeaders();
+        $body = $this->buildBody($request);
+
+        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
     }
 }

@@ -1,21 +1,72 @@
 <?php
 namespace Paranoia\Acquirer\NestPay\RequestBuilder;
 
+use Paranoia\Acquirer\NestPay\NestPayConfiguration;
+use Paranoia\Core\Formatter\DecimalFormatter;
+use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Model\Request;
-use Paranoia\Lib\Serializer\Serializer;
+use Paranoia\Core\Model\Request\HttpRequest;
+use Paranoia\Lib\XmlSerializer;
 
-class CaptureRequestBuilder extends BaseRequestBuilder
+class CaptureRequestBuilder
 {
-    const TRANSACTION_TYPE = 'PostAuth';
-    const ENVELOPE_NAME = 'CC5Request';
+    private const TRANSACTION_TYPE = 'PostAuth';
 
-    public function build(Request $request)
+    /** @var NestPayConfiguration */
+    private $configuration;
+
+    /** @var RequestBuilderCommon */
+    private $requestBuilderCommon;
+
+    /** @var XmlSerializer */
+    protected $serializer;
+
+    /** @var DecimalFormatter */
+    protected $amountFormatter;
+
+    /** @var  IsoNumericCurrencyCodeFormatter */
+    protected $currencyCodeFormatter;
+
+    /**
+     * CaptureRequestBuilder constructor.
+     * @param NestPayConfiguration $configuration
+     * @param RequestBuilderCommon $requestBuilderCommon
+     * @param XmlSerializer $serializer
+     * @param DecimalFormatter $amountFormatter
+     * @param IsoNumericCurrencyCodeFormatter $currencyCodeFormatter
+     */
+    public function __construct(
+        NestPayConfiguration $configuration,
+        RequestBuilderCommon $requestBuilderCommon,
+        XmlSerializer $serializer,
+        DecimalFormatter $amountFormatter,
+        IsoNumericCurrencyCodeFormatter $currencyCodeFormatter
+    ) {
+        $this->configuration = $configuration;
+        $this->requestBuilderCommon = $requestBuilderCommon;
+        $this->serializer = $serializer;
+        $this->amountFormatter = $amountFormatter;
+        $this->currencyCodeFormatter = $currencyCodeFormatter;
+    }
+
+
+    private function buildBody(Request\CaptureRequest $request)
     {
-        $data = array_merge($this->buildBaseRequest(self::TRANSACTION_TYPE), [
-            'OrderId'  => $request->getOrderId()
+        $data = array_merge($this->requestBuilderCommon->buildBaseRequest(self::TRANSACTION_TYPE), [
+            'OrderId' => $request->getOrderId(),
+            'Total' => $this->amountFormatter->format($request->getAmount()),
+            'Currency' => $this->currencyCodeFormatter->format($request->getCurrency()),
         ]);
 
-        $serializer = new Serializer(Serializer::XML);
-        return $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);
+        $xmlData = $this->serializer->serialize($data, ['root_name' => RequestBuilderCommon::ENVELOPE_NAME]);
+        return http_build_query([RequestBuilderCommon::FORM_FIELD => $xmlData]);
+    }
+
+    public function build(Request\CaptureRequest $request): HttpRequest
+    {
+        $headers = $this->requestBuilderCommon->buildHeaders();
+        $body = $this->buildBody($request);
+
+        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
     }
 }

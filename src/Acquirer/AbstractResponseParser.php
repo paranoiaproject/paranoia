@@ -19,5 +19,5 @@ abstract class AbstractResponseParser
 
     abstract protected function validateResponse($transformedResponse);
 
-    abstract public function process($rawResponse);
+    abstract public function parse($rawResponse);
 }

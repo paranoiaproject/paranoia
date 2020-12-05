@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Core\Model;
 
-use Paranoia\Core\Model\Request\Resource\ResourceInterface;
+use Paranoia\Core\Model\Request\Card;
 
 class Request implements TransferInterface
 {
@@ -23,13 +23,13 @@ class Request implements TransferInterface
     /** @var string */
     private $authCode;
 
-    /** @var ResourceInterface */
-    private $resource;
+    /** @var Card */
+    private $card;
 
     /**
      * @return string
      */
-    public function getOrderId()
+    public function getOrderId(): string
     {
         return $this->orderId;
     }
@@ -38,7 +38,7 @@ class Request implements TransferInterface
      * @param string $orderId
      * @return Request
      */
-    public function setOrderId($orderId)
+    public function setOrderId(string $orderId): Request
     {
         $this->orderId = $orderId;
         return $this;
@@ -47,7 +47,7 @@ class Request implements TransferInterface
     /**
      * @return float
      */
-    public function getAmount()
+    public function getAmount(): float
     {
         return $this->amount;
     }
@@ -56,7 +56,7 @@ class Request implements TransferInterface
      * @param float $amount
      * @return Request
      */
-    public function setAmount($amount)
+    public function setAmount(float $amount): Request
     {
         $this->amount = $amount;
         return $this;
@@ -65,7 +65,7 @@ class Request implements TransferInterface
     /**
      * @return string
      */
-    public function getCurrency()
+    public function getCurrency(): string
     {
         return $this->currency;
     }
@@ -74,7 +74,7 @@ class Request implements TransferInterface
      * @param string $currency
      * @return Request
      */
-    public function setCurrency($currency)
+    public function setCurrency(string $currency): Request
     {
         $this->currency = $currency;
         return $this;
@@ -83,7 +83,7 @@ class Request implements TransferInterface
     /**
      * @return int
      */
-    public function getInstallment()
+    public function getInstallment(): int
     {
         return $this->installment;
     }
@@ -92,7 +92,7 @@ class Request implements TransferInterface
      * @param int $installment
      * @return Request
      */
-    public function setInstallment($installment)
+    public function setInstallment(int $installment): Request
     {
         $this->installment = $installment;
         return $this;
@@ -101,7 +101,7 @@ class Request implements TransferInterface
     /**
      * @return string
      */
-    public function getTransactionId()
+    public function getTransactionId(): string
     {
         return $this->transactionId;
     }
@@ -110,7 +110,7 @@ class Request implements TransferInterface
      * @param string $transactionId
      * @return Request
      */
-    public function setTransactionId($transactionId)
+    public function setTransactionId(string $transactionId): Request
     {
         $this->transactionId = $transactionId;
         return $this;
@@ -119,7 +119,7 @@ class Request implements TransferInterface
     /**
      * @return string
      */
-    public function getAuthCode()
+    public function getAuthCode(): string
     {
         return $this->authCode;
     }
@@ -128,27 +128,27 @@ class Request implements TransferInterface
      * @param string $authCode
      * @return Request
      */
-    public function setAuthCode($authCode)
+    public function setAuthCode(string $authCode): Request
     {
         $this->authCode = $authCode;
         return $this;
     }
 
     /**
-     * @return ResourceInterface
+     * @return Card
      */
-    public function getResource()
+    public function getCard(): Card
     {
-        return $this->resource;
+        return $this->card;
     }
 
     /**
-     * @param ResourceInterface $resource
+     * @param Card $card
      * @return Request
      */
-    public function setResource($resource)
+    public function setCard(Card $card): Request
     {
-        $this->resource = $resource;
+        $this->card = $card;
         return $this;
     }
 }

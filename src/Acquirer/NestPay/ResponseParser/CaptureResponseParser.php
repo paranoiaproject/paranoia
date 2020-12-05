@@ -1,15 +1,44 @@
 <?php
 namespace Paranoia\Acquirer\NestPay\ResponseParser;
 
-class CaptureResponseParser extends BaseResponseParser
+use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Model\Response\CaptureResponse;
+
+/**
+ * Class CaptureResponseParser
+ * @package Paranoia\Acquirer\NestPay\ResponseParser
+ */
+class CaptureResponseParser
 {
+    /** @var  ResponseParserCommon */
+    private $responseParserCommon;
+
     /**
-     * @param $rawResponse
-     * @throws \Paranoia\Core\Exception\BadResponseException
-     * @return \Paranoia\Core\Model\Response
+     * CaptureResponseParser constructor.
+     * @param ResponseParserCommon $responseParserCommon
      */
-    public function process($rawResponse)
+    public function __construct(ResponseParserCommon $responseParserCommon)
     {
-        return $this->processCommonResponse($rawResponse);
+        $this->responseParserCommon = $responseParserCommon;
+    }
+
+    /**
+     * @param string $rawResponse
+     * @return CaptureResponse
+     * @throws BadResponseException
+     */
+    public function parse(string $rawResponse): CaptureResponse
+    {
+        $xml = $this->responseParserCommon->parseResponse($rawResponse);
+        $response = new CaptureResponse();
+        $this->responseParserCommon->decorateWithStatus($xml, $response);
+
+        if ($response->isApproved()) {
+            $this->responseParserCommon->decorateWithTransactionDetails($xml, $response);
+        } else {
+            $this->responseParserCommon->decorateWithErrorDetails($xml, $response);
+        }
+
+        return $response;
     }
 }

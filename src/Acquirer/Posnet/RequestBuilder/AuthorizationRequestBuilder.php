@@ -20,7 +20,7 @@ class AuthorizationRequestBuilder extends BaseRequestBuilder
                         'currencyCode' => $this->currencyCodeFormatter->format($request->getCurrency()),
                         'orderID' => $this->orderIdFormatter->format($request->getOrderId())
                     ],
-                    $this->buildCard($request->getResource())
+                    $this->buildCard($request->getCard())
                 )
             ]
         );

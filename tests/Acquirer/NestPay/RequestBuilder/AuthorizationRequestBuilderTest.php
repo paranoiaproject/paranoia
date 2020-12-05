@@ -52,7 +52,7 @@ class AuthorizationRequestBuilderTest extends TestCase
             ->setSecurityCode('000')
             ->setExpireMonth(1)
             ->setExpireYear(2020);
-        $request->setResource($card);
+        $request->setCard($card);
 
         return $request;
     }

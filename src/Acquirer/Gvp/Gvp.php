@@ -37,6 +37,6 @@ class Gvp extends AbstractAcquirer
      */
     protected function parseResponse($rawResponse, $transactionType)
     {
-        return $this->processorFactory->createProcessor($transactionType)->process($rawResponse);
+        return $this->processorFactory->createProcessor($transactionType)->parse($rawResponse);
     }
 }

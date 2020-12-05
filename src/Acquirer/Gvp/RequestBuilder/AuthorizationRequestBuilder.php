@@ -14,7 +14,7 @@ class AuthorizationRequestBuilder extends BaseRequestBuilder
     {
         $data = array_merge(
             $this->buildBaseRequest($request),
-            ['Card' => $this->buildCard($request->getResource())]
+            ['Card' => $this->buildCard($request->getCard())]
         );
 
         $serializer = new Serializer(Serializer::XML);
@@ -53,7 +53,7 @@ class AuthorizationRequestBuilder extends BaseRequestBuilder
                     '%s%s%s%s%s',
                     $request->getOrderId(),
                     $configuration->getTerminalId(),
-                    $request->getResource()->getNumber(),
+                    $request->getCard()->getNumber(),
                     $this->amountFormatter->format($request->getAmount()),
                     $this->generateSecurityHash($password)
                 )

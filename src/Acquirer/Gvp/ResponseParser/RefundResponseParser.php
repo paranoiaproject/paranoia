@@ -8,7 +8,7 @@ class RefundResponseParser extends BaseResponseParser
      * @throws \Paranoia\Core\Exception\BadResponseException
      * @return \Paranoia\Core\Model\Response
      */
-    public function process($rawResponse)
+    public function parse($rawResponse)
     {
         return $this->processCommonResponse($rawResponse);
     }

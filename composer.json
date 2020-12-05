@@ -4,11 +4,12 @@
     "description": "Universal Payment Library",
     "keywords": ["payment", "e-commerce"],
     "require": {
-        "php": ">= 5.6.0",
+        "php": ">= 7.1",
         "guzzle/guzzle": "3.9.2",
         "symfony/event-dispatcher": "^2.7|^3.0",
         "ext-SimpleXML": "*",
-        "ext-curl" :"*"
+        "ext-curl" :"*",
+      "ext-dom": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "5.7.*",
