@@ -1,0 +1,78 @@
+<?php
+namespace Paranoia\Acquirer\Posnet;
+
+use Paranoia\Acquirer\Posnet\RequestBuilder\CancelRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\PostAuthorizationRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\PreAuthorizationRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\RefundRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\SaleRequestBuilder;
+use Paranoia\Acquirer\AbstractRequestBuilderFactory;
+use Paranoia\Acquirer\AbstractRequestBuilder;
+use Paranoia\Core\Exception\NotImplementedError;
+use Paranoia\Core\Formatter\MoneyFormatter;
+use Paranoia\Core\Formatter\MultiDigitInstallmentFormatter;
+use Paranoia\Acquirer\Posnet\Formatter\CustomCurrencyCodeFormatter;
+use Paranoia\Acquirer\Posnet\Formatter\ExpireDateFormatter;
+use Paranoia\Acquirer\Posnet\Formatter\OrderIdFormatter;
+use Paranoia\Core\Constant\TransactionType;
+
+class PosnetRequestBuilderFactory extends AbstractRequestBuilderFactory
+{
+    /**
+     * @param $transactionType
+     * @return AbstractRequestBuilder
+     * @throws NotImplementedError
+     */
+    public function createBuilder($transactionType)
+    {
+        switch ($transactionType) {
+            case TransactionType::SALE:
+                return new SaleRequestBuilder(
+                    $this->configuration,
+                    new CustomCurrencyCodeFormatter(),
+                    new MoneyFormatter(),
+                    new MultiDigitInstallmentFormatter(),
+                    new ExpireDateFormatter(),
+                    new OrderIdFormatter()
+                );
+            case TransactionType::CANCEL:
+                return new CancelRequestBuilder(
+                    $this->configuration,
+                    new CustomCurrencyCodeFormatter(),
+                    new MoneyFormatter(),
+                    new MultiDigitInstallmentFormatter(),
+                    new ExpireDateFormatter(),
+                    new OrderIdFormatter()
+                );
+            case TransactionType::REFUND:
+                return new RefundRequestBuilder(
+                    $this->configuration,
+                    new CustomCurrencyCodeFormatter(),
+                    new MoneyFormatter(),
+                    new MultiDigitInstallmentFormatter(),
+                    new ExpireDateFormatter(),
+                    new OrderIdFormatter()
+                );
+            case TransactionType::PRE_AUTHORIZATION:
+                return new PreAuthorizationRequestBuilder(
+                    $this->configuration,
+                    new CustomCurrencyCodeFormatter(),
+                    new MoneyFormatter(),
+                    new MultiDigitInstallmentFormatter(),
+                    new ExpireDateFormatter(),
+                    new OrderIdFormatter()
+                );
+            case TransactionType::POST_AUTHORIZATION:
+                return new PostAuthorizationRequestBuilder(
+                    $this->configuration,
+                    new CustomCurrencyCodeFormatter(),
+                    new MoneyFormatter(),
+                    new MultiDigitInstallmentFormatter(),
+                    new ExpireDateFormatter(),
+                    new OrderIdFormatter()
+                );
+            default:
+                throw new NotImplementedError('Not implemented transaction type: ' . $transactionType);
+        }
+    }
+}
