@@ -3,10 +3,10 @@ namespace Paranoia\Test\Acquirer\NestPay;
 
 use Paranoia\Acquirer\NestPay\NestPayConfiguration as NestPayConfiguration;
 use Paranoia\Acquirer\NestPay\NestPayRequestBuilderFactory;
-use Paranoia\Acquirer\NestPay\RequestBuilder\CancelRequestBuilder;
-use Paranoia\Acquirer\NestPay\RequestBuilder\ChargeRequestBuilder;
-use Paranoia\Acquirer\NestPay\RequestBuilder\CaptureRequestBuilder;
 use Paranoia\Acquirer\NestPay\RequestBuilder\AuthorizationRequestBuilder;
+use Paranoia\Acquirer\NestPay\RequestBuilder\CancelRequestBuilder;
+use Paranoia\Acquirer\NestPay\RequestBuilder\CaptureRequestBuilder;
+use Paranoia\Acquirer\NestPay\RequestBuilder\ChargeRequestBuilder;
 use Paranoia\Acquirer\NestPay\RequestBuilder\RefundRequestBuilder;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\NotImplementedError;

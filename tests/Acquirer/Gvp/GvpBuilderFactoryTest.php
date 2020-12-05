@@ -3,10 +3,10 @@ namespace Paranoia\Test\Acquirer\Gvp;
 
 use Paranoia\Acquirer\Gvp\GvpConfiguration as GvpConfiguration;
 use Paranoia\Acquirer\Gvp\GvpRequestBuilderFactory;
-use Paranoia\Acquirer\Gvp\RequestBuilder\CancelRequestBuilder;
-use Paranoia\Acquirer\Gvp\RequestBuilder\ChargeRequestBuilder;
-use Paranoia\Acquirer\Gvp\RequestBuilder\CaptureRequestBuilder;
 use Paranoia\Acquirer\Gvp\RequestBuilder\AuthorizationRequestBuilder;
+use Paranoia\Acquirer\Gvp\RequestBuilder\CancelRequestBuilder;
+use Paranoia\Acquirer\Gvp\RequestBuilder\CaptureRequestBuilder;
+use Paranoia\Acquirer\Gvp\RequestBuilder\ChargeRequestBuilder;
 use Paranoia\Acquirer\Gvp\RequestBuilder\RefundRequestBuilder;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\NotImplementedError;

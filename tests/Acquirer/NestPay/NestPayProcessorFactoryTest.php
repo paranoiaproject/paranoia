@@ -3,10 +3,10 @@ namespace Paranoia\Test\Acquirer\NestPay;
 
 use Paranoia\Acquirer\NestPay\NestPayConfiguration;
 use Paranoia\Acquirer\NestPay\NestPayResponseParserFactory;
-use Paranoia\Acquirer\NestPay\ResponseParser\CancelResponseParser;
-use Paranoia\Acquirer\NestPay\ResponseParser\ChargeResponseParser;
-use Paranoia\Acquirer\NestPay\ResponseParser\CaptureResponseParser;
 use Paranoia\Acquirer\NestPay\ResponseParser\AuthorizationResponseParser;
+use Paranoia\Acquirer\NestPay\ResponseParser\CancelResponseParser;
+use Paranoia\Acquirer\NestPay\ResponseParser\CaptureResponseParser;
+use Paranoia\Acquirer\NestPay\ResponseParser\ChargeResponseParser;
 use Paranoia\Acquirer\NestPay\ResponseParser\RefundResponseParser;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\InvalidArgumentException;

@@ -3,10 +3,10 @@ namespace Paranoia\Test\Acquirer\Gvp;
 
 use Paranoia\Acquirer\Gvp\GvpConfiguration;
 use Paranoia\Acquirer\Gvp\GvpResponseParserFactory;
-use Paranoia\Acquirer\Gvp\ResponseParser\CancelResponseParser;
-use Paranoia\Acquirer\Gvp\ResponseParser\ChargeResponseParser;
-use Paranoia\Acquirer\Gvp\ResponseParser\CaptureResponseParser;
 use Paranoia\Acquirer\Gvp\ResponseParser\AuthorizationResponseParser;
+use Paranoia\Acquirer\Gvp\ResponseParser\CancelResponseParser;
+use Paranoia\Acquirer\Gvp\ResponseParser\CaptureResponseParser;
+use Paranoia\Acquirer\Gvp\ResponseParser\ChargeResponseParser;
 use Paranoia\Acquirer\Gvp\ResponseParser\RefundResponseParser;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\InvalidArgumentException;

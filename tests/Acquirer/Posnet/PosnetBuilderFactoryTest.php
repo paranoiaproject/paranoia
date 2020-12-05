@@ -3,10 +3,10 @@ namespace Paranoia\Test\Acquirer\Posnet;
 
 use Paranoia\Acquirer\Posnet\PosnetConfiguration as PosnetConfiguration;
 use Paranoia\Acquirer\Posnet\PosnetRequestBuilderFactory;
-use Paranoia\Acquirer\Posnet\RequestBuilder\CancelRequestBuilder;
-use Paranoia\Acquirer\Posnet\RequestBuilder\ChargeRequestBuilder;
-use Paranoia\Acquirer\Posnet\RequestBuilder\CaptureRequestBuilder;
 use Paranoia\Acquirer\Posnet\RequestBuilder\AuthorizationRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\CancelRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\CaptureRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\ChargeRequestBuilder;
 use Paranoia\Acquirer\Posnet\RequestBuilder\RefundRequestBuilder;
 use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\NotImplementedError;
