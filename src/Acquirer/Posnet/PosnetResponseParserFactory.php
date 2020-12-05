@@ -3,13 +3,13 @@ namespace Paranoia\Acquirer\Posnet;
 
 use Paranoia\Acquirer\AbstractResponseParser;
 use Paranoia\Acquirer\AbstractResponseParserFactory;
-use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Acquirer\Posnet\ResponseParser\CancelResponseParser;
+use Paranoia\Acquirer\Posnet\ResponseParser\ChargeResponseParser;
 use Paranoia\Acquirer\Posnet\ResponseParser\PostAuthorizationResponseParser;
 use Paranoia\Acquirer\Posnet\ResponseParser\PreAuthorizationResponseParser;
 use Paranoia\Acquirer\Posnet\ResponseParser\RefundResponseParser;
-use Paranoia\Acquirer\Posnet\ResponseParser\SaleResponseParser;
 use Paranoia\Core\Constant\TransactionType;
+use Paranoia\Core\Exception\InvalidArgumentException;
 
 class PosnetResponseParserFactory extends AbstractResponseParserFactory
 {
@@ -21,7 +21,7 @@ class PosnetResponseParserFactory extends AbstractResponseParserFactory
     {
         switch ($transactionType) {
             case TransactionType::SALE:
-                return new SaleResponseParser($this->configuration);
+                return new ChargeResponseParser($this->configuration);
             case TransactionType::REFUND:
                 return new RefundResponseParser($this->configuration);
             case TransactionType::CANCEL:

@@ -1,9 +1,8 @@
 <?php
 namespace Paranoia\Acquirer\NestPay\RequestBuilder;
 
-use Paranoia\Acquirer\NestPay\RequestBuilder\BaseRequestBuilder;
-use Paranoia\Lib\Serializer\Serializer;
 use Paranoia\Core\Model\Request;
+use Paranoia\Lib\Serializer\Serializer;
 
 class PreAuthorizationRequestBuilder extends BaseRequestBuilder
 {

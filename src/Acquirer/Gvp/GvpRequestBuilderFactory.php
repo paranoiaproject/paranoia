@@ -1,19 +1,19 @@
 <?php
 namespace Paranoia\Acquirer\Gvp;
 
+use Paranoia\Acquirer\AbstractRequestBuilder;
+use Paranoia\Acquirer\AbstractRequestBuilderFactory;
+use Paranoia\Acquirer\Gvp\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\Gvp\RequestBuilder\CancelRequestBuilder;
+use Paranoia\Acquirer\Gvp\RequestBuilder\ChargeRequestBuilder;
 use Paranoia\Acquirer\Gvp\RequestBuilder\PostAuthorizationRequestBuilder;
 use Paranoia\Acquirer\Gvp\RequestBuilder\PreAuthorizationRequestBuilder;
 use Paranoia\Acquirer\Gvp\RequestBuilder\RefundRequestBuilder;
-use Paranoia\Acquirer\Gvp\RequestBuilder\SaleRequestBuilder;
-use Paranoia\Acquirer\AbstractRequestBuilderFactory;
-use Paranoia\Acquirer\AbstractRequestBuilder;
+use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\NotImplementedError;
-use Paranoia\Acquirer\Gvp\Formatter\ExpireDateFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\MoneyFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
-use Paranoia\Core\Constant\TransactionType;
 
 class GvpRequestBuilderFactory extends AbstractRequestBuilderFactory
 {
@@ -26,7 +26,7 @@ class GvpRequestBuilderFactory extends AbstractRequestBuilderFactory
     {
         switch ($transactionType) {
             case TransactionType::SALE:
-                return new SaleRequestBuilder(
+                return new ChargeRequestBuilder(
                     $this->configuration,
                     new IsoNumericCurrencyCodeFormatter(),
                     new MoneyFormatter(),

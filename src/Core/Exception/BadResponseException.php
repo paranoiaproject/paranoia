@@ -1,7 +1,7 @@
 <?php
 namespace Paranoia\Core\Exception;
 
-use \ErrorException;
+use ErrorException;
 
 class BadResponseException extends ErrorException
 {

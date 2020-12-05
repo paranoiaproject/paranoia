@@ -1,12 +1,12 @@
 <?php
 namespace Paranoia\Test\Acquirer\NestPay\RequestBuilder;
 
-use Paranoia\Acquirer\NestPay\RequestBuilder\SaleRequestBuilder;
+use Paranoia\Acquirer\NestPay\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\NestPay\NestPayConfiguration as NestPayConfiguration;
+use Paranoia\Acquirer\NestPay\RequestBuilder\ChargeRequestBuilder;
 use Paranoia\Core\Constant\Currency;
 use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
-use Paranoia\Acquirer\NestPay\Formatter\ExpireDateFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
 use Paranoia\Core\Model\Request;
 use Paranoia\Core\Model\Request\Resource\Card;
@@ -72,7 +72,7 @@ class SaleRequestBuilderTest extends TestCase
 
     protected function setupBuilder()
     {
-        return new SaleRequestBuilder(
+        return new ChargeRequestBuilder(
             $this->setupConfiguration(),
             new IsoNumericCurrencyCodeFormatter(),
             new DecimalFormatter(),

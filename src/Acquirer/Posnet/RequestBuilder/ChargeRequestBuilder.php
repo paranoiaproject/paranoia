@@ -1,11 +1,10 @@
 <?php
 namespace Paranoia\Acquirer\Posnet\RequestBuilder;
 
-use Paranoia\Acquirer\Posnet\RequestBuilder\BaseRequestBuilder;
-use Paranoia\Lib\Serializer\Serializer;
 use Paranoia\Core\Model\Request;
+use Paranoia\Lib\Serializer\Serializer;
 
-class SaleRequestBuilder extends BaseRequestBuilder
+class ChargeRequestBuilder extends BaseRequestBuilder
 {
     const TRANSACTION_TYPE = 'sale';
     const ENVELOPE_NAME    = 'posnetRequest';

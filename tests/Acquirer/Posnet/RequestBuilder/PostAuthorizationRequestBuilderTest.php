@@ -1,16 +1,16 @@
 <?php
 namespace Paranoia\Test\Acquirer\Posnet\RequestBuilder;
 
+use Paranoia\Acquirer\Posnet\Formatter\CustomCurrencyCodeFormatter;
+use Paranoia\Acquirer\Posnet\Formatter\ExpireDateFormatter;
+use Paranoia\Acquirer\Posnet\Formatter\OrderIdFormatter;
+use Paranoia\Acquirer\Posnet\PosnetConfiguration as PosnetConfiguration;
 use Paranoia\Acquirer\Posnet\RequestBuilder\PostAuthorizationRequestBuilder;
 use Paranoia\Core\Constant\Currency;
 use Paranoia\Core\Formatter\MoneyFormatter;
 use Paranoia\Core\Formatter\MultiDigitInstallmentFormatter;
-use Paranoia\Acquirer\Posnet\Formatter\CustomCurrencyCodeFormatter;
-use Paranoia\Acquirer\Posnet\Formatter\ExpireDateFormatter;
-use Paranoia\Acquirer\Posnet\Formatter\OrderIdFormatter;
 use Paranoia\Core\Model\Request;
 use PHPUnit\Framework\TestCase;
-use Paranoia\Acquirer\Posnet\PosnetConfiguration as PosnetConfiguration;
 
 class PostAuthorizationRequestBuilderTest extends TestCase
 {

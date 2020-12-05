@@ -1,9 +1,9 @@
 <?php
 namespace Paranoia\Test\Acquirer\Gvp\ResponseParser;
 
+use Paranoia\Acquirer\Gvp\ResponseParser\PreAuthorizationResponseParser;
 use Paranoia\Core\AbstractConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
-use Paranoia\Acquirer\Gvp\ResponseParser\PreAuthorizationResponseParser;
 use Paranoia\Core\Model\Response;
 use PHPUnit\Framework\TestCase;
 

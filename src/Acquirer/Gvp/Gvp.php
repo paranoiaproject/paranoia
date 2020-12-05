@@ -2,9 +2,7 @@
 namespace Paranoia\Acquirer\Gvp;
 
 use Paranoia\Acquirer\AbstractAcquirer;
-use Paranoia\Acquirer\Gvp\GvpRequestBuilderFactory;
 use Paranoia\Core\AbstractConfiguration;
-use Paranoia\Acquirer\Gvp\GvpResponseParserFactory;
 use Paranoia\Core\Model\Request;
 
 class Gvp extends AbstractAcquirer

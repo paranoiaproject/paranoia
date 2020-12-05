@@ -1,9 +1,9 @@
 <?php
 namespace Paranoia\Test\Acquirer\NestPay\ResponseParser;
 
+use Paranoia\Acquirer\NestPay\ResponseParser\PreAuthorizationResponseParser;
 use Paranoia\Core\AbstractConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
-use Paranoia\Acquirer\NestPay\ResponseParser\PreAuthorizationResponseParser;
 use Paranoia\Core\Model\Response;
 use PHPUnit\Framework\TestCase;
 

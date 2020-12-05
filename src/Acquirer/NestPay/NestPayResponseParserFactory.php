@@ -3,13 +3,13 @@ namespace Paranoia\Acquirer\NestPay;
 
 use Paranoia\Acquirer\AbstractResponseParser;
 use Paranoia\Acquirer\AbstractResponseParserFactory;
-use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Acquirer\NestPay\ResponseParser\CancelResponseParser;
+use Paranoia\Acquirer\NestPay\ResponseParser\ChargeResponseParser;
 use Paranoia\Acquirer\NestPay\ResponseParser\PostAuthorizationResponseParser;
 use Paranoia\Acquirer\NestPay\ResponseParser\PreAuthorizationResponseParser;
 use Paranoia\Acquirer\NestPay\ResponseParser\RefundResponseParser;
-use Paranoia\Acquirer\NestPay\ResponseParser\SaleResponseParser;
 use Paranoia\Core\Constant\TransactionType;
+use Paranoia\Core\Exception\InvalidArgumentException;
 
 class NestPayResponseParserFactory extends AbstractResponseParserFactory
 {
@@ -21,7 +21,7 @@ class NestPayResponseParserFactory extends AbstractResponseParserFactory
     {
         switch ($transactionType) {
             case TransactionType::SALE:
-                return new SaleResponseParser($this->configuration);
+                return new ChargeResponseParser($this->configuration);
             case TransactionType::REFUND:
                 return new RefundResponseParser($this->configuration);
             case TransactionType::CANCEL:

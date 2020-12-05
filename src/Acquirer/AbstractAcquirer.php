@@ -4,9 +4,9 @@ namespace Paranoia\Acquirer;
 use Guzzle\Http\Client as HttpClient;
 use Guzzle\Http\Exception\RequestException;
 use Paranoia\Core\AbstractConfiguration;
+use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\CommunicationError;
 use Paranoia\Core\Model\Request;
-use Paranoia\Core\Constant\TransactionType;
 
 abstract class AbstractAcquirer
 {

@@ -3,9 +3,7 @@ namespace Paranoia\Acquirer\NestPay;
 
 use Paranoia\Acquirer\AbstractAcquirer;
 use Paranoia\Acquirer\AbstractRequestBuilderFactory;
-use Paranoia\Acquirer\NestPay\NestPayRequestBuilderFactory;
 use Paranoia\Core\AbstractConfiguration;
-use Paranoia\Acquirer\NestPay\NestPayResponseParserFactory;
 use Paranoia\Core\Model\Request;
 
 class NestPay extends AbstractAcquirer

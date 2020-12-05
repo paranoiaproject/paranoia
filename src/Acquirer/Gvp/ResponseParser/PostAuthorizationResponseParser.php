@@ -1,8 +1,6 @@
 <?php
 namespace Paranoia\Acquirer\Gvp\ResponseParser;
 
-use Paranoia\Acquirer\Gvp\ResponseParser\BaseResponseParser;
-
 class PostAuthorizationResponseParser extends BaseResponseParser
 {
     /**

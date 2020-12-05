@@ -2,13 +2,13 @@
 namespace Paranoia\Acquirer\Posnet\RequestBuilder;
 
 use Paranoia\Acquirer\AbstractRequestBuilder;
-use Paranoia\Core\AbstractConfiguration;
-use Paranoia\Acquirer\Posnet\PosnetConfiguration;
-use Paranoia\Core\Formatter\MoneyFormatter;
-use Paranoia\Core\Formatter\MultiDigitInstallmentFormatter;
 use Paranoia\Acquirer\Posnet\Formatter\CustomCurrencyCodeFormatter;
 use Paranoia\Acquirer\Posnet\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\Posnet\Formatter\OrderIdFormatter;
+use Paranoia\Acquirer\Posnet\PosnetConfiguration;
+use Paranoia\Core\AbstractConfiguration;
+use Paranoia\Core\Formatter\MoneyFormatter;
+use Paranoia\Core\Formatter\MultiDigitInstallmentFormatter;
 use Paranoia\Core\Model\Request;
 use Paranoia\Core\Model\Request\Resource\Card;
 use Paranoia\Core\Model\Request\Resource\ResourceInterface;

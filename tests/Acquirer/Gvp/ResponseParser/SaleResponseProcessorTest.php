@@ -1,9 +1,9 @@
 <?php
 namespace Paranoia\Test\Acquirer\Gvp\ResponseParser;
 
+use Paranoia\Acquirer\Gvp\ResponseParser\ChargeResponseParser;
 use Paranoia\Core\AbstractConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
-use Paranoia\Acquirer\Gvp\ResponseParser\SaleResponseParser;
 use Paranoia\Core\Model\Response;
 use PHPUnit\Framework\TestCase;
 
@@ -17,7 +17,7 @@ class SaleResponseProcessorTest extends TestCase
 
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new SaleResponseParser($configuration);
+        $processor = new ChargeResponseParser($configuration);
         $response = $processor->process($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(true, $response->isSuccess());
@@ -34,7 +34,7 @@ class SaleResponseProcessorTest extends TestCase
 
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new SaleResponseParser($configuration);
+        $processor = new ChargeResponseParser($configuration);
         $response = $processor->process($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
         $this->assertEquals(false, $response->isSuccess());
@@ -52,7 +52,7 @@ class SaleResponseProcessorTest extends TestCase
     {
         /** @var AbstractConfiguration $configuration */
         $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
-        $processor = new SaleResponseParser($configuration);
+        $processor = new ChargeResponseParser($configuration);
 
         $this->expectException(BadResponseException::class);
         $processor->process($rawResponse);

@@ -1,9 +1,10 @@
 <?php
 namespace Paranoia\Lib\Serializer;
 
-use Paranoia\Lib\Serializer\Adapter\Xml;
-// use Paranoia\Common\Serializer\Adapter\Json;
 use Paranoia\Core\Exception\InvalidArgumentException;
+use Paranoia\Lib\Serializer\Adapter\Xml;
+
+// use Paranoia\Common\Serializer\Adapter\Json;
 
 class Serializer
 {

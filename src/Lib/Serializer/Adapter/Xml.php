@@ -33,8 +33,8 @@
  */
 namespace Paranoia\Lib\Serializer\Adapter;
 
-use \DomDocument;
-use \Exception;
+use DomDocument;
+use Exception;
 use Paranoia\Core\Exception\InvalidArgumentException;
 
 class Xml implements SerializerInterface

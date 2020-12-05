@@ -1,9 +1,8 @@
 <?php
 namespace Paranoia\Acquirer\Posnet\RequestBuilder;
 
-use Paranoia\Acquirer\Posnet\RequestBuilder\BaseRequestBuilder;
-use Paranoia\Lib\Serializer\Serializer;
 use Paranoia\Core\Model\Request;
+use Paranoia\Lib\Serializer\Serializer;
 
 class RefundRequestBuilder extends BaseRequestBuilder
 {

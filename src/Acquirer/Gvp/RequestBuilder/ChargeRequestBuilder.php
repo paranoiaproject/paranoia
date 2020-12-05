@@ -1,12 +1,11 @@
 <?php
 namespace Paranoia\Acquirer\Gvp\RequestBuilder;
 
-use Paranoia\Acquirer\Gvp\RequestBuilder\BaseRequestBuilder;
-use Paranoia\Lib\Serializer\Serializer;
 use Paranoia\Acquirer\Gvp\GvpConfiguration;
 use Paranoia\Core\Model\Request;
+use Paranoia\Lib\Serializer\Serializer;
 
-class SaleRequestBuilder extends BaseRequestBuilder
+class ChargeRequestBuilder extends BaseRequestBuilder
 {
     const TRANSACTION_TYPE = 'sales';
     const ENVELOPE_NAME    = 'GVPSRequest';

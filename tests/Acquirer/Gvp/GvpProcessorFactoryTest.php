@@ -2,14 +2,14 @@
 namespace Paranoia\Test\Acquirer\Gvp;
 
 use Paranoia\Acquirer\Gvp\GvpConfiguration;
-use Paranoia\Core\Exception\InvalidArgumentException;
+use Paranoia\Acquirer\Gvp\GvpResponseParserFactory;
 use Paranoia\Acquirer\Gvp\ResponseParser\CancelResponseParser;
+use Paranoia\Acquirer\Gvp\ResponseParser\ChargeResponseParser;
 use Paranoia\Acquirer\Gvp\ResponseParser\PostAuthorizationResponseParser;
 use Paranoia\Acquirer\Gvp\ResponseParser\PreAuthorizationResponseParser;
 use Paranoia\Acquirer\Gvp\ResponseParser\RefundResponseParser;
-use Paranoia\Acquirer\Gvp\ResponseParser\SaleResponseParser;
-use Paranoia\Acquirer\Gvp\GvpResponseParserFactory;
 use Paranoia\Core\Constant\TransactionType;
+use Paranoia\Core\Exception\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class GvpProcessorFactoryTest extends TestCase
@@ -19,7 +19,7 @@ class GvpProcessorFactoryTest extends TestCase
         /** @var GvpConfiguration $configuration */
         $configuration = $this->getMockBuilder(GvpConfiguration::class)->getMock();
         $factory = new GvpResponseParserFactory($configuration);
-        $this->assertInstanceOf(SaleResponseParser::class, $factory->createProcessor(TransactionType::SALE));
+        $this->assertInstanceOf(ChargeResponseParser::class, $factory->createProcessor(TransactionType::SALE));
         $this->assertInstanceOf(RefundResponseParser::class, $factory->createProcessor(TransactionType::REFUND));
         $this->assertInstanceOf(CancelResponseParser::class, $factory->createProcessor(TransactionType::CANCEL));
         $this->assertInstanceOf(PreAuthorizationResponseParser::class, $factory->createProcessor(TransactionType::PRE_AUTHORIZATION));

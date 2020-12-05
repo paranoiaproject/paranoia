@@ -1,8 +1,8 @@
 <?php
 namespace Paranoia\Acquirer\Posnet\ResponseParser;
 
-use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Acquirer\AbstractResponseParser;
+use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Model\Response;
 
 abstract class BaseResponseParser extends AbstractResponseParser

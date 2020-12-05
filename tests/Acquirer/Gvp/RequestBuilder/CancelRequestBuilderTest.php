@@ -1,9 +1,9 @@
 <?php
 namespace Paranoia\Test\Acquirer\Gvp\RequestBuilder;
 
-use Paranoia\Acquirer\Gvp\RequestBuilder\CancelRequestBuilder;
-use Paranoia\Acquirer\Gvp\GvpConfiguration as GvpConfiguration;
 use Paranoia\Acquirer\Gvp\Formatter\ExpireDateFormatter;
+use Paranoia\Acquirer\Gvp\GvpConfiguration as GvpConfiguration;
+use Paranoia\Acquirer\Gvp\RequestBuilder\CancelRequestBuilder;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\MoneyFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;

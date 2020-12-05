@@ -1,7 +1,6 @@
 <?php
 namespace Paranoia\Acquirer;
 
-use Paranoia\Acquirer\AbstractRequestBuilder;
 use Paranoia\Core\AbstractConfiguration;
 
 abstract class AbstractRequestBuilderFactory

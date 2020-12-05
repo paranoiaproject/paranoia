@@ -1,7 +1,6 @@
 <?php
 namespace Paranoia\Core\Formatter;
 
-use Paranoia\Core\Formatter\FormatterInterface;
 use Paranoia\Core\Exception\InvalidArgumentException;
 
 class DecimalFormatter implements FormatterInterface

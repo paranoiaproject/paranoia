@@ -2,7 +2,6 @@
 namespace Paranoia\Core\Model;
 
 use Paranoia\Core\Model\Request\Resource\ResourceInterface;
-use Paranoia\Core\Model\TransferInterface;
 
 class Request implements TransferInterface
 {

@@ -1,9 +1,7 @@
 <?php
 namespace Paranoia\Acquirer\Posnet\ResponseParser;
 
-use Paranoia\Acquirer\Posnet\ResponseParser\BaseResponseParser;
-
-class SaleResponseParser extends BaseResponseParser
+class ChargeResponseParser extends BaseResponseParser
 {
     /**
      * @param $rawResponse

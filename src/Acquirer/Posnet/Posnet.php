@@ -2,9 +2,7 @@
 namespace Paranoia\Acquirer\Posnet;
 
 use Paranoia\Acquirer\AbstractAcquirer;
-use Paranoia\Acquirer\Posnet\PosnetRequestBuilderFactory;
 use Paranoia\Core\AbstractConfiguration;
-use Paranoia\Acquirer\Posnet\PosnetResponseParserFactory;
 use Paranoia\Core\Model\Request;
 
 class Posnet extends AbstractAcquirer

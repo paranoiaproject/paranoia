@@ -1,15 +1,15 @@
 <?php
 namespace Paranoia\Test\Acquirer\Gvp;
 
+use Paranoia\Acquirer\Gvp\GvpConfiguration as GvpConfiguration;
+use Paranoia\Acquirer\Gvp\GvpRequestBuilderFactory;
 use Paranoia\Acquirer\Gvp\RequestBuilder\CancelRequestBuilder;
+use Paranoia\Acquirer\Gvp\RequestBuilder\ChargeRequestBuilder;
 use Paranoia\Acquirer\Gvp\RequestBuilder\PostAuthorizationRequestBuilder;
 use Paranoia\Acquirer\Gvp\RequestBuilder\PreAuthorizationRequestBuilder;
 use Paranoia\Acquirer\Gvp\RequestBuilder\RefundRequestBuilder;
-use Paranoia\Acquirer\Gvp\RequestBuilder\SaleRequestBuilder;
-use Paranoia\Acquirer\Gvp\GvpRequestBuilderFactory;
-use Paranoia\Acquirer\Gvp\GvpConfiguration as GvpConfiguration;
-use Paranoia\Core\Exception\NotImplementedError;
 use Paranoia\Core\Constant\TransactionType;
+use Paranoia\Core\Exception\NotImplementedError;
 use PHPUnit\Framework\TestCase;
 
 class GvpBuilderFactoryTest extends TestCase
@@ -19,7 +19,7 @@ class GvpBuilderFactoryTest extends TestCase
         /** @var GvpConfiguration $configuration */
         $configuration = $this->getMockBuilder(GvpConfiguration::class)->getMock();
         $factory = new GvpRequestBuilderFactory($configuration);
-        $this->assertInstanceOf(SaleRequestBuilder::class, $factory->createBuilder(TransactionType::SALE));
+        $this->assertInstanceOf(ChargeRequestBuilder::class, $factory->createBuilder(TransactionType::SALE));
         $this->assertInstanceOf(RefundRequestBuilder::class, $factory->createBuilder(TransactionType::REFUND));
         $this->assertInstanceOf(CancelRequestBuilder::class, $factory->createBuilder(TransactionType::CANCEL));
         $this->assertInstanceOf(PreAuthorizationRequestBuilder::class, $factory->createBuilder(TransactionType::PRE_AUTHORIZATION));

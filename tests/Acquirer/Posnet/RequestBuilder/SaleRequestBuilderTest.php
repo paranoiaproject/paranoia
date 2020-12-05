@@ -1,17 +1,17 @@
 <?php
 namespace Paranoia\Test\Acquirer\Posnet\RequestBuilder;
 
-use Paranoia\Acquirer\Posnet\RequestBuilder\SaleRequestBuilder;
-use Paranoia\Core\Constant\Currency;
-use Paranoia\Core\Formatter\MoneyFormatter;
-use Paranoia\Core\Formatter\MultiDigitInstallmentFormatter;
 use Paranoia\Acquirer\Posnet\Formatter\CustomCurrencyCodeFormatter;
 use Paranoia\Acquirer\Posnet\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\Posnet\Formatter\OrderIdFormatter;
+use Paranoia\Acquirer\Posnet\PosnetConfiguration as PosnetConfiguration;
+use Paranoia\Acquirer\Posnet\RequestBuilder\ChargeRequestBuilder;
+use Paranoia\Core\Constant\Currency;
+use Paranoia\Core\Formatter\MoneyFormatter;
+use Paranoia\Core\Formatter\MultiDigitInstallmentFormatter;
 use Paranoia\Core\Model\Request;
 use Paranoia\Core\Model\Request\Resource\Card;
 use PHPUnit\Framework\TestCase;
-use Paranoia\Acquirer\Posnet\PosnetConfiguration as PosnetConfiguration;
 
 class SaleRequestBuilderTest extends TestCase
 {
@@ -73,7 +73,7 @@ class SaleRequestBuilderTest extends TestCase
 
     protected function setupBuilder()
     {
-        return new SaleRequestBuilder(
+        return new ChargeRequestBuilder(
             $this->setupConfiguration(),
             new CustomCurrencyCodeFormatter(),
             new MoneyFormatter(),

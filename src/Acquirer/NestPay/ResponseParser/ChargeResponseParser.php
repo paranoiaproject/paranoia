@@ -1,9 +1,7 @@
 <?php
-namespace Paranoia\Acquirer\Gvp\ResponseParser;
+namespace Paranoia\Acquirer\NestPay\ResponseParser;
 
-use Paranoia\Acquirer\Gvp\ResponseParser\BaseResponseParser;
-
-class SaleResponseParser extends BaseResponseParser
+class ChargeResponseParser extends BaseResponseParser
 {
     /**
      * @param $rawResponse

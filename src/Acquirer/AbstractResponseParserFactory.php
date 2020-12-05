@@ -2,7 +2,6 @@
 namespace Paranoia\Acquirer;
 
 use Paranoia\Core\AbstractConfiguration;
-use Paranoia\Acquirer\AbstractResponseParser;
 
 abstract class AbstractResponseParserFactory
 {

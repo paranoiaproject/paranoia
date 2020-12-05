@@ -3,13 +3,13 @@ namespace Paranoia\Acquirer\Gvp;
 
 use Paranoia\Acquirer\AbstractResponseParser;
 use Paranoia\Acquirer\AbstractResponseParserFactory;
-use Paranoia\Core\Exception\InvalidArgumentException;
 use Paranoia\Acquirer\Gvp\ResponseParser\CancelResponseParser;
+use Paranoia\Acquirer\Gvp\ResponseParser\ChargeResponseParser;
 use Paranoia\Acquirer\Gvp\ResponseParser\PostAuthorizationResponseParser;
 use Paranoia\Acquirer\Gvp\ResponseParser\PreAuthorizationResponseParser;
 use Paranoia\Acquirer\Gvp\ResponseParser\RefundResponseParser;
-use Paranoia\Acquirer\Gvp\ResponseParser\SaleResponseParser;
 use Paranoia\Core\Constant\TransactionType;
+use Paranoia\Core\Exception\InvalidArgumentException;
 
 class GvpResponseParserFactory extends AbstractResponseParserFactory
 {
@@ -21,7 +21,7 @@ class GvpResponseParserFactory extends AbstractResponseParserFactory
     {
         switch ($transactionType) {
             case TransactionType::SALE:
-                return new SaleResponseParser($this->configuration);
+                return new ChargeResponseParser($this->configuration);
             case TransactionType::REFUND:
                 return new RefundResponseParser($this->configuration);
             case TransactionType::CANCEL:

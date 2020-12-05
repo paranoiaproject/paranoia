@@ -1,9 +1,9 @@
 <?php
 namespace Paranoia\Test\Acquirer\Posnet\ResponseParser;
 
+use Paranoia\Acquirer\Posnet\ResponseParser\RefundResponseParser;
 use Paranoia\Core\AbstractConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
-use Paranoia\Acquirer\Posnet\ResponseParser\RefundResponseParser;
 use Paranoia\Core\Model\Response;
 use PHPUnit\Framework\TestCase;
 

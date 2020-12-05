@@ -1,11 +1,10 @@
 <?php
 namespace Paranoia\Acquirer\NestPay\RequestBuilder;
 
-use Paranoia\Acquirer\NestPay\RequestBuilder\BaseRequestBuilder;
-use Paranoia\Lib\Serializer\Serializer;
 use Paranoia\Core\Model\Request;
+use Paranoia\Lib\Serializer\Serializer;
 
-class SaleRequestBuilder extends BaseRequestBuilder
+class ChargeRequestBuilder extends BaseRequestBuilder
 {
     const TRANSACTION_TYPE = 'Auth';
     const ENVELOPE_NAME    = 'CC5Request';

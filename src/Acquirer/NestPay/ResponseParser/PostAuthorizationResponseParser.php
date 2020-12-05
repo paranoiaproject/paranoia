@@ -1,8 +1,6 @@
 <?php
 namespace Paranoia\Acquirer\NestPay\ResponseParser;
 
-use Paranoia\Acquirer\NestPay\ResponseParser\BaseResponseParser;
-
 class PostAuthorizationResponseParser extends BaseResponseParser
 {
     /**

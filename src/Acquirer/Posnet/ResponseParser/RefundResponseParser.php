@@ -1,8 +1,6 @@
 <?php
 namespace Paranoia\Acquirer\Posnet\ResponseParser;
 
-use Paranoia\Acquirer\Posnet\ResponseParser\BaseResponseParser;
-
 class RefundResponseParser extends BaseResponseParser
 {
     /**

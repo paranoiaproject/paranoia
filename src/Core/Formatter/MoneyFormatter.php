@@ -2,7 +2,6 @@
 namespace Paranoia\Core\Formatter;
 
 use Paranoia\Core\Exception\InvalidArgumentException;
-use Paranoia\Core\Formatter\FormatterInterface;
 
 class MoneyFormatter implements FormatterInterface
 {

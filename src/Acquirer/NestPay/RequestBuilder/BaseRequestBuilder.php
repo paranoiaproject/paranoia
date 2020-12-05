@@ -2,10 +2,10 @@
 namespace Paranoia\Acquirer\NestPay\RequestBuilder;
 
 use Paranoia\Acquirer\AbstractRequestBuilder;
+use Paranoia\Acquirer\NestPay\Formatter\ExpireDateFormatter;
 use Paranoia\Core\AbstractConfiguration;
 use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
-use Paranoia\Acquirer\NestPay\Formatter\ExpireDateFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
 use Paranoia\Core\Model\Request\Resource\Card;
 use Paranoia\Core\Model\Request\Resource\ResourceInterface;

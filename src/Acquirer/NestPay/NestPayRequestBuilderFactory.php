@@ -1,19 +1,19 @@
 <?php
 namespace Paranoia\Acquirer\NestPay;
 
+use Paranoia\Acquirer\AbstractRequestBuilder;
+use Paranoia\Acquirer\AbstractRequestBuilderFactory;
+use Paranoia\Acquirer\NestPay\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\NestPay\RequestBuilder\CancelRequestBuilder;
+use Paranoia\Acquirer\NestPay\RequestBuilder\ChargeRequestBuilder;
 use Paranoia\Acquirer\NestPay\RequestBuilder\PostAuthorizationRequestBuilder;
 use Paranoia\Acquirer\NestPay\RequestBuilder\PreAuthorizationRequestBuilder;
 use Paranoia\Acquirer\NestPay\RequestBuilder\RefundRequestBuilder;
-use Paranoia\Acquirer\NestPay\RequestBuilder\SaleRequestBuilder;
-use Paranoia\Acquirer\AbstractRequestBuilderFactory;
-use Paranoia\Acquirer\AbstractRequestBuilder;
+use Paranoia\Core\Constant\TransactionType;
 use Paranoia\Core\Exception\NotImplementedError;
 use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
-use Paranoia\Acquirer\NestPay\Formatter\ExpireDateFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
-use Paranoia\Core\Constant\TransactionType;
 
 class NestPayRequestBuilderFactory extends AbstractRequestBuilderFactory
 {
@@ -26,7 +26,7 @@ class NestPayRequestBuilderFactory extends AbstractRequestBuilderFactory
     {
         switch ($transactionType) {
             case TransactionType::SALE:
-                return new SaleRequestBuilder(
+                return new ChargeRequestBuilder(
                     $this->configuration,
                     new IsoNumericCurrencyCodeFormatter(),
                     new DecimalFormatter(),

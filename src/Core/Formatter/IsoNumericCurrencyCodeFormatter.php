@@ -3,7 +3,6 @@ namespace Paranoia\Core\Formatter;
 
 use Paranoia\Core\Constant\Currency;
 use Paranoia\Core\Exception\InvalidArgumentException;
-use Paranoia\Core\Formatter\FormatterInterface;
 
 class IsoNumericCurrencyCodeFormatter implements FormatterInterface
 {

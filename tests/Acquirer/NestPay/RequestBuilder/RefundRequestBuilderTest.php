@@ -1,15 +1,16 @@
 <?php
 namespace Paranoia\Test\Acquirer\NestPay\RequestBuilder;
 
-use Paranoia\Acquirer\NestPay\RequestBuilder\RefundRequestBuilder;
+use Paranoia\Acquirer\NestPay\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\NestPay\NestPayConfiguration as NestPayConfiguration;
+use Paranoia\Acquirer\NestPay\RequestBuilder\RefundRequestBuilder;
 use Paranoia\Core\Constant\Currency;
 use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
-use Paranoia\Acquirer\NestPay\Formatter\ExpireDateFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
 use Paranoia\Core\Model\Request;
 use PHPUnit\Framework\TestCase;
+
 #TODO: Ensure whether the provider allow full refund without amount and currency fields
 class RefundRequestBuilderTest extends TestCase
 {

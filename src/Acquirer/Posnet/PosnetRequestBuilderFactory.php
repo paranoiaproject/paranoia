@@ -1,20 +1,20 @@
 <?php
 namespace Paranoia\Acquirer\Posnet;
 
-use Paranoia\Acquirer\Posnet\RequestBuilder\CancelRequestBuilder;
-use Paranoia\Acquirer\Posnet\RequestBuilder\PostAuthorizationRequestBuilder;
-use Paranoia\Acquirer\Posnet\RequestBuilder\PreAuthorizationRequestBuilder;
-use Paranoia\Acquirer\Posnet\RequestBuilder\RefundRequestBuilder;
-use Paranoia\Acquirer\Posnet\RequestBuilder\SaleRequestBuilder;
-use Paranoia\Acquirer\AbstractRequestBuilderFactory;
 use Paranoia\Acquirer\AbstractRequestBuilder;
-use Paranoia\Core\Exception\NotImplementedError;
-use Paranoia\Core\Formatter\MoneyFormatter;
-use Paranoia\Core\Formatter\MultiDigitInstallmentFormatter;
+use Paranoia\Acquirer\AbstractRequestBuilderFactory;
 use Paranoia\Acquirer\Posnet\Formatter\CustomCurrencyCodeFormatter;
 use Paranoia\Acquirer\Posnet\Formatter\ExpireDateFormatter;
 use Paranoia\Acquirer\Posnet\Formatter\OrderIdFormatter;
+use Paranoia\Acquirer\Posnet\RequestBuilder\CancelRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\ChargeRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\PostAuthorizationRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\PreAuthorizationRequestBuilder;
+use Paranoia\Acquirer\Posnet\RequestBuilder\RefundRequestBuilder;
 use Paranoia\Core\Constant\TransactionType;
+use Paranoia\Core\Exception\NotImplementedError;
+use Paranoia\Core\Formatter\MoneyFormatter;
+use Paranoia\Core\Formatter\MultiDigitInstallmentFormatter;
 
 class PosnetRequestBuilderFactory extends AbstractRequestBuilderFactory
 {
@@ -27,7 +27,7 @@ class PosnetRequestBuilderFactory extends AbstractRequestBuilderFactory
     {
         switch ($transactionType) {
             case TransactionType::SALE:
-                return new SaleRequestBuilder(
+                return new ChargeRequestBuilder(
                     $this->configuration,
                     new CustomCurrencyCodeFormatter(),
                     new MoneyFormatter(),

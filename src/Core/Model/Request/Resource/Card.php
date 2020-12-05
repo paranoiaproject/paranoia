@@ -1,8 +1,6 @@
 <?php
 namespace Paranoia\Core\Model\Request\Resource;
 
-use Paranoia\Core\Model\Request\Resource\ResourceInterface;
-
 class Card implements ResourceInterface
 {
     /** @var string */

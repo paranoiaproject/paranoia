@@ -1,10 +1,10 @@
 <?php
 namespace Paranoia\Test\Acquirer\Gvp\RequestBuilder;
 
-use Paranoia\Acquirer\Gvp\RequestBuilder\SaleRequestBuilder;
-use Paranoia\Acquirer\Gvp\GvpConfiguration as GvpConfiguration;
-use Paranoia\Core\Constant\Currency;
 use Paranoia\Acquirer\Gvp\Formatter\ExpireDateFormatter;
+use Paranoia\Acquirer\Gvp\GvpConfiguration as GvpConfiguration;
+use Paranoia\Acquirer\Gvp\RequestBuilder\ChargeRequestBuilder;
+use Paranoia\Core\Constant\Currency;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\MoneyFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
@@ -75,7 +75,7 @@ class SaleRequestBuilderTest extends TestCase
 
     protected function setupBuilder()
     {
-        return new SaleRequestBuilder(
+        return new ChargeRequestBuilder(
             $this->setupConfiguration(),
             new IsoNumericCurrencyCodeFormatter(),
             new MoneyFormatter(),

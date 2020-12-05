@@ -1,8 +1,6 @@
 <?php
 namespace Paranoia\Core\Formatter;
 
-use Paranoia\Core\Formatter\FormatterInterface;
-
 class MultiDigitInstallmentFormatter implements FormatterInterface
 {
     public function format($input)
