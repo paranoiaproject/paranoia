@@ -8,6 +8,10 @@ use Paranoia\Core\Model\Request;
 use Paranoia\Core\Model\Request\HttpRequest;
 use Paranoia\Lib\XmlSerializer;
 
+/**
+ * Class CaptureRequestBuilder
+ * @package Paranoia\Acquirer\NestPay\RequestBuilder
+ */
 class CaptureRequestBuilder
 {
     private const TRANSACTION_TYPE = 'PostAuth';
@@ -19,13 +23,13 @@ class CaptureRequestBuilder
     private $requestBuilderCommon;
 
     /** @var XmlSerializer */
-    protected $serializer;
+    private $serializer;
 
     /** @var DecimalFormatter */
-    protected $amountFormatter;
+    private $amountFormatter;
 
     /** @var  IsoNumericCurrencyCodeFormatter */
-    protected $currencyCodeFormatter;
+    private $currencyCodeFormatter;
 
     /**
      * CaptureRequestBuilder constructor.
@@ -49,7 +53,22 @@ class CaptureRequestBuilder
         $this->currencyCodeFormatter = $currencyCodeFormatter;
     }
 
+    /**
+     * @param Request\CaptureRequest $request
+     * @return HttpRequest
+     */
+    public function build(Request\CaptureRequest $request): HttpRequest
+    {
+        $headers = $this->requestBuilderCommon->buildHeaders();
+        $body = $this->buildBody($request);
 
+        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
+    }
+
+    /**
+     * @param Request\CaptureRequest $request
+     * @return string
+     */
     private function buildBody(Request\CaptureRequest $request)
     {
         $data = array_merge($this->requestBuilderCommon->buildBaseRequest(self::TRANSACTION_TYPE), [
@@ -60,13 +79,5 @@ class CaptureRequestBuilder
 
         $xmlData = $this->serializer->serialize($data, ['root_name' => RequestBuilderCommon::ENVELOPE_NAME]);
         return http_build_query([RequestBuilderCommon::FORM_FIELD => $xmlData]);
-    }
-
-    public function build(Request\CaptureRequest $request): HttpRequest
-    {
-        $headers = $this->requestBuilderCommon->buildHeaders();
-        $body = $this->buildBody($request);
-
-        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
     }
 }

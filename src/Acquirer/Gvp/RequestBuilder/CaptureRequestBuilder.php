@@ -2,58 +2,93 @@
 namespace Paranoia\Acquirer\Gvp\RequestBuilder;
 
 use Paranoia\Acquirer\Gvp\GvpConfiguration;
-use Paranoia\Core\Model\Request;
-use Paranoia\Lib\Serializer\Serializer;
+use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
+use Paranoia\Core\Formatter\MoneyFormatter;
+use Paranoia\Core\Model\Request\CaptureRequest;
+use Paranoia\Core\Model\Request\HttpRequest;
+use Paranoia\Lib\XmlSerializer;
 
-class CaptureRequestBuilder extends BaseRequestBuilder
+/**
+ * Class CaptureRequestBuilder
+ * @package Paranoia\Acquirer\Gvp\RequestBuilder
+ */
+class CaptureRequestBuilder
 {
-    const TRANSACTION_TYPE = 'postauth';
-    const ENVELOPE_NAME    = 'GVPSRequest';
+    private const TRANSACTION_TYPE = 'postauth';
 
-    public function build(Request $request)
-    {
-        $data = $this->buildBaseRequest($request);
+    /** @var GvpConfiguration */
+    private $configuration;
 
-        $serializer = new Serializer(Serializer::XML);
-        return $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);
+    /** @var RequestBuilderCommon */
+    private $requestBuilderCommon;
+
+    /** @var XmlSerializer */
+    protected $serializer;
+
+    /** @var MoneyFormatter */
+    protected $amountFormatter;
+
+    /** @var  IsoNumericCurrencyCodeFormatter */
+    protected $currencyCodeFormatter;
+
+    /**
+     * CaptureRequestBuilder constructor.
+     * @param GvpConfiguration $configuration
+     * @param RequestBuilderCommon $requestBuilderCommon
+     * @param XmlSerializer $serializer
+     * @param MoneyFormatter $amountFormatter
+     * @param IsoNumericCurrencyCodeFormatter $currencyCodeFormatter
+     */
+    public function __construct(
+        GvpConfiguration $configuration,
+        RequestBuilderCommon $requestBuilderCommon,
+        XmlSerializer $serializer,
+        MoneyFormatter $amountFormatter,
+        IsoNumericCurrencyCodeFormatter $currencyCodeFormatter
+    ) {
+        $this->configuration = $configuration;
+        $this->requestBuilderCommon = $requestBuilderCommon;
+        $this->serializer = $serializer;
+        $this->amountFormatter = $amountFormatter;
+        $this->currencyCodeFormatter = $currencyCodeFormatter;
     }
 
-    protected function buildTransaction(Request $request)
+    /**
+     * @param CaptureRequest $request
+     * @return HttpRequest
+     */
+    public function build(CaptureRequest $request): HttpRequest
     {
-        return [
-            'Type'                  => self::TRANSACTION_TYPE,
-            'Amount'                => $this->amountFormatter->format($request->getAmount()),
-            'CurrencyCode'          => $this->currencyCodeFormatter->format($request->getCurrency()),
+        $headers = $this->requestBuilderCommon->buildHeaders();
+        $body = $this->buildBody($request);
 
-            #TODO: Will be changed after 3D integration
-            'CardholderPresentCode' => self::CARD_HOLDER_PRESENT_CODE_NON_3D,
-
-            'MotoInd'               => 'N',
-            'OriginalRetrefNum'     => $request->getTransactionId(),
-        ];
+        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
     }
 
-    protected function getCredentialPair()
+    /**
+     * @param CaptureRequest $request
+     * @return string
+     */
+    private function buildBody(CaptureRequest $request): string
     {
-        /** @var GvpConfiguration $configuration */
-        $configuration = $this->configuration;
-        return [$configuration->getAuthorizationUsername(), $configuration->getAuthorizationPassword()];
-    }
-
-    protected function buildHash(Request $request, $password)
-    {
-        /** @var GvpConfiguration $configuration */
-        $configuration = $this->configuration;
-        return strtoupper(
-            sha1(
-                sprintf(
-                    '%s%s%s%s',
-                    $request->getOrderId(),
-                    $configuration->getTerminalId(),
-                    $this->amountFormatter->format($request->getAmount()),
-                    $this->generateSecurityHash($password)
-                )
-            )
+        $hash = $this->requestBuilderCommon->buildHAshWithoutCard(
+            $request->getOrderId(),
+            $this->amountFormatter->format($request->getAmount()),
+            $this->configuration->getAuthorizationPassword()
         );
+
+        $terminal = $this->requestBuilderCommon->buildTerminal($this->configuration->getAuthorizationUsername(), $hash);
+        $order = $this->requestBuilderCommon->buildOrder($request->getOrderId());
+
+        $transaction = $this->requestBuilderCommon->buildTransaction(
+            self::TRANSACTION_TYPE,
+            $this->amountFormatter->format($request->getAmount()),
+            $this->currencyCodeFormatter->format($request->getCurrency())
+        );
+
+        $baseRequest = $this->requestBuilderCommon->buildBaseRequest($terminal, $order, $transaction);
+
+        $xmlData = $this->serializer->serialize($baseRequest, ['root_name' => RequestBuilderCommon::ENVELOPE_NAME]);
+        return http_build_query([RequestBuilderCommon::FORM_FIELD => $xmlData]);
     }
 }

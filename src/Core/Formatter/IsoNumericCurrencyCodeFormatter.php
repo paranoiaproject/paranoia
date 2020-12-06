@@ -4,13 +4,13 @@ namespace Paranoia\Core\Formatter;
 use Paranoia\Core\Constant\Currency;
 use Paranoia\Core\Exception\InvalidArgumentException;
 
-class IsoNumericCurrencyCodeFormatter implements FormatterInterface
+class IsoNumericCurrencyCodeFormatter
 {
-    const CODE_TRY = 949;
-    const CODE_USD = 840;
-    const CODE_EUR = 978;
+    const CODE_TRY = '949';
+    const CODE_USD = '840';
+    const CODE_EUR = '978';
 
-    public function format($input)
+    public function format(string $input): string
     {
         switch ($input) {
             case Currency::CODE_EUR:

@@ -1,11 +1,9 @@
 <?php
 namespace Paranoia\Acquirer\Posnet\Formatter;
 
-use Paranoia\Core\Formatter\FormatterInterface;
-
-class ExpireDateFormatter implements FormatterInterface
+class ExpireDateFormatter
 {
-    public function format($input)
+    public function format(array $input): string
     {
         return sprintf('%02s%02s', substr($input[1], -2), $input[0]);
     }

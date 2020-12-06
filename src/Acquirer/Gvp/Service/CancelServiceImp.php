@@ -1,39 +1,39 @@
 <?php
 namespace Paranoia\Acquirer\Gvp\Service;
 
-use Paranoia\Acquirer\Gvp\RequestBuilder\ChargeRequestBuilder;
-use Paranoia\Acquirer\Gvp\ResponseParser\ChargeResponseParser;
-use Paranoia\Core\Acquirer\Service\ChargeService;
+use Paranoia\Acquirer\Gvp\RequestBuilder\CancelRequestBuilder;
+use Paranoia\Acquirer\Gvp\ResponseParser\CancelResponseParser;
+use Paranoia\Core\Acquirer\Service\CancelService;
 use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Exception\CommunicationError;
-use Paranoia\Core\Model\Request\ChargeRequest;
-use Paranoia\Core\Model\Response\ChargeResponse;
+use Paranoia\Core\Model\Request\CancelRequest;
+use Paranoia\Core\Model\Response\CancelResponse;
 use Paranoia\Lib\HttpClient;
 
 /**
- * Class ChargeService
+ * Class CancelServiceImp
  * @package Paranoia\Acquirer\Gvp\Service
  */
-class ChargeServiceImp implements ChargeService
+class CancelServiceImp implements CancelService
 {
-    /** @var ChargeRequestBuilder */
+    /** @var CancelRequestBuilder */
     private $requestBuilder;
 
-    /** @var ChargeResponseParser */
+    /** @var CancelResponseParser */
     private $responseParser;
 
     /** @var HttpClient */
     private $httpClient;
 
     /**
-     * ChargeService constructor.
-     * @param ChargeRequestBuilder $requestBuilder
-     * @param ChargeResponseParser $responseParser
+     * CancelServiceImp constructor.
+     * @param CancelRequestBuilder $requestBuilder
+     * @param CancelResponseParser $responseParser
      * @param HttpClient $httpClient
      */
     public function __construct(
-        ChargeRequestBuilder $requestBuilder,
-        ChargeResponseParser $responseParser,
+        CancelRequestBuilder $requestBuilder,
+        CancelResponseParser $responseParser,
         HttpClient $httpClient
     ) {
         $this->requestBuilder = $requestBuilder;
@@ -42,12 +42,12 @@ class ChargeServiceImp implements ChargeService
     }
 
     /**
-     * @param ChargeRequest $request
-     * @return ChargeResponse
+     * @param CancelRequest $request
+     * @return CancelResponse
      * @throws BadResponseException
      * @throws CommunicationError
      */
-    public function process(ChargeRequest $request): ChargeResponse
+    public function process(CancelRequest $request): CancelResponse
     {
         $providerRequest = $this->requestBuilder->build($request);
         $rawResponse = $this->httpClient->send($providerRequest);

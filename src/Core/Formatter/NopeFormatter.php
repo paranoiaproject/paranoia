@@ -1,9 +1,9 @@
 <?php
 namespace Paranoia\Core\Formatter;
 
-class NopeFormatter implements FormatterInterface
+class NopeFormatter
 {
-    public function format($input)
+    public function format(string $input): string
     {
         return $input;
     }

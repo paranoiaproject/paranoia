@@ -39,6 +39,22 @@ class CancelRequestBuilder
         $this->serializer = $serializer;
     }
 
+    /**
+     * @param CancelRequest $request
+     * @return HttpRequest
+     */
+    public function build(CancelRequest $request): HttpRequest
+    {
+        $headers = $this->requestBuilderCommon->buildHeaders();
+        $body = $this->buildBody($request);
+
+        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
+    }
+
+    /**
+     * @param CancelRequest $request
+     * @return string
+     */
     private function buildBody(CancelRequest $request)
     {
         $data = $this->requestBuilderCommon->buildBaseRequest(self::TRANSACTION_TYPE);
@@ -57,13 +73,5 @@ class CancelRequestBuilder
 
         $xmlData = $this->serializer->serialize($data, ['root_name' => RequestBuilderCommon::ENVELOPE_NAME]);
         return http_build_query([RequestBuilderCommon::FORM_FIELD => $xmlData]);
-    }
-
-    public function build(CancelRequest $request): HttpRequest
-    {
-        $headers = $this->requestBuilderCommon->buildHeaders();
-        $body = $this->buildBody($request);
-
-        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
     }
 }

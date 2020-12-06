@@ -1,42 +1,52 @@
 <?php
 namespace Paranoia\Acquirer\Gvp;
 
-use Paranoia\Acquirer\AbstractAcquirer;
-use Paranoia\Core\AbstractConfiguration;
-use Paranoia\Core\Model\Request;
+use Paranoia\Acquirer\Gvp\Service\Factory\AuthorizationServiceFactory;
+use Paranoia\Acquirer\Gvp\Service\Factory\CancelServiceFactory;
+use Paranoia\Acquirer\Gvp\Service\Factory\CaptureServiceFactory;
+use Paranoia\Acquirer\Gvp\Service\Factory\ChargeServiceFactory;
+use Paranoia\Acquirer\Gvp\Service\Factory\RefundServiceFactory;
+use Paranoia\Core\Acquirer\AcquirerAdapter;
+use Paranoia\Core\Acquirer\Service\Factory\AbstractServiceFactory;
+use Paranoia\Core\Exception\InvalidArgumentException;
 
-class Gvp extends AbstractAcquirer
+/**
+ * Class Gvp
+ * @package Paranoia\Acquirer\Gvp
+ */
+class Gvp implements AcquirerAdapter
 {
-    /** @var GvpRequestBuilderFactory */
-    private $builderFactory;
+    /** @var GvpConfiguration */
+    private $configuration;
 
-    /** @var  GvpResponseParserFactory */
-    private $processorFactory;
-
-    public function __construct(AbstractConfiguration $configuration)
+    /**
+     * Gvp constructor.
+     * @param GvpConfiguration $configuration
+     */
+    public function __construct(GvpConfiguration $configuration)
     {
-        parent::__construct($configuration);
-        $this->builderFactory = new GvpRequestBuilderFactory($this->configuration);
-        $this->processorFactory = new GvpResponseParserFactory($this->configuration);
+        $this->configuration = $configuration;
     }
 
     /**
-     * {@inheritdoc}
-     * @throws \Paranoia\Core\Exception\NotImplementedError
-     *@see \Paranoia\Acquirer\AbstractAcquirer::buildRequest()
+     * @param string $serviceType
+     * @return AbstractServiceFactory
      */
-    protected function buildRequest(Request $request, $transactionType)
+    public function getServiceFactory(string $serviceType): AbstractServiceFactory
     {
-        $rawRequest = $this->builderFactory->createBuilder($transactionType)->build($request);
-        return array( 'data' => $rawRequest);
-    }
-
-    /**
-     * {@inheritdoc}
-     * @see \Paranoia\Acquirer\AbstractAcquirer::parseResponse()
-     */
-    protected function parseResponse($rawResponse, $transactionType)
-    {
-        return $this->processorFactory->createProcessor($transactionType)->parse($rawResponse);
+        switch ($serviceType) {
+            case AbstractServiceFactory::AUTHORIZATION:
+                return new AuthorizationServiceFactory($this->configuration);
+            case AbstractServiceFactory::CAPTURE:
+                return new CaptureServiceFactory($this->configuration);
+            case AbstractServiceFactory::CHARGE:
+                return new ChargeServiceFactory($this->configuration);
+            case AbstractServiceFactory::REFUND:
+                return new RefundServiceFactory($this->configuration);
+            case AbstractServiceFactory::CANCEL:
+                return new CancelServiceFactory($this->configuration);
+            default:
+                throw new InvalidArgumentException('Unknown service type');
+        }
     }
 }

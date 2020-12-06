@@ -25,16 +25,16 @@ class ChargeRequestBuilder
     private $requestBuilderCommon;
 
     /** @var XmlSerializer */
-    protected $serializer;
+    private $serializer;
 
     /** @var DecimalFormatter */
-    protected $amountFormatter;
+    private $amountFormatter;
 
     /** @var  IsoNumericCurrencyCodeFormatter */
-    protected $currencyCodeFormatter;
+    private $currencyCodeFormatter;
 
     /** @var  SingleDigitInstallmentFormatter */
-    protected $installmentFormatter;
+    private $installmentFormatter;
 
     /**
      * ChargeRequestBuilder constructor.
@@ -63,6 +63,18 @@ class ChargeRequestBuilder
 
     /**
      * @param ChargeRequest $request
+     * @return HttpRequest
+     */
+    public function build(ChargeRequest $request): HttpRequest
+    {
+        $headers = $this->requestBuilderCommon->buildHeaders();
+        $body = $this->buildBody($request);
+
+        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
+    }
+
+    /**
+     * @param ChargeRequest $request
      * @return string
      */
     private function buildBody(ChargeRequest $request): string
@@ -83,17 +95,5 @@ class ChargeRequestBuilder
 
         $xmlData = $this->serializer->serialize($data, ['root_name' => RequestBuilderCommon::ENVELOPE_NAME]);
         return http_build_query([RequestBuilderCommon::FORM_FIELD => $xmlData]);
-    }
-
-    /**
-     * @param ChargeRequest $request
-     * @return HttpRequest
-     */
-    public function build(ChargeRequest $request): HttpRequest
-    {
-        $headers = $this->requestBuilderCommon->buildHeaders();
-        $body = $this->buildBody($request);
-
-        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
     }
 }

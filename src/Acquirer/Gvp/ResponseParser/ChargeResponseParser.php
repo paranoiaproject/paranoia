@@ -1,15 +1,40 @@
 <?php
 namespace Paranoia\Acquirer\Gvp\ResponseParser;
 
-class ChargeResponseParser extends BaseResponseParser
+use Paranoia\Core\Exception\BadResponseException;
+use Paranoia\Core\Model\Response\ChargeResponse;
+
+class ChargeResponseParser
 {
+    /** @var ResponseParserCommon */
+    private $responseParserCommon;
+
     /**
-     * @param $rawResponse
-     * @throws \Paranoia\Core\Exception\BadResponseException
-     * @return \Paranoia\Core\Model\Response
+     * ChargeResponseParser constructor.
+     * @param ResponseParserCommon $responseParserCommon
      */
-    public function parse($rawResponse)
+    public function __construct(ResponseParserCommon $responseParserCommon)
     {
-        return $this->processCommonResponse($rawResponse);
+        $this->responseParserCommon = $responseParserCommon;
+    }
+
+    /**
+     * @param string $rawResponse
+     * @return ChargeResponse
+     * @throws BadResponseException
+     */
+    public function parse(string $rawResponse): ChargeResponse
+    {
+        $xml = $this->responseParserCommon->parseResponse($rawResponse);
+        $response = new ChargeResponse();
+        $this->responseParserCommon->decorateWithStatus($xml, $response);
+
+        if ($response->isApproved()) {
+            $this->responseParserCommon->decorateWithTransactionDetails($xml, $response);
+        } else {
+            $this->responseParserCommon->decorateWithErrorDetails($xml, $response);
+        }
+
+        return $response;
     }
 }

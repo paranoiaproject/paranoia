@@ -2,57 +2,79 @@
 namespace Paranoia\Acquirer\Gvp\RequestBuilder;
 
 use Paranoia\Acquirer\Gvp\GvpConfiguration;
-use Paranoia\Core\Model\Request;
-use Paranoia\Lib\Serializer\Serializer;
+use Paranoia\Core\Model\Request\CancelRequest;
+use Paranoia\Core\Model\Request\HttpRequest;
+use Paranoia\Lib\XmlSerializer;
 
-class CancelRequestBuilder extends BaseRequestBuilder
+/**
+ * Class CancelRequestBuilder
+ * @package Paranoia\Acquirer\Gvp\RequestBuilder
+ */
+class CancelRequestBuilder
 {
     const TRANSACTION_TYPE = 'void';
-    const ENVELOPE_NAME    = 'GVPSRequest';
 
-    public function build(Request $request)
-    {
-        $data = $this->buildBaseRequest($request);
-        $serializer = new Serializer(Serializer::XML);
-        return $serializer->serialize($data, ['root_name' => self::ENVELOPE_NAME]);
+    /** @var GvpConfiguration */
+    private $configuration;
+
+    /** @var RequestBuilderCommon */
+    private $requestBuilderCommon;
+
+    /** @var XmlSerializer */
+    protected $serializer;
+
+    /**
+     * CancelRequestBuilder constructor.
+     * @param GvpConfiguration $configuration
+     * @param RequestBuilderCommon $requestBuilderCommon
+     * @param XmlSerializer $serializer
+     */
+    public function __construct(
+        GvpConfiguration $configuration,
+        RequestBuilderCommon $requestBuilderCommon,
+        XmlSerializer $serializer
+    ) {
+        $this->configuration = $configuration;
+        $this->requestBuilderCommon = $requestBuilderCommon;
+        $this->serializer = $serializer;
     }
 
-    protected function buildTransaction(Request $request)
+    /**
+     * @param CancelRequest $request
+     * @return HttpRequest
+     */
+    public function build(CancelRequest $request): HttpRequest
     {
-        return [
-            'Type'                  => self::TRANSACTION_TYPE,
-            'Amount'                => 1,
-            'CurrencyCode'          => null,
+        $headers = $this->requestBuilderCommon->buildHeaders();
+        $body = $this->buildBody($request);
 
-            #TODO: Will be changed after 3D integration
-            'CardholderPresentCode' => self::CARD_HOLDER_PRESENT_CODE_NON_3D,
-
-            'MotoInd'               => 'N',
-            'OriginalRetrefNum'     => $request->getTransactionId()
-        ];
+        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
     }
 
-    protected function getCredentialPair()
+    /**
+     * @param CancelRequest $request
+     * @return string
+     */
+    private function buildBody(CancelRequest $request): string
     {
-        /** @var GvpConfiguration $configuration */
-        $configuration = $this->configuration;
-        return [$configuration->getRefundUsername(), $configuration->getRefundPassword()];
-    }
-
-    protected function buildHash(Request $request, $password)
-    {
-        /** @var GvpConfiguration $configuration */
-        $configuration = $this->configuration;
-        return strtoupper(
-            sha1(
-                sprintf(
-                    '%s%s%s%s',
-                    $request->getOrderId(),
-                    $configuration->getTerminalId(),
-                    1,
-                    $this->generateSecurityHash($password)
-                )
-            )
+        $hash = $this->requestBuilderCommon->buildHAshWithoutCard(
+            $request->getOrderId(),
+            '1',
+            $this->configuration->getAuthorizationPassword()
         );
+
+        $terminal = $this->requestBuilderCommon->buildTerminal($this->configuration->getAuthorizationUsername(), $hash);
+        $order = $this->requestBuilderCommon->buildOrder($request->getOrderId());
+
+        $transaction = $this->requestBuilderCommon->buildTransaction(
+            self::TRANSACTION_TYPE,
+            '1',
+            null
+        );
+
+        $baseRequest = $this->requestBuilderCommon->buildBaseRequest($terminal, $order, $transaction);
+
+        $xmlData = $this->serializer->serialize($baseRequest, ['root_name' => RequestBuilderCommon::ENVELOPE_NAME]);
+        return http_build_query([RequestBuilderCommon::FORM_FIELD => $xmlData]);
     }
 }

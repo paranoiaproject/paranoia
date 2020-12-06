@@ -1,5 +1,5 @@
 <?php
-namespace Paranoia\Acquirer\NestPay\ResponseParser;
+namespace Paranoia\Acquirer\Gvp\ResponseParser;
 
 use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Model\Response\AbstractResponse;
@@ -7,6 +7,8 @@ use Paranoia\Core\Model\Response\PaymentResponse;
 
 class ResponseParserCommon
 {
+    private const SUCCESSFUL_RESPONSE_CODE = '00';
+
     /**
      * @param string $rawResponse
      * @return \SimpleXMLElement
@@ -28,7 +30,7 @@ class ResponseParserCommon
      */
     public function decorateWithStatus(\SimpleXMLElement $xml, AbstractResponse $response): void
     {
-        $response->setApproved((string)$xml->Response == 'Approved');
+        $response->setApproved(self::SUCCESSFUL_RESPONSE_CODE == (string)$xml->Transaction->Response->Code);
     }
 
     /**
@@ -38,23 +40,20 @@ class ResponseParserCommon
     public function decorateWithErrorDetails(\SimpleXMLElement $xml, AbstractResponse $response): void
     {
         $errorMessages = array();
-        if (property_exists($xml, 'Error')) {
-            $errorMessages[] = sprintf('Error: %s', (string)$xml->Error);
-        }
-        if (property_exists($xml, 'ErrMsg')) {
+        if (property_exists($xml->Transaction->Response, 'ErrorMsg')) {
             $errorMessages[] = sprintf(
-                'Error Message: %s ',
-                (string)$xml->ErrMsg
+                'Error Message: %s',
+                (string)$xml->Transaction->Response->ErrorMsg
             );
         }
-        if (property_exists($xml, 'Extra') && property_exists($xml->Extra, 'HOSTMSG')) {
+        if (property_exists($xml->Transaction->Response, 'SysErrMsg')) {
             $errorMessages[] = sprintf(
-                'Host Message: %s',
-                (string)$xml->Extra->HOSTMSG
+                'System Error Message: %s',
+                (string)$xml->Transaction->Response->SysErrMsg
             );
         }
         $errorMessage = implode(' ', $errorMessages);
-        $response->setErrorCode((string) $xml->ProcReturnCode);
+        $response->setErrorCode((string) $xml->Transaction->Response->ReasonCode);
         $response->setErrorMessage($errorMessage);
     }
 
@@ -62,10 +61,20 @@ class ResponseParserCommon
      * @param \SimpleXMLElement $xml
      * @param PaymentResponse $response
      */
-    public function decorateWithTransactionDetails(\SimpleXMLElement $xml, PaymentResponse $response)
+    public function decorateWithTransactionDetails(\SimpleXMLElement $xml, PaymentResponse $response): void
     {
-        $response->setOrderId((string)$xml->OrderId);
-        $response->setTransactionId((string)$xml->TransId);
-        $response->setAuthCode((string) $xml->AuthCode);
+        if (property_exists($xml, 'Order') && property_exists($xml->Order, 'OrderID')) {
+            $response->setOrderId((string)$xml->Order->OrderID);
+        }
+
+        if (property_exists($xml, 'Transaction')) {
+            if (property_exists($xml->Transaction, 'RetrefNum')) {
+                $response->setTransactionId((string)$xml->Transaction->RetrefNum);
+            }
+
+            if (property_exists($xml->Transaction, 'AuthCode')) {
+                $response->setAuthCode((string)$xml->Transaction->AuthCode);
+            }
+        }
     }
 }

@@ -5,7 +5,7 @@ use Paranoia\Acquirer\NestPay\NestPayConfiguration;
 use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
-use Paranoia\Core\Model\Request;
+use Paranoia\Core\Model\Request\AuthorizationRequest;
 use Paranoia\Core\Model\Request\HttpRequest;
 use Paranoia\Lib\XmlSerializer;
 
@@ -20,16 +20,16 @@ class AuthorizationRequestBuilder
     private $requestBuilderCommon;
 
     /** @var XmlSerializer */
-    protected $serializer;
+    private $serializer;
 
     /** @var DecimalFormatter */
-    protected $amountFormatter;
+    private $amountFormatter;
 
     /** @var  IsoNumericCurrencyCodeFormatter */
-    protected $currencyCodeFormatter;
+    private $currencyCodeFormatter;
 
     /** @var  SingleDigitInstallmentFormatter */
-    protected $installmentFormatter;
+    private $installmentFormatter;
 
     /**
      * AuthorizationRequestBuilder constructor.
@@ -57,10 +57,22 @@ class AuthorizationRequestBuilder
     }
 
     /**
-     * @param Request\AuthorizationRequest $request
+     * @param AuthorizationRequest $request
+     * @return HttpRequest
+     */
+    public function build(AuthorizationRequest $request): HttpRequest
+    {
+        $headers = $this->requestBuilderCommon->buildHeaders();
+        $body = $this->buildBody($request);
+
+        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
+    }
+
+    /**
+     * @param AuthorizationRequest $request
      * @return string
      */
-    private function buildBody(Request\AuthorizationRequest $request): string
+    private function buildBody(AuthorizationRequest $request): string
     {
         $data = array_merge(
             $this->requestBuilderCommon->buildBaseRequest(self::TRANSACTION_TYPE),
@@ -78,17 +90,5 @@ class AuthorizationRequestBuilder
 
         $xmlData = $this->serializer->serialize($data, ['root_name' => RequestBuilderCommon::ENVELOPE_NAME]);
         return http_build_query([RequestBuilderCommon::FORM_FIELD => $xmlData]);
-    }
-
-    /**
-     * @param Request\AuthorizationRequest $request
-     * @return HttpRequest
-     */
-    public function build(Request\AuthorizationRequest $request): HttpRequest
-    {
-        $headers = $this->requestBuilderCommon->buildHeaders();
-        $body = $this->buildBody($request);
-
-        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
     }
 }

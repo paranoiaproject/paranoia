@@ -23,13 +23,13 @@ class RefundRequestBuilder
     private $requestBuilderCommon;
 
     /** @var XmlSerializer */
-    protected $serializer;
+    private $serializer;
 
     /** @var DecimalFormatter */
-    protected $amountFormatter;
+    private $amountFormatter;
 
     /** @var  IsoNumericCurrencyCodeFormatter */
-    protected $currencyCodeFormatter;
+    private $currencyCodeFormatter;
 
     /**
      * RefundRequestBuilder constructor.
@@ -55,6 +55,18 @@ class RefundRequestBuilder
 
     /**
      * @param RefundRequest $request
+     * @return HttpRequest
+     */
+    public function build(RefundRequest $request): HttpRequest
+    {
+        $headers = $this->requestBuilderCommon->buildHeaders();
+        $body = $this->buildBody($request);
+
+        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
+    }
+
+    /**
+     * @param RefundRequest $request
      * @return string
      */
     private function buildBody(RefundRequest $request): string
@@ -75,17 +87,5 @@ class RefundRequestBuilder
 
         $xmlData = $this->serializer->serialize($data, ['root_name' => RequestBuilderCommon::ENVELOPE_NAME]);
         return http_build_query([RequestBuilderCommon::FORM_FIELD => $xmlData]);
-    }
-
-    /**
-     * @param RefundRequest $request
-     * @return HttpRequest
-     */
-    public function build(RefundRequest $request): HttpRequest
-    {
-        $headers = $this->requestBuilderCommon->buildHeaders();
-        $body = $this->buildBody($request);
-
-        return new HttpRequest($this->configuration->getApiUrl(), HttpRequest::HTTP_POST, $headers, $body);
     }
 }

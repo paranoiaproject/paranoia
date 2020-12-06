@@ -1,40 +1,33 @@
 <?php
-namespace Paranoia\Acquirer\NestPay\Service\Factory;
+namespace Paranoia\Acquirer\Gvp\Service\Factory;
 
 use Guzzle\Http\Client;
-use Paranoia\Acquirer\NestPay\Formatter\ExpireDateFormatter;
-use Paranoia\Acquirer\NestPay\NestPayConfiguration;
-use Paranoia\Acquirer\NestPay\RequestBuilder\CancelRequestBuilder;
-use Paranoia\Acquirer\NestPay\RequestBuilder\RequestBuilderCommon;
-use Paranoia\Acquirer\NestPay\ResponseParser\CancelResponseParser;
-use Paranoia\Acquirer\NestPay\ResponseParser\ResponseParserCommon;
-use Paranoia\Acquirer\NestPay\Service\CancelServiceImp;
+use Paranoia\Acquirer\Gvp\Formatter\ExpireDateFormatter;
+use Paranoia\Acquirer\Gvp\GvpConfiguration;
+use Paranoia\Acquirer\Gvp\RequestBuilder\CancelRequestBuilder;
+use Paranoia\Acquirer\Gvp\RequestBuilder\RequestBuilderCommon;
+use Paranoia\Acquirer\Gvp\ResponseParser\CancelResponseParser;
+use Paranoia\Acquirer\Gvp\ResponseParser\ResponseParserCommon;
+use Paranoia\Acquirer\Gvp\Service\CancelServiceImp;
 use Paranoia\Core\Acquirer\Service\CancelService;
 use Paranoia\Core\Acquirer\Service\Factory\AbstractServiceFactory;
 use Paranoia\Lib\HttpClient;
 use Paranoia\Lib\XmlSerializer;
 
-/**
- * Class CancelServiceFactory
- * @package Paranoia\Acquirer\NestPay\Service\Factory
- */
 class CancelServiceFactory extends AbstractServiceFactory
 {
-    /** @var NestPayConfiguration */
+    /** @var GvpConfiguration */
     private $configuration;
 
     /**
      * CancelServiceFactory constructor.
-     * @param NestPayConfiguration $configuration
+     * @param GvpConfiguration $configuration
      */
-    public function __construct(NestPayConfiguration $configuration)
+    public function __construct(GvpConfiguration $configuration)
     {
         $this->configuration = $configuration;
     }
 
-    /**
-     * @return CancelService
-     */
     public function create(): CancelService
     {
         $requestBuilder = $this->createRequestBuilder();
@@ -45,9 +38,6 @@ class CancelServiceFactory extends AbstractServiceFactory
         return new CancelServiceImp($requestBuilder, $responseParser, $httpClient);
     }
 
-    /**
-     * @return CancelRequestBuilder
-     */
     private function createRequestBuilder(): CancelRequestBuilder
     {
         $serializer = new XmlSerializer();
@@ -57,9 +47,6 @@ class CancelServiceFactory extends AbstractServiceFactory
         return new CancelRequestBuilder($this->configuration, $requestBuilderCommon, $serializer);
     }
 
-    /**
-     * @return CancelResponseParser
-     */
     private function createResponseParser(): CancelResponseParser
     {
         $responseParserCommon = new ResponseParserCommon();

@@ -1,9 +1,9 @@
 <?php
 namespace Paranoia\Core\Formatter;
 
-class SingleDigitInstallmentFormatter implements FormatterInterface
+class SingleDigitInstallmentFormatter
 {
-    public function format($input)
+    public function format(int $input): string
     {
         return (!is_numeric($input) || intval($input) <= 1) ? null : $input;
     }
