@@ -13,6 +13,7 @@ use Paranoia\Core\Acquirer\Service\CaptureService;
 use Paranoia\Core\Acquirer\Service\Factory\AbstractServiceFactory;
 use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
+use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
 use Paranoia\Lib\HttpClient;
 use Paranoia\Lib\XmlSerializer;
 
@@ -50,6 +51,7 @@ class CaptureServiceFactory extends AbstractServiceFactory
         $expireDateFormatter = new ExpireDateFormatter();
         $amountFormatter = new DecimalFormatter();
         $currencyFormatter = new IsoNumericCurrencyCodeFormatter();
+        $installmentFormatter = new SingleDigitInstallmentFormatter();
         $requestBuilderCommon = new RequestBuilderCommon($this->configuration, $expireDateFormatter);
 
         return new CaptureRequestBuilder(
@@ -57,7 +59,8 @@ class CaptureServiceFactory extends AbstractServiceFactory
             $requestBuilderCommon,
             $serializer,
             $amountFormatter,
-            $currencyFormatter
+            $currencyFormatter,
+            $installmentFormatter
         );
     }
 

@@ -4,6 +4,7 @@ namespace Paranoia\Acquirer\Gvp\RequestBuilder;
 use Paranoia\Acquirer\Gvp\GvpConfiguration;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\MoneyFormatter;
+use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
 use Paranoia\Core\Model\Request\CaptureRequest;
 use Paranoia\Core\Model\Request\HttpRequest;
 use Paranoia\Lib\XmlSerializer;
@@ -31,6 +32,9 @@ class CaptureRequestBuilder
     /** @var  IsoNumericCurrencyCodeFormatter */
     protected $currencyCodeFormatter;
 
+    /** @var  SingleDigitInstallmentFormatter */
+    protected $installmentFormatter;
+
     /**
      * CaptureRequestBuilder constructor.
      * @param GvpConfiguration $configuration
@@ -38,19 +42,22 @@ class CaptureRequestBuilder
      * @param XmlSerializer $serializer
      * @param MoneyFormatter $amountFormatter
      * @param IsoNumericCurrencyCodeFormatter $currencyCodeFormatter
+     * @param SingleDigitInstallmentFormatter $installmentFormatter
      */
     public function __construct(
         GvpConfiguration $configuration,
         RequestBuilderCommon $requestBuilderCommon,
         XmlSerializer $serializer,
         MoneyFormatter $amountFormatter,
-        IsoNumericCurrencyCodeFormatter $currencyCodeFormatter
+        IsoNumericCurrencyCodeFormatter $currencyCodeFormatter,
+        SingleDigitInstallmentFormatter $installmentFormatter
     ) {
         $this->configuration = $configuration;
         $this->requestBuilderCommon = $requestBuilderCommon;
         $this->serializer = $serializer;
         $this->amountFormatter = $amountFormatter;
         $this->currencyCodeFormatter = $currencyCodeFormatter;
+        $this->installmentFormatter = $installmentFormatter;
     }
 
     /**
@@ -83,7 +90,8 @@ class CaptureRequestBuilder
         $transaction = $this->requestBuilderCommon->buildTransaction(
             self::TRANSACTION_TYPE,
             $this->amountFormatter->format($request->getAmount()),
-            $this->currencyCodeFormatter->format($request->getCurrency())
+            $this->currencyCodeFormatter->format($request->getCurrency()),
+            $this->installmentFormatter->format($request->getInstallment())
         );
 
         $baseRequest = $this->requestBuilderCommon->buildBaseRequest($terminal, $order, $transaction);
