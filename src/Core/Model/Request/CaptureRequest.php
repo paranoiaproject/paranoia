@@ -10,11 +10,53 @@ class CaptureRequest
     /** @var string */
     private $orderId;
 
+    /** @var string */
+    private $transactionId;
+
     /** @var float */
     private $amount;
 
     /** @var string */
     private $currency;
+
+    /** @var int */
+    private $installment;
+
+    /**
+     * @return string
+     */
+    public function getTransactionId(): string
+    {
+        return $this->transactionId;
+    }
+
+    /**
+     * @param string $transactionId
+     * @return CaptureRequest
+     */
+    public function setTransactionId(string $transactionId): CaptureRequest
+    {
+        $this->transactionId = $transactionId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInstallment(): int
+    {
+        return $this->installment;
+    }
+
+    /**
+     * @param int $installment
+     * @return CaptureRequest
+     */
+    public function setInstallment(int $installment): CaptureRequest
+    {
+        $this->installment = $installment;
+        return $this;
+    }
 
     /**
      * @return string

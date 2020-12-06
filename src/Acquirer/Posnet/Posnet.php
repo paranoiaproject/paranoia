@@ -1,42 +1,53 @@
 <?php
 namespace Paranoia\Acquirer\Posnet;
 
-use Paranoia\Acquirer\AbstractAcquirer;
-use Paranoia\Core\AbstractConfiguration;
-use Paranoia\Core\Model\Request;
+use Paranoia\Acquirer\Posnet\Service\Factory\AuthorizationServiceFactory;
+use Paranoia\Acquirer\Posnet\Service\Factory\CancelServiceFactory;
+use Paranoia\Acquirer\Posnet\Service\Factory\CaptureServiceFactory;
+use Paranoia\Acquirer\Posnet\Service\Factory\ChargeServiceFactory;
+use Paranoia\Acquirer\Posnet\Service\Factory\RefundServiceFactory;
+use Paranoia\Core\Acquirer\AcquirerAdapter;
+use Paranoia\Core\Acquirer\Service\Factory\AbstractServiceFactory;
+use Paranoia\Core\Exception\InvalidArgumentException;
 
-class Posnet extends AbstractAcquirer
+/**
+ * Class Posnet
+ * @package Paranoia\Acquirer\Posnet
+ */
+class Posnet implements AcquirerAdapter
 {
-    /** @var PosnetRequestBuilderFactory */
-    private $builderFactory;
-
-    /** @var PosnetResponseParserFactory */
-    private $processorFactory;
-
-    public function __construct(AbstractConfiguration $configuration)
-    {
-        parent::__construct($configuration);
-        $this->builderFactory = new PosnetRequestBuilderFactory($this->configuration);
-        $this->processorFactory = new PosnetResponseParserFactory($this->configuration);
-    }
+    /** @var PosnetConfiguration */
+    private $configuration;
 
     /**
-     * {@inheritdoc}
-     * @throws \Paranoia\Core\Exception\NotImplementedError
-     *@see \Paranoia\Acquirer\AbstractAcquirer::buildRequest()
+     * Posnet constructor.
+     * @param PosnetConfiguration $configuration
      */
-    protected function buildRequest(Request $request, $transactionType)
+    public function __construct(PosnetConfiguration $configuration)
     {
-        $rawRequest = $this->builderFactory->createBuilder($transactionType)->build($request);
-        return array( 'xmldata' => $rawRequest);
+        $this->configuration = $configuration;
     }
 
+
     /**
-     * {@inheritdoc}
-     * @see \Paranoia\Acquirer\AbstractAcquirer::parseResponse()
+     * @param string $serviceType
+     * @return AbstractServiceFactory
      */
-    protected function parseResponse($rawResponse, $transactionType)
+    public function getServiceFactory(string $serviceType): AbstractServiceFactory
     {
-        return $this->processorFactory->createProcessor($transactionType)->parse($rawResponse);
+        switch ($serviceType) {
+            case AbstractServiceFactory::AUTHORIZATION:
+                return new AuthorizationServiceFactory($this->configuration);
+            case AbstractServiceFactory::CAPTURE:
+                return new CaptureServiceFactory($this->configuration);
+            case AbstractServiceFactory::CHARGE:
+                return new ChargeServiceFactory($this->configuration);
+            case AbstractServiceFactory::REFUND:
+                return new RefundServiceFactory($this->configuration);
+            case AbstractServiceFactory::CANCEL:
+                return new CancelServiceFactory($this->configuration);
+            default:
+                throw new InvalidArgumentException('Unknown service type');
+        }
     }
 }

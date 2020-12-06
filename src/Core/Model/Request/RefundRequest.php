@@ -10,11 +10,32 @@ class RefundRequest
     /** @var string */
     private $orderId;
 
+    /** @var string */
+    private $transactionId;
+
     /** @var float */
     private $amount;
 
     /** @var string */
     private $currency;
+
+    /**
+     * @return string
+     */
+    public function getTransactionId(): string
+    {
+        return $this->transactionId;
+    }
+
+    /**
+     * @param string $transactionId
+     * @return RefundRequest
+     */
+    public function setTransactionId(string $transactionId): RefundRequest
+    {
+        $this->transactionId = $transactionId;
+        return $this;
+    }
 
     /**
      * @return string
