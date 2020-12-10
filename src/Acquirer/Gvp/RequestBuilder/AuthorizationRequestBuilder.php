@@ -5,7 +5,6 @@ use Paranoia\Acquirer\Gvp\GvpConfiguration;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\MoneyFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
-use Paranoia\Core\Model\Request;
 use Paranoia\Core\Model\Request\AuthorizationRequest;
 use Paranoia\Core\Model\Request\HttpRequest;
 use Paranoia\Lib\XmlSerializer;
@@ -78,7 +77,7 @@ class AuthorizationRequestBuilder
      * @param AuthorizationRequest $request
      * @return string
      */
-    private function buildBody(Request\AuthorizationRequest $request): string
+    private function buildBody(AuthorizationRequest $request): string
     {
         $hash = $this->requestBuilderCommon->buildHashWithCard(
             $request->getCard(),

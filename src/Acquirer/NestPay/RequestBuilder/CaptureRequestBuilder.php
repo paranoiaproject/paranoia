@@ -5,7 +5,7 @@ use Paranoia\Acquirer\NestPay\NestPayConfiguration;
 use Paranoia\Core\Formatter\DecimalFormatter;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\SingleDigitInstallmentFormatter;
-use Paranoia\Core\Model\Request;
+use Paranoia\Core\Model\Request\CaptureRequest;
 use Paranoia\Core\Model\Request\HttpRequest;
 use Paranoia\Lib\XmlSerializer;
 
@@ -61,10 +61,10 @@ class CaptureRequestBuilder
     }
 
     /**
-     * @param Request\CaptureRequest $request
+     * @param CaptureRequest $request
      * @return HttpRequest
      */
-    public function build(Request\CaptureRequest $request): HttpRequest
+    public function build(CaptureRequest $request): HttpRequest
     {
         $headers = $this->requestBuilderCommon->buildHeaders();
         $body = $this->buildBody($request);
@@ -73,10 +73,10 @@ class CaptureRequestBuilder
     }
 
     /**
-     * @param Request\CaptureRequest $request
+     * @param CaptureRequest $request
      * @return string
      */
-    private function buildBody(Request\CaptureRequest $request)
+    private function buildBody(CaptureRequest $request)
     {
         $data = array_merge($this->requestBuilderCommon->buildBaseRequest(self::TRANSACTION_TYPE), [
             'OrderId' => $request->getOrderId(),

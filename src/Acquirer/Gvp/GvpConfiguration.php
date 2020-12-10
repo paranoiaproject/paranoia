@@ -2,9 +2,9 @@
 
 namespace Paranoia\Acquirer\Gvp;
 
-use Paranoia\Core\AbstractConfiguration;
+use Paranoia\Core\Acquirer\BaseConfiguration;
 
-class GvpConfiguration extends AbstractConfiguration
+class GvpConfiguration extends BaseConfiguration
 {
 
     /**

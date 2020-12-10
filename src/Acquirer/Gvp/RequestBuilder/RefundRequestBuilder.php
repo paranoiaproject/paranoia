@@ -4,7 +4,6 @@ namespace Paranoia\Acquirer\Gvp\RequestBuilder;
 use Paranoia\Acquirer\Gvp\GvpConfiguration;
 use Paranoia\Core\Formatter\IsoNumericCurrencyCodeFormatter;
 use Paranoia\Core\Formatter\MoneyFormatter;
-use Paranoia\Core\Model\Request;
 use Paranoia\Core\Model\Request\HttpRequest;
 use Paranoia\Core\Model\Request\RefundRequest;
 use Paranoia\Lib\XmlSerializer;
@@ -58,7 +57,7 @@ class RefundRequestBuilder
      * @param RefundRequest $request
      * @return HttpRequest
      */
-    public function build(Request\RefundRequest $request): HttpRequest
+    public function build(RefundRequest $request): HttpRequest
     {
         $headers = $this->requestBuilderCommon->buildHeaders();
         $body = $this->buildBody($request);

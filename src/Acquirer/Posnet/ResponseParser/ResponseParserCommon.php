@@ -2,7 +2,6 @@
 namespace Paranoia\Acquirer\Posnet\ResponseParser;
 
 use Paranoia\Core\Exception\BadResponseException;
-use Paranoia\Core\Model\Response;
 use Paranoia\Core\Model\Response\AbstractResponse;
 use Paranoia\Core\Model\Response\PaymentResponse;
 
@@ -68,30 +67,5 @@ class ResponseParserCommon
         if (property_exists($xml, 'authCode')) {
             $response->setAuthCode((string)$xml->authCode);
         }
-    }
-
-    /**
-     * @param $rawResponse
-     * @return Response
-     * @throws BadResponseException
-     */
-    protected function processCommonResponse($rawResponse)
-    {
-        try {
-            /** @var \SimpleXMLElement $xml */
-            $xml = new \SimpleXmlElement($rawResponse);
-        } catch (\Exception $e) {
-            $exception = new BadResponseException('Provider returned unexpected response: ' . $rawResponse);
-            throw $exception;
-        }
-        $this->validateResponse($xml);
-        $response = new Response();
-        $response->setIsSuccess((int)$xml->approved > 0);
-        if (!$response->isSuccess()) {
-            $this->prepareErrorDetails($xml, $response);
-        } else {
-            $this->prepareTransactionDetails($xml, $response);
-        }
-        return $response;
     }
 }

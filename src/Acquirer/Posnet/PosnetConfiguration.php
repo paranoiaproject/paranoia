@@ -1,9 +1,9 @@
 <?php
 namespace Paranoia\Acquirer\Posnet;
 
-use Paranoia\Core\AbstractConfiguration;
+use Paranoia\Core\Acquirer\BaseConfiguration;
 
-class PosnetConfiguration extends AbstractConfiguration
+class PosnetConfiguration extends BaseConfiguration
 {
     /**
      * @var int

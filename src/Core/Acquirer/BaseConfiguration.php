@@ -1,7 +1,7 @@
 <?php
-namespace Paranoia\Core;
+namespace Paranoia\Core\Acquirer;
 
-class AbstractConfiguration
+abstract class BaseConfiguration
 {
 
     /**

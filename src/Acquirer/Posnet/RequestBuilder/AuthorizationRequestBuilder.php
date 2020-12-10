@@ -6,7 +6,6 @@ use Paranoia\Acquirer\Posnet\Formatter\OrderIdFormatter;
 use Paranoia\Acquirer\Posnet\PosnetConfiguration;
 use Paranoia\Core\Formatter\MoneyFormatter;
 use Paranoia\Core\Formatter\MultiDigitInstallmentFormatter;
-use Paranoia\Core\Model\Request;
 use Paranoia\Core\Model\Request\AuthorizationRequest;
 use Paranoia\Core\Model\Request\HttpRequest;
 use Paranoia\Lib\XmlSerializer;
@@ -72,7 +71,7 @@ class AuthorizationRequestBuilder
      * @param AuthorizationRequest $request
      * @return HttpRequest
      */
-    public function build(AuthorizationRequest $request): Request\HttpRequest
+    public function build(AuthorizationRequest $request): HttpRequest
     {
         $headers = $this->requestBuilderCommon->buildHeaders();
         $body = $this->buildBody($request);

@@ -2,7 +2,7 @@
 namespace Paranoia\Test\Acquirer\NestPay\ResponseParser;
 
 use Paranoia\Acquirer\NestPay\ResponseParser\RefundResponseParser;
-use Paranoia\Core\AbstractConfiguration;
+use Paranoia\Core\Acquirer\BaseConfiguration;
 use Paranoia\Core\Exception\BadResponseException;
 use Paranoia\Core\Model\Response;
 use PHPUnit\Framework\TestCase;
@@ -15,8 +15,8 @@ class RefundResponseProcessorTest extends TestCase
             __DIR__ . '/../../../samples/response/nestpay/refund_successful.xml'
         );
 
-        /** @var AbstractConfiguration $configuration */
-        $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
+        /** @var BaseConfiguration $configuration */
+        $configuration = $this->getMockBuilder(BaseConfiguration::class)->getMock();
         $processor = new RefundResponseParser($configuration);
         $response = $processor->parse($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
@@ -32,8 +32,8 @@ class RefundResponseProcessorTest extends TestCase
             __DIR__ . '/../../../samples/response/nestpay/refund_failed.xml'
         );
 
-        /** @var AbstractConfiguration $configuration */
-        $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
+        /** @var BaseConfiguration $configuration */
+        $configuration = $this->getMockBuilder(BaseConfiguration::class)->getMock();
         $processor = new RefundResponseParser($configuration);
         $response = $processor->parse($rawResponse);
         $this->assertInstanceOf(Response::class, $response);
@@ -50,8 +50,8 @@ class RefundResponseProcessorTest extends TestCase
      */
     public function test_bad_response($rawResponse)
     {
-        /** @var AbstractConfiguration $configuration */
-        $configuration = $this->getMockBuilder(AbstractConfiguration::class)->getMock();
+        /** @var BaseConfiguration $configuration */
+        $configuration = $this->getMockBuilder(BaseConfiguration::class)->getMock();
         $processor = new RefundResponseParser($configuration);
 
         $this->expectException(BadResponseException::class);

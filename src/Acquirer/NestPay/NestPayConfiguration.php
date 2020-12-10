@@ -2,9 +2,9 @@
 
 namespace Paranoia\Acquirer\NestPay;
 
-use Paranoia\Core\AbstractConfiguration;
+use Paranoia\Core\Acquirer\BaseConfiguration;
 
-class NestPayConfiguration extends AbstractConfiguration
+class NestPayConfiguration extends BaseConfiguration
 {
 
     /**
